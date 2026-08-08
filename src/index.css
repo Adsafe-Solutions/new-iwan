@@ -27,12 +27,15 @@
   --font: "DM Sans", system-ui, -apple-system, sans-serif;
   --serif: "Amiri", Georgia, serif;
 
-  /* Hero brand set — fixed by spec and intentionally NOT part of the
-     [data-theme] system below, so the theme switcher leaves the hero alone. */
   --font-satoshi: "Satoshi", Tahoma, sans-serif;
   --serif-display: "DM Serif Text", Georgia, serif;
-  --green-deep: #122f2a;
-  --amber-2: #ffc107;
+
+  /* Hero base + accent. These point at the theme tokens rather than fixed
+     hexes, so the switcher recolors the hero along with everything else —
+     --blue-800 is the darkest primary, --yellow the accent. Custom properties
+     resolve at use time, so the [data-theme] overrides below flow through. */
+  --hero-bg: var(--blue-800);
+  --hero-accent: var(--yellow);
 }
 
 /* ============ THEMES (brand combinations) ============
