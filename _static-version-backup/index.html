@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="A Canadian charity delivering clean water, food aid and emergency relief to communities in need." />
+  <title>Droplets of Mercy — Clean Water, Food & Emergency Relief</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ============ TOP BAR ============ -->
+  <div class="topbar">
+    <div class="container topbar__inner">
+      <a href="#emergency" class="topbar__live">
+        <span class="pulse-dot"></span> Emergency Monitor — Live
+      </a>
+      <div class="topbar__right">
+        <a href="tel:+18005550000">1-800-555-0000</a>
+        <div class="lang">
+          <span class="flag">🇨🇦</span>
+          <button class="lang__btn is-active">EN</button>
+          <span class="lang__sep">/</span>
+          <button class="lang__btn">FR</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ HEADER ============ -->
+  <header class="header" id="header">
+    <div class="container header__inner">
+      <a href="#" class="brand" aria-label="Droplets of Mercy home">
+        <svg class="brand__mark" viewBox="0 0 32 40" aria-hidden="true">
+          <path d="M16 0C16 0 2 16 2 26a14 14 0 0 0 28 0C30 16 16 0 16 0Z"/>
+        </svg>
+        <span class="brand__name">Droplets<em>of Mercy</em></span>
+      </a>
+
+      <nav class="nav" id="nav">
+        <ul class="nav__list">
+          <li><a href="#" data-link>Zakat</a></li>
+          <li><a href="#causes" data-link>Religious Giving</a></li>
+          <li><a href="#causes" data-link>Appeals</a></li>
+          <li><a href="#causes" data-link>What We Do</a></li>
+          <li><a href="#about" data-link>About Us</a></li>
+        </ul>
+      </nav>
+
+      <div class="header__actions">
+        <a href="#donate" class="btn btn--primary btn--donate">Donate</a>
+        <button class="burger" id="burger" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ HERO CAROUSEL ============ -->
+  <section class="hero" id="hero">
+    <div class="hero__track" id="heroTrack">
+
+      <article class="slide is-active" style="--img:url('https://images.unsplash.com/photo-1541252260730-0412e8e2108e?q=80&w=1920&auto=format&fit=crop')">
+        <div class="slide__bg"></div>
+        <div class="container slide__content">
+          <span class="slide__eyebrow">Water for Life</span>
+          <h1 class="slide__title">Dirty Water Kills</h1>
+          <p class="slide__text">785 million people live without clean water. A single well transforms a community for a generation.</p>
+          <div class="slide__cta">
+            <a href="#donate" class="btn btn--primary">Give Water</a>
+            <a href="#causes" class="btn btn--ghost">Learn More</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="slide" style="--img:url('https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=1920&auto=format&fit=crop')">
+        <div class="slide__bg"></div>
+        <div class="container slide__content">
+          <span class="slide__eyebrow">Food Aid</span>
+          <h1 class="slide__title">Mercy Kitchen</h1>
+          <p class="slide__text">Hot, nutritious meals served daily to families facing hunger across three continents.</p>
+          <div class="slide__cta">
+            <a href="#donate" class="btn btn--primary">Feed a Family</a>
+            <a href="#causes" class="btn btn--ghost">Learn More</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="slide" style="--img:url('https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=1920&auto=format&fit=crop')">
+        <div class="slide__bg"></div>
+        <div class="container slide__content">
+          <span class="slide__eyebrow">Emergency Appeal</span>
+          <h1 class="slide__title">Families in Crisis</h1>
+          <p class="slide__text">When disaster strikes, our teams are on the ground within hours delivering life-saving aid.</p>
+          <div class="slide__cta">
+            <a href="#donate" class="btn btn--primary">Donate Now</a>
+            <a href="#causes" class="btn btn--ghost">Learn More</a>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <button class="hero__arrow hero__arrow--prev" id="heroPrev" aria-label="Previous slide">‹</button>
+    <button class="hero__arrow hero__arrow--next" id="heroNext" aria-label="Next slide">›</button>
+    <div class="hero__dots" id="heroDots"></div>
+  </section>
+
+  <!-- ============ MISSION ============ -->
+  <section class="mission" id="about">
+    <div class="container mission__inner reveal">
+      <span class="section__eyebrow">Who We Are</span>
+      <h2 class="section__title">We're a Leading Canadian Charity</h2>
+      <p class="mission__lead">Rooted in compassion and accountability, we deliver 100% of your donation to those who need it most — verified, transparent, and on the ground.</p>
+      <div class="mission__endorse">
+        <div class="endorse"><span class="endorse__avatar">A</span><div><strong>Dr. Aisha R.</strong><small>Scholar &amp; Advisor</small></div></div>
+        <div class="endorse"><span class="endorse__avatar">M</span><div><strong>Sh. Musa K.</strong><small>Researcher</small></div></div>
+        <div class="endorse"><span class="endorse__avatar">Y</span><div><strong>Dr. Yusuf B.</strong><small>Advisor</small></div></div>
+        <div class="endorse"><span class="endorse__avatar">S</span><div><strong>Sara N.</strong><small>Field Director</small></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ STATS ============ -->
+  <section class="stats">
+    <div class="container stats__grid">
+      <div class="stat reveal"><span class="stat__num" data-count="1200000">0</span><span class="stat__label">Lives Reached</span></div>
+      <div class="stat reveal"><span class="stat__num" data-count="8500">0</span><span class="stat__label">Wells Built</span></div>
+      <div class="stat reveal"><span class="stat__num" data-count="42">0</span><span class="stat__label">Countries</span></div>
+      <div class="stat reveal"><span class="stat__num" data-count="100" data-suffix="%">0</span><span class="stat__label">Donation Policy</span></div>
+    </div>
+  </section>
+
+  <!-- ============ CAUSES GRID ============ -->
+  <section class="causes" id="causes">
+    <div class="container">
+      <div class="section__head reveal">
+        <span class="section__eyebrow">What We Do</span>
+        <h2 class="section__title">Where Your Giving Goes</h2>
+      </div>
+      <div class="causes__grid">
+        <a href="#donate" class="cause reveal" style="--c:#1e9bd7"><div class="cause__icon">💧</div><h3>Water for Life</h3><p>Wells, pumps &amp; filtration for lasting access to clean water.</p><span class="cause__link">Support →</span></a>
+        <a href="#donate" class="cause reveal" style="--c:#f0a500"><div class="cause__icon">🍲</div><h3>Food Aid</h3><p>Daily meals and emergency food parcels for hungry families.</p><span class="cause__link">Support →</span></a>
+        <a href="#donate" class="cause reveal" style="--c:#e05a5a"><div class="cause__icon">🩺</div><h3>Health &amp; Medical</h3><p>Clinics, medicine and mobile care for underserved regions.</p><span class="cause__link">Support →</span></a>
+        <a href="#donate" class="cause reveal" style="--c:#7b61ff"><div class="cause__icon">🧒</div><h3>Orphans &amp; Widows</h3><p>Sponsorship, shelter and dignity for the most vulnerable.</p><span class="cause__link">Support →</span></a>
+        <a href="#donate" class="cause reveal" style="--c:#2bb673"><div class="cause__icon">📚</div><h3>Education</h3><p>Schools, supplies and scholarships that break the cycle.</p><span class="cause__link">Support →</span></a>
+        <a href="#emergency" class="cause reveal" style="--c:#ff5a3c"><div class="cause__icon">🚨</div><h3>Emergency Monitor</h3><p>Rapid response to disasters and conflict, live from the field.</p><span class="cause__link">Support →</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PARALLAX BANNER ============ -->
+  <section class="banner" id="donate">
+    <div class="banner__bg" data-parallax></div>
+    <div class="container banner__inner reveal">
+      <h2>Your Turn — Take Action</h2>
+      <p>Every drop counts. Join thousands of donors changing lives today.</p>
+      <a href="#" class="btn btn--primary btn--lg">Donate Now</a>
+    </div>
+  </section>
+
+  <!-- ============ ACTION MODULES ============ -->
+  <section class="actions">
+    <div class="container">
+      <div class="actions__grid">
+        <a class="action reveal" href="#"><div class="action__img" style="background-image:url('https://images.unsplash.com/photo-1509099836639-18ba1795216d?q=80&w=800&auto=format&fit=crop')"></div><h3>Mercy Trips</h3><span>Volunteer in the field →</span></a>
+        <a class="action reveal" href="#"><div class="action__img" style="background-image:url('https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=800&auto=format&fit=crop')"></div><h3>Work With Us</h3><span>Careers &amp; roles →</span></a>
+        <a class="action reveal" href="#"><div class="action__img" style="background-image:url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=800&auto=format&fit=crop')"></div><h3>Blogs</h3><span>Stories from the ground →</span></a>
+        <a class="action reveal" href="#"><div class="action__img" style="background-image:url('https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?q=80&w=800&auto=format&fit=crop')"></div><h3>Mercy Fund</h3><span>Monthly giving →</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ NEWS ============ -->
+  <section class="news" id="emergency">
+    <div class="container">
+      <div class="section__head reveal">
+        <span class="section__eyebrow">Media Center</span>
+        <h2 class="section__title">Latest News</h2>
+      </div>
+      <div class="news__grid">
+        <article class="post reveal"><div class="post__img" style="background-image:url('https://images.unsplash.com/photo-1497486751825-1233686d5d80?q=80&w=800&auto=format&fit=crop')"></div><div class="post__body"><time>July 18, 2026</time><h3>New well brings water to 4,000 people</h3><p>A remote village celebrates its first clean water source in a generation.</p></div></article>
+        <article class="post reveal"><div class="post__img" style="background-image:url('https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=800&auto=format&fit=crop')"></div><div class="post__body"><time>July 09, 2026</time><h3>Mercy Kitchen serves millionth meal</h3><p>A milestone in the fight against hunger across three continents.</p></div></article>
+        <article class="post reveal"><div class="post__img" style="background-image:url('https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=800&auto=format&fit=crop')"></div><div class="post__body"><time>June 28, 2026</time><h3>Emergency teams respond within hours</h3><p>Rapid deployment delivers aid to families displaced by flooding.</p></div></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="container footer__grid">
+      <div class="footer__col footer__brand">
+        <a href="#" class="brand brand--light">
+          <svg class="brand__mark" viewBox="0 0 32 40" aria-hidden="true"><path d="M16 0C16 0 2 16 2 26a14 14 0 0 0 28 0C30 16 16 0 16 0Z"/></svg>
+          <span class="brand__name">Droplets<em>of Mercy</em></span>
+        </a>
+        <p>A registered Canadian charity delivering clean water, food and relief worldwide.</p>
+        <div class="socials">
+          <a href="#" aria-label="Facebook">f</a>
+          <a href="#" aria-label="Instagram">ig</a>
+          <a href="#" aria-label="YouTube">yt</a>
+          <a href="#" aria-label="LinkedIn">in</a>
+          <a href="#" aria-label="TikTok">tk</a>
+        </div>
+      </div>
+      <div class="footer__col">
+        <h4>Organization</h4>
+        <a href="#about">About Us</a><a href="#">Financials</a><a href="#">Careers</a><a href="#">Contact</a>
+      </div>
+      <div class="footer__col">
+        <h4>Campaigns</h4>
+        <a href="#causes">Water for Life</a><a href="#causes">Food Aid</a><a href="#causes">Orphans</a><a href="#emergency">Emergency</a>
+      </div>
+      <div class="footer__col footer__news">
+        <h4>Newsletter</h4>
+        <p>Get impact updates in your inbox.</p>
+        <form class="subscribe" onsubmit="return false">
+          <input type="email" placeholder="Your email" aria-label="Email" required />
+          <button class="btn btn--primary">Join</button>
+        </form>
+      </div>
+    </div>
+    <div class="footer__bar">
+      <div class="container footer__bar-inner">
+        <span>© 2026 Droplets of Mercy. Charity No. 00000-0000. All rights reserved.</span>
+        <span>Template build — replace with your content.</span>
+      </div>
+    </div>
+  </footer>
+
+  <a href="#donate" class="fab">Donate ❤</a>
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

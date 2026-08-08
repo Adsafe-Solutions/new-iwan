@@ -1,0 +1,870 @@
+/* ===================== ZAKAT PAGE ===================== */
+.zakat {
+  overflow-x: hidden;
+}
+.zy {
+  color: var(--yellow);
+}
+
+/* ---------- 1 · HERO ---------- */
+.zhero {
+  position: relative;
+  min-height: 560px;
+  height: 66vh;
+  overflow: hidden;
+  background: #04101f;
+  display: flex;
+  align-items: center;
+}
+.zhero__bg {
+  position: absolute;
+  inset: 0;
+  background: var(--img) center/cover;
+}
+.zhero__bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(4, 16, 31, 0.9),
+    rgba(4, 16, 31, 0.35) 55%,
+    rgba(4, 16, 31, 0.2)
+  );
+}
+.zhero__inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+.zhero__card {
+  background: #fff;
+  border-radius: 3px;
+  padding: 40px 32px;
+  box-shadow: var(--shadow-card);
+  width: 480px;
+  max-width: 100%;
+}
+/* H1: 30 / 700 / lh37.5 / -0.6px / #2D3748 */
+.zhero__card h1 {
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 37.5px;
+  letter-spacing: -0.6px;
+  color: #2d3748;
+  margin: 0.4rem 0 0.7rem;
+}
+/* body: 16 / 400 / lh26 */
+.zhero__card p {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 26px;
+  color: var(--muted);
+  margin-bottom: 0.8rem;
+}
+/* bold sub-line: 16 / 600 / lh26 */
+.zhero__note {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 26px;
+  color: var(--ink-2);
+}
+.zhero__give {
+  width: 100%;
+  font-size: 16px;
+  padding: 16px;
+  margin: 0.4rem 0 0.5rem;
+}
+.zhero__calc {
+  width: 100%;
+  font-size: 14px;
+  padding: 0.85rem 1rem;
+  background: #fff;
+  color: var(--blue);
+  border: 2px solid var(--line);
+  text-transform: none;
+}
+.zhero__calc:hover {
+  border-color: var(--blue);
+}
+.zhero__bar {
+  margin-top: 1.1rem;
+}
+.zhero__bar-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.4rem;
+}
+/* stat: 14 / 700 / lh20 · percent: 12 / 400 */
+.zhero__stat {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 20px;
+  color: var(--ink-2);
+}
+.zhero__pct {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+}
+.zhero__track {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--line);
+  overflow: hidden;
+}
+.zhero__fill {
+  height: 100%;
+  background: var(--blue);
+  border-radius: 999px;
+}
+.zhero__obl {
+  position: absolute;
+  right: 24px;
+  bottom: 26px;
+  z-index: 2;
+  text-align: left;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  /* reserve space for the absolutely-positioned typewriter line below */
+  padding-bottom: 66px;
+}
+/* ZAKAT badge word: 112px */
+.zhero__obl-big {
+  display: inline-block;
+  background: var(--blue);
+  color: #fff;
+  font-size: 112px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  padding: 0.05em 0.2em;
+}
+/* "AN OBLIGATION" — both words 49 / 900 / lh53.9 / -0.98px */
+.zhero__obl-sub {
+  display: inline-block;
+  font-size: 49px;
+  font-weight: 900;
+  line-height: 53.9px;
+  letter-spacing: -0.98px;
+  margin-top: 0.2rem;
+}
+/* dynamic typewriter line: 48px.  width:0 + overflow keeps it out of the
+   block's width calc so ZAKAT / OBLIGATION never shift while it types.
+   align-self:flex-end + text-align:right anchor it to the block's right edge
+   so the text grows right → left as it types. */
+/* absolutely anchored to the block's right edge so it stays visible and the
+   text grows right → left as it types, without shifting ZAKAT / OBLIGATION */
+.zhero__obl-type {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1.1;
+  white-space: nowrap;
+  text-align: right;
+  color: #fff;
+}
+.tw-cursor--light {
+  background: #fff;
+}
+
+/* ---------- 2 · PATHWAY ---------- */
+.zintro {
+  padding: 4.5rem 0;
+}
+.zintro__grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+/* large stat line: 48 / 900 / lh60 */
+.zintro__text {
+  font-size: clamp(2rem, 4vw, 48px);
+  font-weight: 900;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+.zintro__text b {
+  color: var(--blue);
+}
+.zpathway {
+  background: var(--blue);
+  color: #fff;
+  border-radius: 6px;
+  padding: 2.4rem;
+}
+/* eyebrow H2: 38.4 / 900 / lh48 */
+.zpathway h3 {
+  font-size: 38.4px;
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 48px;
+  letter-spacing: -0.01em;
+  margin-bottom: 1.1rem;
+  display: inline-block;
+}
+.zpathway__rule {
+  display: block;
+  height: 3px;
+  background: var(--yellow);
+  margin-top: 0.7rem;
+  transform: scaleX(0);
+  transform-origin: left center;
+  will-change: transform;
+}
+.zpathway ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.4rem;
+}
+/* list item: 21.6 / 700 / lh32.4 */
+.zpathway li {
+  color: var(--yellow);
+  font-weight: 700;
+  font-size: 21.6px;
+  line-height: 32.4px;
+}
+/* quote: 23 / 400 / lh31.6 italic */
+.zpathway blockquote {
+  font-size: 23px;
+  font-weight: 400;
+  color: #cfe0ef;
+  font-style: italic;
+  line-height: 31.6px;
+}
+/* citation: 20 / 700 / lh30 */
+.zpathway cite {
+  display: block;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  font-style: normal;
+  line-height: 30px;
+  margin-top: 0.5rem;
+}
+
+/* ---------- 3 · CHANGING LIVES ---------- */
+.zlives {
+  padding: 2rem 0 4.5rem;
+}
+/* heading split: 51.2 / 900 · dark text + blue pill */
+.zlives .kicker {
+  font-size: clamp(2rem, 4.6vw, 51.2px);
+  color: #1a1a1a;
+}
+.zlives .mark--b {
+  padding: 2px 14px 6px;
+}
+.zlives .dgrid {
+  gap: 16px;
+}
+/* card body copy: 20 / 900 / lh26 */
+.zakat .dcard__body h3 {
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 26px;
+  letter-spacing: normal;
+}
+/* category badge: 13.8 / 900 / ls1.1px */
+.zakat .dcard__tag {
+  letter-spacing: 1.1px;
+}
+
+/* ---------- 4 · AMOUNT CARDS ---------- */
+.zamounts {
+  padding: 0 0 5rem;
+}
+/* grid: 3 cols, 80px row / 16px col gap */
+.zamounts__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 80px 16px;
+}
+.zamount {
+  position: relative;
+  cursor: pointer;
+}
+/* colored top box: radius4, no shadow */
+.zamount__top {
+  height: 184px;
+  border-radius: 4px;
+  display: grid;
+  place-items: center;
+  transition: transform 0.3s;
+}
+.zamount:hover .zamount__top {
+  transform: translateY(-4px);
+}
+.zamount__top span {
+  font-size: 2.6rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
+}
+/* white price box overlapping the bottom, with shadow */
+.zamount__body {
+  position: absolute;
+  left: 50%;
+  bottom: -30px;
+  transform: translateX(-50%);
+  width: 82%;
+  background: #fff;
+  border-radius: 3px;
+  padding: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.13);
+  text-align: center;
+}
+/* price: 22.4 / 900 */
+.zamount__body strong {
+  display: block;
+  font-size: 22.4px;
+  font-weight: 900;
+  color: var(--ink);
+}
+/* label: 10.88 / 700 uppercase gray */
+.zamount__body small {
+  display: block;
+  font-size: 10.88px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: #555;
+  margin-top: 2px;
+}
+
+/* ---------- 5 · CALCULATOR ---------- */
+/* section sits on a soft gradient; the panel floats with a wide shadow */
+.zcalc {
+  /* gutter lives on the section, not the card — see .zcalc__grid below */
+  padding: 5rem 24px;
+  background: linear-gradient(120deg, #eceff6 0%, #f5f6f9 55%, #f4f1e8 100%);
+}
+.zcalc__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  /* .container's `padding: 0 24px` would sit INSIDE the rounded, shadowed box,
+     leaving a transparent strip down each side of the card */
+  padding: 0;
+  border-radius: 3px;
+  overflow: hidden;
+  box-shadow: 0 42px 90px -38px rgba(10, 16, 32, 0.45);
+}
+.zcalc__blue {
+  background: var(--blue);
+  color: #fff;
+  padding: 3rem 3.2rem;
+  /* grid items default to min-width:auto and refuse to shrink below their
+     content, which pushed the panels wider than the card on narrow screens */
+  min-width: 0;
+}
+.zcalc .pill {
+  font-size: 14px;
+  font-weight: 700;
+  padding: 8px 16px;
+}
+/* H2: 48 / 700 — display leading, not the 1.55 body default */
+.zcalc__blue h2 {
+  font-size: clamp(2rem, 3.6vw, 48px);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  margin: 1.2rem 0 1.2rem;
+}
+/* paragraph: 18 / 400 / lh29.25 */
+.zcalc__blue p {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 29.25px;
+  color: #cfe0ef;
+  margin-bottom: 1.3rem;
+}
+.zcalc__blue .btn {
+  margin-top: 0.6rem;
+}
+/* button: 18 / 700, padding 24/40, radius3 */
+.zcalc .btn--yellow {
+  font-size: 18px;
+  font-weight: 700;
+  padding: 24px 40px;
+  border-radius: 3px;
+}
+.zcalc__yellow {
+  background: var(--yellow);
+  color: var(--blue);
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  min-width: 0;
+}
+/* 2.5%: 128 / 700 / #0E41B0 */
+.zcalc__pct {
+  font-size: clamp(4rem, 9vw, 128px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.zcalc__pct-sub {
+  font-size: 20px;
+  font-weight: 700;
+  margin-top: 0.6rem;
+}
+.zcalc__quote {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--blue);
+  margin-top: 1.6rem;
+  max-width: 430px;
+}
+.zcalc__yellow cite {
+  font-family: var(--serif);
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--blue);
+  margin-top: 0.5rem;
+}
+
+/* ---------- 6 · ACT OF MERCY ---------- */
+.zmercy {
+  position: relative;
+  overflow: hidden;
+  padding: 3rem 0 4.5rem;
+}
+.zmercy__wipe {
+  position: absolute;
+  inset: 0;
+  background: var(--blue);
+  transform: scaleX(0);
+  transform-origin: right center;
+  z-index: 0;
+  will-change: transform;
+}
+.zmercy .container {
+  position: relative;
+  z-index: 1;
+}
+.zmercy__card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: #0a1224;
+  border-radius: 8px;
+  overflow: hidden;
+  min-height: 340px;
+}
+.zmercy__text {
+  position: relative;
+  z-index: 1;
+  padding: 3.5rem 3.75rem;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+/* H2: 42.95 / 900 */
+.zmercy__text h2 {
+  font-size: clamp(2rem, 4vw, 42.95px);
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  margin-bottom: 1rem;
+}
+/* paragraph: 16.8 / 400 / lh27.3 */
+.zmercy__text p {
+  color: #c3d2ef;
+  font-size: 16.8px;
+  font-weight: 400;
+  line-height: 27.3px;
+  margin-bottom: 1.4rem;
+  max-width: 420px;
+}
+.zmercy__img {
+  position: relative;
+  z-index: 1;
+  background: var(--img) center/cover;
+}
+
+/* ---------- 7 · ADMINISTER ---------- */
+.zadmin {
+  position: relative;
+  overflow: hidden;
+  background: #f4f7fc;
+  padding: 4.5rem 0;
+}
+.zadmin__wipe {
+  position: absolute;
+  inset: 0;
+  background: var(--yellow);
+  transform: scaleX(0);
+  transform-origin: left center;
+  z-index: 0;
+  will-change: transform;
+}
+.zadmin .container {
+  position: relative;
+  z-index: 1;
+}
+.zadmin__card {
+  background: #fff;
+  border-radius: 3px;
+  padding: 64px !important;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+  box-shadow: var(--shadow);
+}
+/* H2: 44.8 / 900 / lh67.2 */
+.zadmin__text .kicker {
+  font-size: clamp(2rem, 4vw, 44.8px);
+  font-weight: 900;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+/* sub-paragraph: 17.6 / 400 / lh28.6 */
+.zadmin__text p {
+  color: var(--muted);
+  font-size: 17.6px;
+  font-weight: 400;
+  line-height: 28.6px;
+  margin-bottom: 1.4rem;
+}
+.zadmin__steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+/* step title: 17.6 / 600 / lh26.4 */
+.zadmin__step {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--blue);
+  color: #fff;
+  border-radius: 5px;
+  padding: 1.1rem 1.3rem;
+  font-size: 17.6px;
+  font-weight: 600;
+  line-height: 26.4px;
+  transition: transform 0.3s;
+}
+.zadmin__step:hover {
+  transform: translateX(6px);
+}
+/* step label: 14 / 900 */
+.zadmin__num {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 4px;
+  padding: 0.35rem 0.6rem;
+  font-size: 14px;
+  font-weight: 900;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ---------- 8 · TRUSTED ---------- */
+.ztrusted {
+  padding: 3.5rem 0;
+}
+.ztrusted .trusted__label {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+.ztrusted__row {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  flex-wrap: wrap;
+  margin-top: 1.4rem;
+}
+/* name: 16 / 600 · title: 12 / 400 */
+.zakat .scholar strong {
+  font-size: 16px;
+  font-weight: 600;
+}
+.zakat .scholar small {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+/* ---------- 9 · ZAKAT POLICY ---------- */
+.zpolicy {
+  background: var(--blue);
+  color: #fff;
+  padding: 4.5rem 0;
+}
+.zpolicy__grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 2.6rem;
+  align-items: start;
+}
+/* heading: 48 / 700 */
+.zpolicy__text h2 {
+  font-size: clamp(2rem, 3.6vw, 48px);
+  font-weight: 700;
+  margin: 1rem 0;
+}
+/* paragraph: 18 / 400 / lh29.25 */
+.zpolicy__text p {
+  color: #cfe0ef;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 29.25px;
+  margin-bottom: 1rem;
+}
+.zpolicy__text .btn {
+  margin-top: 0.6rem;
+}
+/* card: padding32, radius3, no shadow */
+.zpolicy__cats {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 3px;
+  padding: 32px;
+}
+/* H3: 24 / 700 / lh32 */
+.zpolicy__cats h3 {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 32px;
+  margin-bottom: 1.2rem;
+  color: var(--yellow);
+}
+.zpolicy__cats ol {
+  list-style: none;
+  counter-reset: cat;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+/* list item: 16 / 400 / lh24 */
+.zpolicy__cats li {
+  counter-increment: cat;
+  display: flex;
+  gap: 0.7rem;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  color: #eaf1fb;
+}
+.zpolicy__cats li::before {
+  content: counter(cat);
+  background: var(--yellow);
+  color: var(--blue);
+  font-weight: 800;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  flex: none;
+}
+
+/* ---------- 10 · FAQ ---------- */
+.zfaq {
+  padding: 4.5rem 0;
+}
+.zfaq__head {
+  text-align: center;
+  max-width: 680px;
+  margin: 0 auto 2.6rem;
+}
+/* eyebrow Questions: 48 / 700 */
+.zfaq__head .kicker {
+  font-size: clamp(2rem, 3.6vw, 48px);
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 1rem 0 1.1rem;
+}
+/* sub-paragraph: 20 / 400 / lh28 */
+.zfaq__head p {
+  color: var(--muted);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 28px;
+}
+.zfaq__list {
+  max-width: 832px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+/* item: radius3, border 1px #DCE0E5 */
+.zfaq__item {
+  border: 1px solid #dce0e5;
+  border-radius: 3px;
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+.zfaq__item.open {
+  border-color: var(--blue);
+}
+/* question: 18 / 600, padding 0 24 */
+.zfaq__q {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  background: #fff;
+  border: none;
+  cursor: pointer;
+  padding: 1.4rem 24px;
+  font-size: 18px;
+  font-weight: 600;
+  text-align: left;
+  color: var(--ink);
+}
+.zfaq__ico {
+  font-size: 1.5rem;
+  color: var(--blue);
+  flex: none;
+  line-height: 1;
+}
+.zfaq__a {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+}
+.zfaq__item.open .zfaq__a {
+  max-height: 260px;
+}
+.zfaq__a p {
+  padding: 0 24px 1.3rem;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* ---------- 11 · CTA ---------- */
+.zcta {
+  padding: 4.5rem 0;
+  background: var(--bg-soft, #f0f4ff);
+  text-align: center;
+}
+.zcta__inner {
+  max-width: 700px;
+  margin: 0 auto;
+}
+/* H2: 48 / 700 / lh48 */
+.zcta__inner .kicker {
+  font-size: clamp(2rem, 3.6vw, 48px);
+  font-weight: 700;
+  line-height: 48px;
+  margin: 1.1rem 0 0.8rem;
+}
+/* paragraph: 20 / 400 / lh32.5 */
+.zcta__inner p {
+  color: var(--muted);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 32.5px;
+  margin-bottom: 1.8rem;
+}
+.zcta__btns {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+/* buttons: 18 / 600 / lh28 */
+.zcta .btn {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 28px;
+}
+.btn--blueline {
+  background: #fff;
+  color: var(--blue);
+  border: 2px solid var(--blue);
+}
+.btn--blueline:hover {
+  background: var(--blue);
+  color: #fff;
+  transform: translateY(-3px);
+}
+
+/* ---------- BADGES ---------- */
+.zbadges {
+  padding: 2rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.zbadges__row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1.5rem 2.5rem;
+}
+.zbadge {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-2);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 1000px) {
+  .zintro__grid,
+  .zcalc__grid,
+  .zmercy__card,
+  .zadmin__card,
+  .zpolicy__grid {
+    grid-template-columns: 1fr;
+  }
+  .zamounts__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .zhero__obl {
+    display: none;
+  }
+  .zmercy__img {
+    min-height: 240px;
+  }
+  .zadmin__card {
+    padding: 2.4rem;
+  }
+}
+@media (max-width: 560px) {
+  .zamounts__grid {
+    grid-template-columns: 1fr;
+  }
+  .ztrusted__row {
+    gap: 1.6rem;
+  }
+  .zhero__card {
+    padding: 28px 22px;
+  }
+  .zcalc {
+    padding: 3.5rem 16px;
+  }
+  .zcalc__blue {
+    padding: 2.2rem 1.5rem;
+  }
+  .zcalc__yellow {
+    padding: 2.6rem 1.5rem;
+  }
+  /* the 350px-wide CTA doesn't fit a phone at its desktop size */
+  .zcalc .btn--yellow {
+    width: 100%;
+    padding: 18px 20px;
+    font-size: 16px;
+  }
+}

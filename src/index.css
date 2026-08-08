@@ -1,0 +1,227 @@
+/* =========================================================
+   Design tokens — matched to the reference charity layout
+   Bold blue + yellow blocking · DM Sans + Amiri
+========================================================= */
+:root {
+  --blue: #0e41b0; /* primary royal blue */
+  --blue-dark: #0a3090;
+  --blue-800: #0a2f86;
+  --yellow: #f2ec0f; /* highlight / marker */
+  --yellow-2: #e8e347;
+  --red: #e11d2a; /* donate button      */
+  --pink: #e0218a;
+  --teal: #26bde2;
+  --green: #4c9f38;
+  --amber: #dda63a;
+  --ink: #0a1020; /* near-black         */
+  --ink-2: #1a2233;
+  --muted: #5b6b80;
+  --bg: #ffffff;
+  --line: #e4e8f0;
+  --radius: 4px;
+  --radius-lg: 6px;
+  --shadow: 0 24px 50px -22px rgba(10, 16, 32, 0.4);
+  --shadow-card: 0 30px 60px -30px rgba(10, 16, 32, 0.55);
+  --container: 1180px;
+  --header-h: 78px;
+  --font: "DM Sans", system-ui, -apple-system, sans-serif;
+  --serif: "Amiri", Georgia, serif;
+}
+
+/* ============ THEMES (brand combinations) ============
+   Each theme overrides the primary (--blue*) and accent (--yellow*)
+   tokens; every component reads these, so switching recolors the site.
+   Keep the swatch colors in src/themes.js in sync with these. */
+:root[data-theme="ocean"] {
+  --blue: #0e41b0;
+  --blue-dark: #0a3090;
+  --blue-800: #0a2f86;
+  --yellow: #f2ec0f;
+  --yellow-2: #e8e347;
+  --teal: #26bde2;
+}
+:root[data-theme="emerald"] {
+  --blue: #0b7a4b;
+  --blue-dark: #085f3a;
+  --blue-800: #074f30;
+  --yellow: #ffce3f;
+  --yellow-2: #f3bf22;
+  --teal: #34d399;
+}
+:root[data-theme="violet"] {
+  --blue: #5a2ca0;
+  --blue-dark: #47237e;
+  --blue-800: #3d1f6e;
+  --yellow: #ffc93c;
+  --yellow-2: #f0b41f;
+  --teal: #a78bfa;
+}
+:root[data-theme="crimson"] {
+  --blue: #d01e2b;
+  --blue-dark: #a91724;
+  --blue-800: #8f131f;
+  --yellow: #ffd23f;
+  --yellow-2: #f5c518;
+  --teal: #f2707a;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  font-family: var(--font);
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.55;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+img {
+  max-width: 100%;
+  display: block;
+}
+ul {
+  list-style: none;
+}
+button {
+  font-family: inherit;
+}
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+.serif {
+  font-family: var(--serif);
+}
+
+/* ---------------- highlight marker headings ---------------- */
+.mark {
+  display: inline;
+  padding: 0.02em 0.18em;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.mark--y {
+  background: var(--yellow);
+}
+.mark--b {
+  background: var(--blue);
+  color: #fff;
+}
+.mark--by {
+  background: var(--blue);
+  color: var(--yellow);
+}
+.mark--yb {
+  background: var(--yellow);
+  color: var(--blue);
+}
+.h-block {
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  line-height: 1.06;
+}
+
+/* ---------------- buttons ---------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  padding: 1rem 1.7rem;
+  border-radius: var(--radius);
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition:
+    transform 0.22s,
+    box-shadow 0.22s,
+    background 0.22s,
+    color 0.22s;
+  white-space: nowrap;
+}
+.btn--blue {
+  background: var(--blue);
+  color: #fff;
+}
+.btn--blue:hover {
+  background: var(--blue-dark);
+  transform: translateY(-3px);
+  box-shadow: 0 16px 30px -14px var(--blue);
+}
+.btn--red {
+  background: var(--red);
+  color: #fff;
+}
+.btn--red:hover {
+  background: #c2161f;
+  transform: translateY(-3px);
+}
+.btn--yellow {
+  background: var(--yellow);
+  color: var(--ink);
+}
+.btn--yellow:hover {
+  background: var(--yellow-2);
+  transform: translateY(-3px);
+}
+.btn--ghost {
+  background: transparent;
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.6);
+}
+.btn--ghost:hover {
+  background: #fff;
+  color: var(--blue);
+  transform: translateY(-3px);
+}
+
+/* ---------------- section heads ---------------- */
+/* display heading base: 64px / 900 / uppercase / 1:1 line-height / -0.64px */
+.kicker {
+  font-size: clamp(2rem, 5vw, 64px);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.64px;
+  line-height: 1.12;
+  margin-bottom: 2.4rem;
+}
+
+/* ---------------- reveal base ---------------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(38px);
+}
+.reveal.in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}

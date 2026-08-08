@@ -1,0 +1,7 @@
+node_modules
+dist
+_static-version-backup
+package-lock.json
+public
+*.min.js
+*.min.css
