@@ -1048,111 +1048,146 @@
 }
 
 /* ===================== FOOTER ===================== */
+/* Tinted wash rather than flat --blue: the giant wordmark below is white and
+   needs a mid-tone ground to read as a watermark instead of a headline.
+   color-mix keeps it tracking the theme without needing per-theme rules. */
 .footer {
-  background: var(--blue);
-  color: #c3d2ef;
-  padding-top: 3.5rem;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--blue) 24%, #fff) 0%,
+    color-mix(in srgb, var(--blue) 46%, #fff) 100%
+  );
+  color: var(--ink);
+  overflow: hidden;
 }
-.footer__grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1.3fr 1.3fr;
-  gap: 2.4rem;
-  padding-bottom: 2.5rem;
+/* wider than .container — the wordmark is meant to run near the full viewport.
+   The deep bottom padding keeps the legal row clear of the theme-switcher FAB,
+   which is fixed to the bottom-left of the viewport. */
+.footer__in {
+  padding: 3.5rem 32px 4.5rem;
 }
-.footer h4 {
-  color: #fff;
+.footer__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 3rem;
+  flex-wrap: wrap;
+}
+.footer__brand {
+  font-size: 22px;
   font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.35px;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.5rem;
+}
+.footer__tagline,
+.footer__fine,
+.footer__copy {
   font-size: 14px;
-  line-height: 20px;
-  margin-bottom: 1.1rem;
+  line-height: 21px;
 }
-.footer a {
-  display: block;
-  padding: 0.28rem 0;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 20px;
-  transition:
-    color 0.2s,
-    padding-left 0.2s;
+.footer__tagline {
+  max-width: 46ch;
 }
-.footer a:hover {
-  color: #fff;
-  padding-left: 5px;
+
+.footer__signup {
+  width: min(560px, 100%);
 }
-.footer__contact p {
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 20px;
-  margin: 0.28rem 0;
-  display: flex;
-  gap: 0.5rem;
-}
-.subscribe {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  margin-top: 0.3rem;
-}
-.subscribe input {
-  padding: 0.8rem 1rem;
-  border-radius: 3px;
-  border: none;
-  background: #fff;
-  color: var(--ink);
-  font-family: inherit;
-}
-.subscribe .btn {
-  width: 100%;
-}
-.socials {
-  display: flex;
-  gap: 0.55rem;
-  margin-top: 1.4rem;
-}
-.socials a {
-  width: 38px;
-  height: 38px;
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.12);
-  display: grid;
-  place-items: center;
-  font-size: 0.75rem;
+.footer__label {
+  font-size: 15px;
   font-weight: 700;
-  color: #fff;
-  transition: 0.25s;
+  margin-bottom: 0.7rem;
 }
-.socials a:hover {
-  background: var(--yellow);
-  color: var(--ink);
-  transform: translateY(-3px);
-}
-.footer__bar {
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
-  padding: 1.4rem 0;
-  font-size: 0.8rem;
-}
-.footer__bar-in {
+/* input and button share one pill; the button sits inside the outline */
+.footer__form {
   display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
   align-items: center;
-  text-align: center;
+  gap: 0.4rem;
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--ink) 45%, transparent);
+  border-radius: 999px;
+  padding: 4px 4px 4px 20px;
+  transition: border-color 0.25s;
 }
-/* registered line: 12px / 600 / lh16 */
-.footer__reg {
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 16px;
+.footer__form:focus-within {
+  border-color: var(--blue-800);
 }
-/* CRA line: 14px / 700 / lh20 */
-.footer__cra {
+.footer__form input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--ink);
+  padding: 0.7rem 0;
+}
+.footer__form input::placeholder {
+  color: color-mix(in srgb, var(--ink) 60%, transparent);
+}
+.footer__form input:focus {
+  outline: none;
+}
+.footer__form button {
+  flex: none;
+  border: 0;
+  cursor: pointer;
+  background: var(--blue-800);
   color: #fff;
-  font-size: 14px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 0.75rem 1.6rem;
+  border-radius: 999px;
+  transition: background-color 0.25s;
+}
+.footer__form button:hover {
+  background: var(--blue);
+}
+.footer__fine {
+  margin-top: 0.7rem;
+  max-width: 62ch;
+}
+.footer__fine a {
+  text-decoration: underline;
+}
+
+/* the watermark. `textLength` makes it span the full width at any viewport,
+   so it never needs a font-size breakpoint. */
+.footer__mark {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 2.2rem 0 1.4rem;
+}
+.footer__mark text {
+  fill: #fff;
+  font-family: var(--font);
+  font-size: 100px;
   font-weight: 700;
-  line-height: 20px;
+  letter-spacing: -0.02em;
+}
+
+.footer__bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  padding-top: 1.4rem;
+  border-top: 1px solid color-mix(in srgb, var(--ink) 22%, transparent);
+}
+.footer__legal {
+  display: flex;
+  gap: 2rem;
+}
+.footer__legal a {
+  font-size: 14px;
+  text-decoration: underline;
+  transition: opacity 0.2s;
+}
+.footer__legal a:hover,
+.footer__fine a:hover {
+  opacity: 0.65;
 }
 
 /* ===================== THEME SWITCHER ===================== */
@@ -1279,9 +1314,6 @@
   .ncard--side .ncard__media {
     height: 300px;
   }
-  .footer__grid {
-    grid-template-columns: 1fr 1fr;
-  }
   .news__arrow {
     display: none;
   }
@@ -1330,9 +1362,17 @@
   }
   .dgrid,
   .tgrid,
-  .news__grid,
-  .footer__grid {
+  .news__grid {
     grid-template-columns: 1fr;
+  }
+  .footer__in {
+    padding: 2.6rem 20px 5rem;
+  }
+  .footer__top {
+    gap: 2rem;
+  }
+  .footer__legal {
+    gap: 1.2rem;
   }
   /* svh, not vh — the iOS URL bar otherwise makes the hero jump on scroll */
   .hero {
