@@ -26,6 +26,13 @@
   --header-h: 78px;
   --font: "DM Sans", system-ui, -apple-system, sans-serif;
   --serif: "Amiri", Georgia, serif;
+
+  /* Hero brand set — fixed by spec and intentionally NOT part of the
+     [data-theme] system below, so the theme switcher leaves the hero alone. */
+  --font-satoshi: "Satoshi", Tahoma, sans-serif;
+  --serif-display: "DM Serif Text", Georgia, serif;
+  --green-deep: #122f2a;
+  --amber-2: #ffc107;
 }
 
 /* ============ THEMES (brand combinations) ============

@@ -1,6 +1,9 @@
-export default function Topbar() {
+export default function Topbar({ overlay = false, hidden = false }) {
   return (
-    <div className="topbar">
+    <div
+      className={`topbar${overlay ? " overlay" : ""}${hidden ? " tucked" : ""}`}
+      aria-hidden={hidden}
+    >
       <div className="container topbar__inner">
         <span className="dot" />
         <span className="topbar__live">Emergency Monitor</span>

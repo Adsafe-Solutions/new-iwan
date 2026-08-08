@@ -64,6 +64,66 @@
   height: 64px;
 }
 
+/* ---- overlay mode: home route, before the page is scrolled ----
+   The topbar and header float over the hero photo instead of capping it.
+   Only ever applied on "/", so every other page keeps the solid white bar. */
+.topbar.overlay,
+.header.overlay {
+  background: transparent;
+  border-bottom-color: transparent;
+}
+/* pinned on the whole home route, not just while overlaid: staying fixed in
+   both states means the chrome never re-enters flow and jolts the page */
+.header.pinned {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  transition:
+    top 0.3s,
+    background 0.3s,
+    box-shadow 0.3s;
+}
+.header.pinned.overlay {
+  top: 34px; /* sits below the overlaid topbar */
+}
+.topbar.overlay {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+}
+/* the live-monitor strip is a hero-only flourish — it retires on scroll */
+.topbar.tucked {
+  display: none;
+}
+.topbar.overlay .topbar__inner,
+.topbar.overlay .topbar__live,
+.header.overlay .nav > ul > li > a,
+.header.overlay .langs,
+.header.overlay .langs button.on {
+  color: #fff;
+}
+.header.overlay .langs button {
+  color: rgba(255, 255, 255, 0.65);
+}
+.header.overlay .nav > ul > li > a::after {
+  background: var(--amber-2);
+}
+.header.overlay .nav > ul > li > a:hover,
+.header.overlay .nav > ul > li > a.active {
+  color: var(--amber-2);
+}
+.header.overlay .grid-ico i {
+  background: #fff;
+}
+.header.overlay .burger span {
+  background: #fff;
+}
+/* the supplied lockup is dark-on-light — flatten it to white over the photo */
+.header.overlay .brand__logo {
+  filter: brightness(0) invert(1);
+}
+
 .brand {
   display: flex;
   align-items: center;
@@ -81,7 +141,7 @@
   transform: translateY(-1px);
 }
 .header.stuck .brand__logo {
-  height: 30px;
+  height: 50px;
 }
 
 .nav ul {
@@ -274,64 +334,250 @@
   transform: translateY(-7px) rotate(-45deg);
 }
 
-/* ===================== HERO ===================== */
+/* ===================== HERO =====================
+   Full-bleed photo slider with fixed copy. The topbar + header overlay this
+   section on the home route, so the top padding clears both. */
 .hero {
   position: relative;
-  min-height: 560px;
-  height: 74vh;
+  min-height: 904px;
+  height: 100vh;
   overflow: hidden;
-  background: #04101f;
+  background: var(--green-deep);
   display: flex;
   align-items: center;
+  padding-top: calc(34px + var(--header-h));
 }
-.hero__slide-bg {
+
+.hero__slide {
   position: absolute;
   inset: 0;
   opacity: 0;
-  transition: opacity 1s ease;
+  z-index: 0;
+  background: var(--img) center/cover no-repeat;
 }
-.hero__slide-bg.on {
+.hero__slide.was {
   opacity: 1;
+  z-index: 1;
 }
-.hero__slide-bg::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--img) center/cover;
-  transform: scale(1.12);
-  transition: transform 8s linear;
-}
-.hero__slide-bg.on::before {
-  transform: scale(1);
-}
-.hero__slide-bg::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    90deg,
-    rgba(4, 16, 31, 0.6),
-    rgba(4, 16, 31, 0.15) 55%,
-    rgba(4, 16, 31, 0.55)
-  );
-}
-.hero__grid {
-  position: relative;
+.hero__slide.on {
+  opacity: 1;
   z-index: 2;
-  width: 100%;
-  display: grid;
-  grid-template-columns: minmax(320px, 440px) 1fr;
-  align-items: center;
-  gap: 2rem;
+  animation: heroWipe 2.1s cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+@keyframes heroWipe {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+/* two stacked gradients: top fade into the section green, then a left-side
+   darkening pass so the copy stays legible over any photo */
+.hero__slide::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(#122f2a, rgba(0, 0, 0, 0) 25%),
+    linear-gradient(265deg, rgba(0, 0, 0, 0) 40%, #000000);
 }
 
-.hero__card {
-  background: #fff;
-  border-radius: 6px;
-  padding: 2rem;
-  box-shadow: var(--shadow-card);
-  max-width: 440px;
+.hero__inner {
+  position: relative;
+  z-index: 2;
 }
+/* 750px copy column, left-aligned inside the 1180px container so it starts on
+   the same gutter as the logo above it */
+.hero__inner > * {
+  max-width: 750px;
+}
+
+/* the horizon each line rises out of. Spacing lives on the band rather than on
+   the text inside it, so the mask clips flush against the next line instead of
+   leaking the rising text into a margin. */
+.hero__rise {
+  overflow: hidden;
+}
+.hero__rise--eyebrow {
+  margin-bottom: 1.1rem;
+}
+.hero__rise--title {
+  margin-bottom: 1.6rem;
+}
+.hero__rise--excerpt {
+  margin-bottom: 2.4rem;
+}
+
+.hero__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-satoshi);
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 30px;
+  color: var(--amber-2);
+}
+.hero__ico {
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+}
+.hero__ico svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.hero__title {
+  font-family: var(--serif-display);
+  font-size: 80px;
+  font-weight: 400;
+  line-height: 104px;
+  color: #fff;
+}
+
+.hero__excerpt {
+  font-family: var(--font-satoshi);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 30px;
+  color: #fff;
+}
+
+/* deliberately not .btn — that base class forces uppercase / 0.9rem / 700 */
+.hero__cta {
+  display: inline-block;
+  background: #fff;
+  color: var(--green-deep);
+  font-family: var(--font-satoshi);
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1;
+  padding: 18px 40px;
+  border-radius: 6px;
+  transition:
+    background-color 0.3s,
+    transform 0.3s;
+}
+.hero__cta:hover {
+  background: var(--amber-2);
+  transform: translateY(-2px);
+}
+
+.hero__arrows {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  display: flex;
+}
+.hero__arrow {
+  width: 80px;
+  height: 80px;
+  border: 0;
+  border-radius: 0;
+  background: var(--amber-2);
+  color: var(--green-deep);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition:
+    background-color 0.5s,
+    color 0.5s;
+}
+.hero__arrow svg {
+  width: 28px;
+  height: 28px;
+}
+.hero__arrow:hover {
+  background: var(--green-deep);
+  color: var(--amber-2);
+}
+
+/* Staggered rise-in, replayed on every slide change (the wrappers are keyed on
+   the slide index, so React remounts them and the animation restarts). Above
+   the fold, so this is plain CSS rather than the ScrollTrigger reveals in
+   hooks/useGsap.js. */
+@keyframes heroRise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 80px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+/* sunset: the copy sinks back the way it came, so the exit mirrors the entrance */
+@keyframes heroSet {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(0, 80px, 0);
+  }
+}
+
+/* Sunrise — bottom of the cascade last. `both` holds the end state, so the copy
+   stays put between transitions. */
+.hero__inner.is-in .hero__eyebrow,
+.hero__inner.is-in .hero__title,
+.hero__inner.is-in .hero__excerpt,
+.hero__inner.is-in .hero__cta {
+  animation: heroRise 0.7s ease-out both;
+}
+.hero__inner.is-in .hero__eyebrow {
+  animation-delay: 0.1s;
+}
+.hero__inner.is-in .hero__title {
+  animation-delay: 0.28s;
+}
+.hero__inner.is-in .hero__excerpt {
+  animation-delay: 0.46s;
+}
+.hero__inner.is-in .hero__cta {
+  animation-delay: 0.64s;
+}
+
+/* Sunset — reversed order, so the button goes down first and the subtitle last,
+   the cascade draining from the bottom up. Faster than the rise (0.5s, ease-in)
+   so the photo isn't kept waiting. `both` holds the copy down through the beat
+   where the photo cross-fades and the text is swapped. */
+.hero__inner.is-out .hero__eyebrow,
+.hero__inner.is-out .hero__title,
+.hero__inner.is-out .hero__excerpt,
+.hero__inner.is-out .hero__cta {
+  animation: heroSet 0.5s ease-in both;
+}
+.hero__inner.is-out .hero__cta {
+  animation-delay: 0s;
+}
+.hero__inner.is-out .hero__excerpt {
+  animation-delay: 0.06s;
+}
+.hero__inner.is-out .hero__title {
+  animation-delay: 0.12s;
+}
+.hero__inner.is-out .hero__eyebrow {
+  animation-delay: 0.18s;
+}
+/* the global reduced-motion rule kills the animation, which would strand these
+   at opacity 0 — restore the end state explicitly */
+@media (prefers-reduced-motion: reduce) {
+  .hero__eyebrow,
+  .hero__title,
+  .hero__excerpt,
+  .hero__cta {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* .hero__pills and .pill* below are still used by the Zakat page hero */
 .hero__pills {
   display: flex;
   gap: 0.5rem;
@@ -356,73 +602,6 @@
 .pill--g {
   background: var(--green);
   color: #fff;
-}
-.hero__card h1 {
-  font-size: 30px;
-  font-weight: 700;
-  line-height: 1.25;
-  letter-spacing: -0.01em;
-  margin-bottom: 0.9rem;
-}
-.hero__card p {
-  color: var(--muted);
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 1.5;
-  margin-bottom: 0.9rem;
-}
-.hero__card p strong {
-  color: var(--ink);
-  font-weight: 600;
-}
-.hero__card .btn {
-  margin-top: 0.4rem;
-  font-size: 16px;
-  font-weight: 700;
-  padding: 16px 32px;
-  border-radius: 3px;
-}
-
-.hero__slides-list {
-  justify-self: end;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  width: min(340px, 42vw);
-}
-.hero__item {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem 1.2rem;
-  background: rgba(6, 16, 31, 0.35);
-  color: #cdd8e6;
-  cursor: pointer;
-  transition: 0.3s;
-  border-left: 3px solid transparent;
-  text-align: left;
-  border: none;
-  font: inherit;
-}
-.hero__item:hover {
-  background: rgba(6, 16, 31, 0.55);
-  color: #fff;
-}
-.hero__item.on {
-  background: var(--blue);
-  color: #fff;
-  border-left-color: var(--yellow);
-}
-.hero__item b {
-  font-size: 13px;
-  opacity: 0.6;
-  font-weight: 700;
-}
-.hero__item span {
-  font-size: 12px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.24px;
 }
 
 /* ===================== CHARITY / TRUSTED BY ===================== */
@@ -1074,11 +1253,17 @@
 
 /* ===================== RESPONSIVE ===================== */
 @media (max-width: 1000px) {
-  .hero__grid {
-    grid-template-columns: 1fr;
+  .hero__title {
+    font-size: clamp(2.6rem, 8vw, 80px);
+    line-height: 1.2;
   }
-  .hero__slides-list {
-    display: none;
+  .hero__arrow {
+    width: 60px;
+    height: 60px;
+  }
+  .hero__arrow svg {
+    width: 22px;
+    height: 22px;
   }
   .charity__inner {
     grid-template-columns: 1fr;
@@ -1148,8 +1333,23 @@
   .footer__grid {
     grid-template-columns: 1fr;
   }
+  /* svh, not vh — the iOS URL bar otherwise makes the hero jump on scroll */
   .hero {
     height: auto;
-    padding: 2.5rem 0;
+    min-height: 100svh;
+    padding: 7rem 0 4rem;
+  }
+  .hero__eyebrow,
+  .hero__excerpt {
+    font-size: 17px;
+    line-height: 26px;
+  }
+  .hero__cta {
+    font-size: 17px;
+    padding: 15px 32px;
+  }
+  .hero__arrow {
+    width: 56px;
+    height: 56px;
   }
 }

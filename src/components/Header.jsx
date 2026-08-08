@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import Brand from "./Brand.jsx";
 import { FOCUS_AREAS, FOCUS_LINKS } from "../focusAreas.js";
@@ -43,18 +43,12 @@ const LINKS = [
   },
 ];
 
-export default function Header() {
-  const [stuck, setStuck] = useState(false);
+/* `stuck` / `overlay` / `pinned` are owned by the Shell in App.jsx — see the
+   note there on why the home-route chrome stays out of flow. */
+export default function Header({ stuck = false, overlay = false, pinned = false }) {
   const [open, setOpen] = useState(false); // mobile drawer
   const [menu, setMenu] = useState(null); // active mega-menu label
   const [lang, setLang] = useState("EN");
-
-  useEffect(() => {
-    const onScroll = () => setStuck(window.scrollY > 10);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   const active = LINKS.find((l) => l.label === menu && l.menu)?.menu;
   const close = () => {
@@ -64,7 +58,9 @@ export default function Header() {
 
   return (
     <header
-      className={`header${stuck ? " stuck" : ""}`}
+      className={`header${stuck ? " stuck" : ""}${pinned ? " pinned" : ""}${
+        overlay ? " overlay" : ""
+      }`}
       onMouseLeave={() => setMenu(null)}
     >
       <div className="container header__inner">
