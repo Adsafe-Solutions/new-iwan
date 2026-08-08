@@ -1,19 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-
-const SLIDES = [
-  {
-    title: "Be the Light for Someone in Need",
-    img: "https://cdn.prod.website-files.com/67d25bbe842c314895ddb151/67d29bce5aabd85a370d1621_home-hero-image-1.jpg",
-  },
-  {
-    title: "A World Without Poverty Starts Here",
-    img: "https://cdn.prod.website-files.com/67d25bbe842c314895ddb151/67d29bcedc5373f69470adc7_home-hero-image-2.jpg",
-  },
-  {
-    title: "Support Education, Change the World",
-    img: "https://cdn.prod.website-files.com/67d25bbe842c314895ddb151/67d29bcec24af2e52edad21b_home-hero-image-3.jpg",
-  },
-];
+import { Link } from "react-router-dom";
+import { HERO_SLIDES as SLIDES } from "../config/navPages.js";
 
 const DURATION = 8000;
 
@@ -70,6 +57,8 @@ export default function Hero() {
     start();
   };
 
+  const slide = SLIDES[current];
+
   return (
     <section
       className="hero"
@@ -79,11 +68,11 @@ export default function Hero() {
     >
       {SLIDES.map((slide, i) => (
         <div
-          key={slide.img}
+          key={slide.path}
           className={`hero__slide${i === current ? " on" : ""}${
             i === prev ? " was" : ""
           }`}
-          style={{ "--img": `url(${slide.img})` }}
+          style={{ "--img": `url(${slide.hero.img})` }}
           aria-hidden="true"
         />
       ))}
@@ -114,26 +103,22 @@ export default function Hero() {
                 />
               </svg>
             </span>
-            <span>Together, We Create Impact</span>
+            <span>{slide.label}</span>
           </p>
         </div>
 
         <div className="hero__rise hero__rise--title">
-          <h1 className="hero__title">{SLIDES[current].title}</h1>
+          <h1 className="hero__title">{slide.hero.title}</h1>
         </div>
 
         <div className="hero__rise hero__rise--excerpt">
-          <p className="hero__excerpt">
-            Your kindness has the power to change lives. Join us in bringing hope,
-            support, and brighter futures to those in need. Every donation makes a
-            difference big or small.
-          </p>
+          <p className="hero__excerpt">{slide.intro}</p>
         </div>
 
         <div className="hero__rise">
-          <a href="#contact" className="hero__cta">
-            Contact Us
-          </a>
+          <Link to={slide.path} className="hero__cta">
+            Explore {slide.label}
+          </Link>
         </div>
       </div>
 
