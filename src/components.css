@@ -57,6 +57,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1.5rem;
   height: var(--header-h);
   transition: height 0.3s;
 }
@@ -84,7 +85,7 @@
     box-shadow 0.3s;
 }
 .header.pinned.overlay {
-  top: 34px; /* sits below the overlaid topbar */
+  top: var(--topbar-h); /* sits below the overlaid topbar */
 }
 .topbar.overlay {
   position: fixed;
@@ -99,22 +100,18 @@
 .topbar.overlay .topbar__inner,
 .topbar.overlay .topbar__live,
 .header.overlay .nav > ul > li > a,
-.header.overlay .langs,
-.header.overlay .langs button.on {
+.header.overlay .nav__parent {
   color: #fff;
 }
-.header.overlay .langs button {
-  color: rgba(255, 255, 255, 0.65);
-}
-.header.overlay .nav > ul > li > a::after {
+.header.overlay .nav > ul > li > a::after,
+.header.overlay .nav__parent::after {
   background: var(--hero-accent);
 }
 .header.overlay .nav > ul > li > a:hover,
-.header.overlay .nav > ul > li > a.active {
+.header.overlay .nav > ul > li > a.active,
+.header.overlay .nav__parent:hover,
+.header.overlay .nav__parent.active {
   color: var(--hero-accent);
-}
-.header.overlay .grid-ico i {
-  background: #fff;
 }
 .header.overlay .burger span {
   background: #fff;
@@ -124,9 +121,12 @@
   filter: brightness(0) invert(1);
 }
 
+/* flex: none on both ends — a long nav will otherwise shrink the logo and the
+   right-hand cluster to nothing rather than wrapping */
 .brand {
   display: flex;
   align-items: center;
+  flex: none;
 }
 /* the lockup stacks the arch above its wordmark (~1.66:1), so it needs far
    more height than a single-line logo to stay legible */
@@ -145,13 +145,17 @@
   height: 46px;
 }
 
-.nav ul {
+.nav > ul {
   display: flex;
-  gap: 1.5rem;
+  gap: 1.15rem;
   align-items: center;
 }
-.nav a {
+.nav a,
+.nav__parent {
   position: relative;
+  background: none;
+  border: 0;
+  cursor: pointer;
   font-weight: 700;
   font-size: 18px;
   line-height: 28px;
@@ -162,8 +166,10 @@
   display: flex;
   align-items: center;
   gap: 0.25rem;
+  white-space: nowrap;
 }
-.nav a::after {
+.nav a::after,
+.nav__parent::after {
   content: "";
   position: absolute;
   left: 0;
@@ -173,24 +179,42 @@
   background: var(--blue);
   transition: width 0.3s;
 }
-.nav a:hover {
+.nav a:hover,
+.nav__parent:hover {
   color: var(--blue);
 }
-.nav a:hover::after {
+.nav a:hover::after,
+.nav__parent:hover::after {
   width: 100%;
 }
-.nav a.active {
+.nav a.active,
+.nav__parent.active {
   color: var(--blue);
 }
-.nav a.active::after {
+.nav a.active::after,
+.nav__parent.active::after {
   width: 100%;
+}
+/* only ever shown inside the drawer — the mega panel covers desktop */
+.nav__sub {
+  display: none;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin: 0.9rem 0 0.3rem 0.9rem;
+  padding-left: 0.9rem;
+  border-left: 2px solid var(--line);
+}
+.nav__sub a {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--muted);
 }
 .caret {
   font-size: 0.6rem;
   opacity: 0.6;
   transition: transform 0.25s;
 }
-.nav a.active .caret {
+.nav__parent.active .caret {
   transform: rotate(180deg);
 }
 
@@ -251,16 +275,6 @@
   padding-left: 10px;
   background: rgba(14, 65, 176, 0.05);
 }
-.mega__flag {
-  background: var(--yellow);
-  color: var(--blue);
-  font-size: 10px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  padding: 3px 7px;
-  border-radius: 2px;
-}
 /* matches the height of the links column beside it */
 .mega__img {
   align-self: stretch;
@@ -274,40 +288,16 @@
   display: flex;
   align-items: center;
   gap: 0.9rem;
+  flex: none;
 }
-.header__cta .btn--red {
+.header__cta .btn {
   font-size: 14px;
   font-weight: 700;
   line-height: 20px;
 }
-.langs {
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 20px;
-}
-.langs button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--muted);
-}
-.langs button.on {
-  color: var(--ink);
-}
-.grid-ico {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 2px;
-  width: 16px;
-}
-.grid-ico i {
-  width: 6px;
-  height: 6px;
-  background: var(--blue);
-  border-radius: 1px;
+.header.overlay .header__cta .btn {
+  background: #fff;
+  color: var(--blue-800);
 }
 .burger {
   display: none;
@@ -346,7 +336,7 @@
   background: var(--hero-bg);
   display: flex;
   align-items: center;
-  padding-top: calc(34px + var(--header-h));
+  padding-top: calc(var(--topbar-h) + var(--header-h));
 }
 
 /* The incoming photo sits on top and is uncovered from the left, overlapping
@@ -1038,9 +1028,46 @@
   right: -26px;
 }
 
-/* ===================== FOOTER ===================== */
-/* Tinted wash rather than flat --blue: the white wordmark below needs a
-   mid-tone ground to read as a watermark instead of a headline. */
+/* ===================== STUB PAGES ===================== */
+.stub {
+  padding: 6rem 0 5rem;
+}
+.stub__in {
+  max-width: 760px;
+}
+.stub__eyebrow {
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--blue);
+  margin-bottom: 0.9rem;
+}
+.stub h1 {
+  font-size: clamp(2.2rem, 5vw, 56px);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  margin-bottom: 1.2rem;
+}
+.stub__intro {
+  font-size: 20px;
+  line-height: 32px;
+  color: var(--muted);
+  margin-bottom: 1.6rem;
+}
+.stub__note {
+  font-size: 16px;
+  line-height: 26px;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--line);
+}
+.stub__note a {
+  color: var(--blue);
+  font-weight: 700;
+  text-decoration: underline;
+}
+
 .footer {
   background: linear-gradient(
     180deg,
@@ -1315,7 +1342,17 @@
     display: none;
   }
 }
-@media (max-width: 780px) {
+/* Nine top-level items need the drawer far earlier than the old 780px — the
+   inline bar runs out of room just under 1000px. */
+@media (max-width: 1240px) {
+  .nav ul {
+    gap: 1.05rem;
+  }
+  .nav a {
+    font-size: 16px;
+  }
+}
+@media (max-width: 1000px) {
   .nav {
     position: fixed;
     inset: 0 0 0 auto;
@@ -1327,30 +1364,39 @@
     transition: transform 0.35s;
     box-shadow: var(--shadow);
     z-index: 99;
+    overflow-y: auto;
   }
   .nav.open {
     transform: translateX(0);
   }
-  .nav ul {
+  .nav > ul {
     flex-direction: column;
     gap: 1.3rem;
     align-items: flex-start;
   }
+  .nav a {
+    font-size: 18px;
+  }
+  /* the drawer is a white panel, so undo the overlay's white-on-photo nav text */
+  .header.overlay .nav > ul > li > a,
+  .header.overlay .nav__parent {
+    color: var(--ink);
+  }
+  .header.overlay .nav > ul > li > a.active,
+  .header.overlay .nav__parent.active {
+    color: var(--blue);
+  }
+  .nav__sub {
+    display: flex;
+  }
   .burger {
     display: flex;
   }
-  .langs,
-  .grid-ico,
   .mega {
     display: none;
   }
-  /* compact Donate variant: 12px / 700 / lh16 */
-  .header__cta .btn--red {
-    font-size: 12px;
-    font-weight: 700;
-    line-height: 16px;
-    padding: 0.6rem 1rem;
-  }
+}
+@media (max-width: 780px) {
   /* avatars scale down to 64x64 */
   .scholar__av {
     width: 64px;

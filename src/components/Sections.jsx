@@ -1,7 +1,7 @@
 import Typewriter from "./Typewriter.jsx";
 import { FOCUS_AREAS } from "../focusAreas.js";
 import { ADVISORS } from "../advisors.js";
-import { BRAND } from "../brand.js";
+import { BRAND } from "../config/brand.js";
 
 const DIFFERENCE_PHRASES = [
   "make a difference",

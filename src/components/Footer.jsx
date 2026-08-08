@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { BRAND } from "../brand.js";
+import { BRAND } from "../config/brand.js";
 
 const MARK_NAME = BRAND.name;
 const MARK_TLD = BRAND.fullName.slice(BRAND.name.length);
