@@ -147,7 +147,7 @@ export default function Zakat() {
           </h2>
           <div className="zpathway reveal">
             <h3>
-              The RBB Pathway: Giving Your Zakat
+              The Iwan Pathway: Giving Your Zakat
               <span className="zpathway__rule" data-line />
             </h3>
             <ul>

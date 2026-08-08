@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-/* Photo + title rotate together; the subtitle and excerpt are shared and static. */
 const SLIDES = [
   {
     title: "Be the Light for Someone in Need",
@@ -16,25 +15,18 @@ const SLIDES = [
   },
 ];
 
-/* Interval between slides. The three beats below now run ~4.1s, so 6000 would
-   leave under two seconds of stillness — this buys the slide back a settled
-   beat. Drop it to 6000 for the original cadence. */
 const DURATION = 8000;
 
-/* A slide change runs in three beats: the copy sets (sinks back behind its
-   horizon), then the new photo wipes across from the left over the old one,
-   then the new copy rises. OUT_MS covers the sunset plus its stagger; HOLD_MS
-   is the beat the photo gets to itself, so the copy waits for the wipe to
-   finish. Keep all three in sync with the heroSet / heroWipe / heroRise
-   timings in components.css. */
+/* Beat lengths must match the heroSet / heroWipe / heroRise timings in
+   components.css, or the copy and photo fall out of step. */
 const OUT_MS = 680;
 const WIPE_MS = 2100;
 const HOLD_MS = WIPE_MS;
 
 export default function Hero() {
   const [current, setCurrent] = useState(0);
-  const [prev, setPrev] = useState(null); // stays lit under the incoming wipe
-  const [setting, setSetting] = useState(false); // true while the copy is down
+  const [prev, setPrev] = useState(null);
+  const [setting, setSetting] = useState(false);
   const index = useRef(0);
   const timer = useRef(null);
   const beats = useRef([]);
@@ -44,15 +36,13 @@ export default function Hero() {
     beats.current = [];
   };
 
-  /* Sunset → wipe → sunrise. The copy stays mounted throughout; the phase class
-     drives it, so nothing below shifts and the text swaps while it's hidden. */
   const go = useCallback((n) => {
     clearBeats();
     setSetting(true);
     beats.current.push(
       setTimeout(() => {
-        /* the outgoing photo has to keep rendering underneath, otherwise the
-           wipe would reveal the bare section green instead of the old slide */
+        /* the outgoing photo keeps rendering underneath, or the wipe would
+           reveal the bare section background instead of the old slide */
         setPrev(index.current);
         index.current = (index.current + n + SLIDES.length) % SLIDES.length;
         setCurrent(index.current);
@@ -74,10 +64,8 @@ export default function Hero() {
     };
   }, [start]);
 
-  /* Manual steps restart the timer so a click always buys a full interval.
-     Ignored mid-sunset so a fast double-click can't strand the copy offscreen. */
   const step = (n) => {
-    if (setting) return;
+    if (setting) return; // a click mid-sunset would strand the copy offscreen
     go(n);
     start();
   };
@@ -100,9 +88,6 @@ export default function Hero() {
         />
       ))}
 
-      {/* Each line sits in an overflow-hidden band and rises out of it, so the
-          copy clears its own horizon rather than drifting up over the photo.
-          `is-out` / `is-in` swap the animation, which restarts it each slide. */}
       <div className={`container hero__inner ${setting ? "is-out" : "is-in"}`}>
         <div className="hero__rise hero__rise--eyebrow">
           <p className="hero__eyebrow">

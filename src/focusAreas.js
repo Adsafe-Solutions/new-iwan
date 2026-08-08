@@ -1,5 +1,5 @@
 /* =========================================================
-   RBB focus areas — single source of truth.
+   Iwan focus areas — single source of truth.
 
    Nav, homepage sections, footer and the Zakat page all read
    from this list, so adding or reordering an area updates the
@@ -18,7 +18,7 @@ export const FOCUS_AREAS = [
     card: "Put a child back in the classroom. Your gift covers school fees, books and a safe place to learn.",
     /* longer line used in the focus-areas pillars */
     blurb:
-      "Education is the way out that lasts. We cover school fees, books, uniforms and safe learning spaces so a child's schooling never stops for want of money — and we are building this into RBB's primary programme.",
+      "Education is the way out that lasts. We cover school fees, books, uniforms and safe learning spaces so a child's schooling never stops for want of money — and we are building this into Iwan's primary programme.",
     img: "https://images.unsplash.com/photo-1497486751825-1233686d5d80?q=80&w=800&auto=format&fit=crop",
   },
   {

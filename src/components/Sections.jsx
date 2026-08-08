@@ -1,6 +1,7 @@
 import Typewriter from "./Typewriter.jsx";
 import { FOCUS_AREAS } from "../focusAreas.js";
 import { ADVISORS } from "../advisors.js";
+import { BRAND } from "../brand.js";
 
 const DIFFERENCE_PHRASES = [
   "make a difference",
@@ -12,7 +13,7 @@ const DIFFERENCE_PHRASES = [
 
 const TILES = [
   [
-    "RBB Field Trips",
+    "Iwan Field Trips",
     "https://images.unsplash.com/photo-1509099836639-18ba1795216d?q=80&w=900&auto=format&fit=crop",
   ],
   [
@@ -30,17 +31,17 @@ const FEATURE = {
   video: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
   poster:
     "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?q=80&w=1000&auto=format&fit=crop",
-  title: "Rising Beyond Borders makes Education its primary focus area",
+  title: "Iwan makes Education its primary focus area",
   date: "08.07.2026",
 };
 const MID_NEWS = [
   [
-    "RBB Global hosts retreat bringing together offices worldwide",
+    "Iwan Global hosts retreat bringing together offices worldwide",
     "15.01.2026",
     "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=800&auto=format&fit=crop",
   ],
   [
-    "Rising Beyond Borders launches Rising Together – a 5 year Strategic Plan",
+    "Iwan launches Rising Together – a 5 year Strategic Plan",
     "10.01.2026",
     "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?q=80&w=800&auto=format&fit=crop",
   ],
@@ -135,8 +136,8 @@ export function TakeAction() {
             </a>
           ))}
           <a className="tile tile--brand reveal" href="#">
-            <img className="tile__mark" src="/rbb-mark.svg" alt="" />
-            <span className="tile__label">RBB Relief Fund</span>
+            <img className="tile__mark" src={BRAND.logo} alt="" />
+            <span className="tile__label">Iwan Relief Fund</span>
           </a>
         </div>
       </div>

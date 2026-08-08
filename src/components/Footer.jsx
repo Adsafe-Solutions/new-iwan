@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
+import { BRAND } from "../brand.js";
 
-const BRAND = "Rising Beyond Borders";
+const MARK_NAME = BRAND.name;
+const MARK_TLD = BRAND.fullName.slice(BRAND.name.length);
 
 export default function Footer() {
   return (
@@ -8,7 +10,7 @@ export default function Footer() {
       <div className="footer__in">
         <div className="footer__top">
           <div className="footer__intro">
-            <p className="footer__brand">{BRAND}</p>
+            <p className="footer__brand">{BRAND.fullName}</p>
             <p className="footer__tagline">
               Be the first to hear about our impact and new volunteer opportunities.
             </p>
@@ -16,8 +18,6 @@ export default function Footer() {
 
           <div className="footer__signup">
             <h4 className="footer__label">Subscribe to receive updates</h4>
-            {/* no mailing-list backend wired up yet — this only guards against a
-                page reload, same as the form it replaces */}
             <form className="footer__form" onSubmit={(e) => e.preventDefault()}>
               <input
                 type="email"
@@ -28,23 +28,23 @@ export default function Footer() {
               <button type="submit">Subscribe</button>
             </form>
             <p className="footer__fine">
-              By subscribing you agree to receive updates from {BRAND} from time to time
-              and to our <Link to="/">Privacy Policy</Link>
+              By subscribing you agree to receive updates from {BRAND.name} from time to
+              time and to our <Link to="/">Privacy Policy</Link>
             </p>
           </div>
         </div>
 
-        {/* SVG rather than sized text: textLength pins the wordmark to the full
-            width of the footer at any viewport, so it always spans edge to edge */}
+        {/* textLength pins the wordmark to the full footer width at any viewport */}
         <svg
           className="footer__mark"
-          viewBox="0 0 1000 118"
+          viewBox="0 0 1000 200"
           role="img"
-          aria-label={BRAND}
+          aria-label={BRAND.fullName}
           focusable="false"
         >
-          <text x="0" y="95" textLength="1000" lengthAdjust="spacing">
-            {BRAND}
+          <text x="0" y="165" textLength="1000" lengthAdjust="spacing">
+            <tspan className="footer__mark-name">{MARK_NAME}</tspan>
+            <tspan className="footer__mark-tld">{MARK_TLD}</tspan>
           </text>
         </svg>
 
@@ -54,7 +54,7 @@ export default function Footer() {
             <Link to="/">Terms of Service</Link>
           </div>
           <p className="footer__copy">
-            © {new Date().getFullYear()} {BRAND}. All rights reserved.
+            © {new Date().getFullYear()} {BRAND.fullName}. All rights reserved.
           </p>
         </div>
       </div>

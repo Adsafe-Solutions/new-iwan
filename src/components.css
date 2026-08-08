@@ -119,8 +119,8 @@
 .header.overlay .burger span {
   background: #fff;
 }
-/* the supplied lockup is dark-on-light — flatten it to white over the photo */
-.header.overlay .brand__logo {
+/* fallback only: applied when the reversed lockup is missing (see Brand.jsx) */
+.brand__logo--invert {
   filter: brightness(0) invert(1);
 }
 
@@ -128,10 +128,11 @@
   display: flex;
   align-items: center;
 }
-/* supplied lockup — mark + wordmark in one asset, ~4.7:1 */
+/* the lockup stacks the arch above its wordmark (~1.66:1), so it needs far
+   more height than a single-line logo to stay legible */
 .brand__logo {
   display: block;
-  height: 36px;
+  height: 56px;
   width: auto;
   transition:
     height 0.3s,
@@ -141,7 +142,7 @@
   transform: translateY(-1px);
 }
 .header.stuck .brand__logo {
-  height: 50px;
+  height: 46px;
 }
 
 .nav ul {
@@ -348,6 +349,9 @@
   padding-top: calc(34px + var(--header-h));
 }
 
+/* The incoming photo sits on top and is uncovered from the left, overlapping
+   the outgoing `.was` slide. Clipping rather than fading keeps the gradient
+   overlays travelling with the photo. */
 .hero__slide {
   position: absolute;
   inset: 0;
@@ -372,9 +376,8 @@
     clip-path: inset(0 0 0 0);
   }
 }
-/* two stacked gradients: top fade into the section base colour, then a
-   left-side darkening pass so the copy stays legible over any photo. The
-   darkening pass stays neutral black — it's shading, not brand colour. */
+/* top fade into the section base colour, then a left-side darkening pass so
+   the copy stays legible over any photo */
 .hero__slide::after {
   content: "";
   position: absolute;
@@ -388,15 +391,12 @@
   position: relative;
   z-index: 2;
 }
-/* 750px copy column, left-aligned inside the 1180px container so it starts on
-   the same gutter as the logo above it */
 .hero__inner > * {
   max-width: 750px;
 }
 
-/* the horizon each line rises out of. Spacing lives on the band rather than on
-   the text inside it, so the mask clips flush against the next line instead of
-   leaking the rising text into a margin. */
+/* Spacing lives on the band, not the text inside it — otherwise the rising
+   text leaks into the margin instead of being clipped flush. */
 .hero__rise {
   overflow: hidden;
 }
@@ -497,10 +497,6 @@
   color: var(--hero-accent);
 }
 
-/* Staggered rise-in, replayed on every slide change (the wrappers are keyed on
-   the slide index, so React remounts them and the animation restarts). Above
-   the fold, so this is plain CSS rather than the ScrollTrigger reveals in
-   hooks/useGsap.js. */
 @keyframes heroRise {
   from {
     opacity: 0;
@@ -511,7 +507,6 @@
     transform: translate3d(0, 0, 0);
   }
 }
-/* sunset: the copy sinks back the way it came, so the exit mirrors the entrance */
 @keyframes heroSet {
   from {
     opacity: 1;
@@ -523,8 +518,7 @@
   }
 }
 
-/* Sunrise — bottom of the cascade last. `both` holds the end state, so the copy
-   stays put between transitions. */
+/* `both` holds the end state, so the copy stays put between transitions */
 .hero__inner.is-in .hero__eyebrow,
 .hero__inner.is-in .hero__title,
 .hero__inner.is-in .hero__excerpt,
@@ -544,10 +538,7 @@
   animation-delay: 0.64s;
 }
 
-/* Sunset — reversed order, so the button goes down first and the subtitle last,
-   the cascade draining from the bottom up. Faster than the rise (0.5s, ease-in)
-   so the photo isn't kept waiting. `both` holds the copy down through the beat
-   where the photo cross-fades and the text is swapped. */
+/* reversed order — the cascade drains from the bottom up */
 .hero__inner.is-out .hero__eyebrow,
 .hero__inner.is-out .hero__title,
 .hero__inner.is-out .hero__excerpt,
@@ -634,7 +625,7 @@
 /* display heading: 64px / 900 / uppercase / 1:1 / -0.64px */
 .charity__head {
   font-size: clamp(2.4rem, 5vw, 64px);
-  font-weight: 900;
+  font-weight: 800;
   text-transform: uppercase;
   line-height: 1.12;
   letter-spacing: -0.64px;
@@ -895,8 +886,8 @@
 }
 /* the mark ships as near-black artwork — recolour it to the accent on the dark tile */
 .tile--brand .tile__mark {
-  width: 132px;
-  height: 132px;
+  width: 190px;
+  height: auto;
   filter: brightness(0) saturate(100%) invert(93%) sepia(72%) saturate(2500%)
     hue-rotate(1deg) brightness(105%) contrast(96%);
   transition: transform 0.5s;
@@ -1048,9 +1039,8 @@
 }
 
 /* ===================== FOOTER ===================== */
-/* Tinted wash rather than flat --blue: the giant wordmark below is white and
-   needs a mid-tone ground to read as a watermark instead of a headline.
-   color-mix keeps it tracking the theme without needing per-theme rules. */
+/* Tinted wash rather than flat --blue: the white wordmark below needs a
+   mid-tone ground to read as a watermark instead of a headline. */
 .footer {
   background: linear-gradient(
     180deg,
@@ -1060,9 +1050,8 @@
   color: var(--ink);
   overflow: hidden;
 }
-/* wider than .container — the wordmark is meant to run near the full viewport.
-   The deep bottom padding keeps the legal row clear of the theme-switcher FAB,
-   which is fixed to the bottom-left of the viewport. */
+/* Wider than .container so the wordmark runs near the full viewport. The deep
+   bottom padding keeps the legal row clear of the fixed theme-switcher FAB. */
 .footer__in {
   padding: 3.5rem 32px 4.5rem;
 }
@@ -1074,6 +1063,7 @@
   flex-wrap: wrap;
 }
 .footer__brand {
+  font-family: var(--font-inter);
   font-size: 22px;
   font-weight: 800;
   letter-spacing: -0.01em;
@@ -1097,7 +1087,6 @@
   font-weight: 700;
   margin-bottom: 0.7rem;
 }
-/* input and button share one pill; the button sits inside the outline */
 .footer__form {
   display: flex;
   align-items: center;
@@ -1151,8 +1140,7 @@
   text-decoration: underline;
 }
 
-/* the watermark. `textLength` makes it span the full width at any viewport,
-   so it never needs a font-size breakpoint. */
+/* textLength spans it to the full width at any viewport — no breakpoints */
 .footer__mark {
   display: block;
   width: 100%;
@@ -1160,11 +1148,20 @@
   margin: 2.2rem 0 1.4rem;
 }
 .footer__mark text {
-  fill: #fff;
-  font-family: var(--font);
-  font-size: 100px;
+  font-family: var(--font-inter);
   font-weight: 700;
-  letter-spacing: -0.02em;
+}
+/* both tspans share the text baseline, so the smaller tld sits on the base */
+.footer__mark-name {
+  fill: #fff;
+  font-size: 213px;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+}
+.footer__mark-tld {
+  fill: var(--blue-800);
+  font-size: 89px;
+  font-weight: 600;
 }
 
 .footer__bar {

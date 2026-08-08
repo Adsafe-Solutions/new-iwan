@@ -43,8 +43,6 @@ const LINKS = [
   },
 ];
 
-/* `stuck` / `overlay` / `pinned` are owned by the Shell in App.jsx — see the
-   note there on why the home-route chrome stays out of flow. */
 export default function Header({ stuck = false, overlay = false, pinned = false }) {
   const [open, setOpen] = useState(false); // mobile drawer
   const [menu, setMenu] = useState(null); // active mega-menu label
@@ -64,7 +62,7 @@ export default function Header({ stuck = false, overlay = false, pinned = false 
       onMouseLeave={() => setMenu(null)}
     >
       <div className="container header__inner">
-        <Brand />
+        <Brand light={overlay} />
 
         <nav className={`nav${open ? " open" : ""}`}>
           <ul>

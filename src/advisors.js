@@ -2,7 +2,7 @@
    "Trusted By" advisors — shown on the homepage and the Zakat page.
 
    ⚠ THESE ARE PLACEHOLDER NAMES. They are not real people and no
-   one listed here has endorsed RBB. Replace every entry with your
+   one listed here has endorsed Iwan. Replace every entry with your
    actual advisors before the site goes live — they sit under a
    "Trusted By" heading, so donors will read them as real endorsements.
 

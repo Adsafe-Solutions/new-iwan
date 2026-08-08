@@ -9,9 +9,6 @@ import Zakat from "./pages/Zakat.jsx";
 import ScrollToTop from "./components/ScrollToTop.jsx";
 import ThemeSwitcher from "./components/ThemeSwitcher.jsx";
 
-/* Lives inside the router so it can read the route. Owns the single scroll
-   listener for the chrome — the topbar and header both derive from it, so they
-   can never visually desync. */
 function Shell() {
   const [stuck, setStuck] = useState(false);
   const { pathname } = useLocation();
@@ -24,8 +21,8 @@ function Shell() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  /* On the home route the chrome floats over the hero photo. It stays fixed
-     even once solid, so it never re-enters flow and shifts the page. */
+  /* `pinned` stays on for the whole home route, not just while overlaid — the
+     chrome must never re-enter flow mid-scroll or the page jolts. */
   const overlay = home && !stuck;
 
   return (
