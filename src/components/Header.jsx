@@ -46,11 +46,11 @@ export default function Header({ stuck = false, overlay = false, pinned = false 
     <header
       className={`header${stuck ? " stuck" : ""}${pinned ? " pinned" : ""}${
         overlay ? " overlay" : ""
-      }`}
+      }${open ? " is-open" : ""}`}
       onMouseLeave={() => setMenu(null)}
     >
       <div className="container header__inner">
-        <Brand light={overlay} />
+        <Brand light={overlay && !open} />
 
         <nav className={`nav${open ? " open" : ""}`}>
           <ul>
