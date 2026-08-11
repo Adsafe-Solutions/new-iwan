@@ -1,6 +1,7 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { EVENTS } from "../../config/events.js";
 import EventModal from "../EventModal/EventModal.jsx";
+import Button from "../Button/Button.jsx";
 import "./Events.css";
 
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -38,6 +39,38 @@ const longDate = (iso) =>
     year: "numeric",
   });
 
+/* Native `behavior: "smooth"` gives no control over speed, so the scroll is
+   animated by hand. SCROLL_MS is the knob. */
+const SCROLL_MS = 1100;
+const easeInOutCubic = (t) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
+
+function glideTo(el) {
+  const header = document.querySelector(".header");
+  const offset = (header?.offsetHeight ?? 0) + 20;
+  const to = Math.max(0, el.getBoundingClientRect().top + window.scrollY - offset);
+  const from = window.scrollY;
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    window.scrollTo(0, to);
+    return;
+  }
+
+  /* html has `scroll-behavior: smooth`, which would fight these per-frame
+     jumps — turn it off for the duration */
+  const root = document.documentElement;
+  const prev = root.style.scrollBehavior;
+  root.style.scrollBehavior = "auto";
+
+  const start = performance.now();
+  const step = (now) => {
+    const t = Math.min(1, (now - start) / SCROLL_MS);
+    window.scrollTo(0, from + (to - from) * easeInOutCubic(t));
+    if (t < 1) requestAnimationFrame(step);
+    else root.style.scrollBehavior = prev;
+  };
+  requestAnimationFrame(step);
+}
+
 export default function Events() {
   const today = useMemo(() => midnight(new Date()), []);
   const [cursor, setCursor] = useState(
@@ -46,18 +79,20 @@ export default function Events() {
   const [selected, setSelected] = useState(null); // ISO day filter
   const [open, setOpen] = useState(null); // event in the modal
   const listRef = useRef(null);
+  const wantScroll = useRef(false);
 
-  /* filtering can leave you staring at empty space if you were scrolled down
-     the old, longer list — bring the top of the list back into view */
-  const pickDay = (iso) => {
-    setSelected(iso === selected ? null : iso);
-    listRef.current?.scrollIntoView({
-      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-        ? "auto"
-        : "smooth",
-      block: "start",
-    });
-  };
+  /* Picking a date can leave you staring at empty space if you were scrolled
+     down the old, longer list, so bring the top of the list back into view.
+     It runs after render rather than in the click, because the list is keyed
+     on `selected` and listRef still points at the outgoing node mid-click.
+     The flag — rather than a "skip first render" guard — is what keeps it from
+     firing on mount: StrictMode double-invokes effects and refs survive that
+     remount, so a mounted-guard would scroll the page on load. */
+  useEffect(() => {
+    if (!wantScroll.current) return;
+    wantScroll.current = false;
+    if (listRef.current) glideTo(listRef.current);
+  }, [selected]);
 
   const upcoming = useMemo(
     () =>
@@ -137,9 +172,9 @@ export default function Events() {
                     <p className="ecard__summary">{e.summary}</p>
                   </span>
                 </button>
-                <button type="button" className="btn btn--blue ecard__cta">
+                <Button variant="outline" className="ecard__cta">
                   Register
-                </button>
+                </Button>
               </article>
             ))}
           </div>
@@ -186,7 +221,10 @@ export default function Events() {
                     type="button"
                     key={iso}
                     className={classes}
-                    onClick={() => pickDay(iso)}
+                    onClick={() => {
+                      wantScroll.current = true;
+                      setSelected(iso === selected ? null : iso);
+                    }}
                     aria-label={`${list.length} event${list.length > 1 ? "s" : ""} on ${longDate(iso)}`}
                   >
                     {d.getDate()}

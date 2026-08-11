@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import Brand from "../Brand/Brand.jsx";
+import Button from "../Button/Button.jsx";
 import { NAV_PAGES, PROGRAMMES } from "../../config/navPages.js";
 import "./Header.css";
 
@@ -99,9 +100,7 @@ export default function Header({ stuck = false, overlay = false, pinned = false 
         </nav>
 
         <div className="header__cta">
-          <a href="#contact" className="btn btn--blue">
-            Contact Us
-          </a>
+          <Button href="#contact">Contact Us</Button>
           <button
             type="button"
             className={`burger${open ? " on" : ""}`}

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useScrollAnimations } from "../../hooks/useGsap.js";
 import Typewriter from "../../components/Typewriter/Typewriter.jsx";
 import { FOCUS_AREAS } from "../../focusAreas.js";
+import Button from "../../components/Button/Button.jsx";
 import { ADVISORS } from "../../advisors.js";
 import "./Zakat.css";
 
@@ -101,12 +102,12 @@ export default function Zakat() {
             <p className="zhero__note">
               Scholar verified — your Zakat is distributed in strict Sharia compliance.
             </p>
-            <a href="#zcalc" className="btn btn--blue zhero__give">
+            <Button href="#zcalc" className="zhero__give">
               Give Zakat →
-            </a>
-            <a href="#zcalc" className="btn zhero__calc">
+            </Button>
+            <Button href="#zcalc" variant="outline" className="zhero__calc">
               Calculate My Zakat
-            </a>
+            </Button>
             <div className="zhero__bar">
               <div className="zhero__bar-top">
                 <span className="zhero__stat">$913,847 raised</span>
@@ -220,9 +221,9 @@ export default function Zakat() {
               Developed in consultation with Islamic scholars, our tool ensures your
               calculation is both accurate and compliant with Islamic jurisprudence.
             </p>
-            <a href="#" className="btn btn--yellow">
+            <Button href="#" variant="yellow">
               Open Zakat Calculator →
-            </a>
+            </Button>
           </div>
           <div className="zcalc__yellow">
             <span className="zcalc__pct">2.5%</span>
@@ -249,9 +250,9 @@ export default function Zakat() {
               Your generosity feeds the hungry, heals the sick and brings dignity to
               families in need — wherever borders have put them out of reach.
             </p>
-            <a href="#zcalc" className="btn btn--yellow">
+            <Button href="#zcalc" variant="yellow">
               Give Zakat Now →
-            </a>
+            </Button>
           </div>
           <div
             className="zmercy__img"
@@ -274,9 +275,7 @@ export default function Zakat() {
               everything we do. Your Zakat is separately earmarked, rigorously distributed
               and fully accounted for.
             </p>
-            <a href="#" className="btn btn--blue">
-              Download Zakat Policy
-            </a>
+            <Button href="#">Download Zakat Policy</Button>
           </div>
           <div className="zadmin__steps">
             {STEPS.map(([step, label]) => (
@@ -325,9 +324,9 @@ export default function Zakat() {
               in the Qur'an. Our approach follows Islamic law within the framework of the
               four schools of jurisprudence.
             </p>
-            <a href="#" className="btn btn--yellow">
+            <Button href="#" variant="yellow">
               Download Zakat Policy (PDF)
-            </a>
+            </Button>
           </div>
           <div className="zpolicy__cats">
             <h3>The Eight Categories of Zakat</h3>
@@ -387,12 +386,12 @@ export default function Zakat() {
             every dollar is handled as the sacred trust it truly is.
           </p>
           <div className="zcta__btns">
-            <a href="#zcalc" className="btn btn--yellow">
+            <Button href="#zcalc" variant="yellow">
               Give Your Zakat Now →
-            </a>
-            <a href="#" className="btn btn--blueline">
+            </Button>
+            <Button href="#" variant="outline">
               Contact Our Team
-            </a>
+            </Button>
           </div>
         </div>
       </section>

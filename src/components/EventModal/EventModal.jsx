@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Modal from "../Modal/Modal.jsx";
+import Button from "../Button/Button.jsx";
 import "./EventModal.css";
 
 const FULLDOW = [
@@ -79,13 +80,7 @@ export default function EventModal({ event, onClose }) {
         <div className="emodal__reg">
           {stage === "cta" && (
             <div className="emodal__reg-cta">
-              <button
-                type="button"
-                className="btn btn--blue"
-                onClick={() => setStage("form")}
-              >
-                Register
-              </button>
+              <Button onClick={() => setStage("form")}>Register</Button>
               <span>Free to attend · everyone welcome</span>
             </div>
           )}
@@ -121,9 +116,7 @@ export default function EventModal({ event, onClose }) {
                 </label>
               </div>
               <div className="emodal__reg-cta">
-                <button type="submit" className="btn btn--blue">
-                  Confirm my place
-                </button>
+                <Button type="submit">Confirm my place</Button>
                 <button
                   type="button"
                   className="emodal__cancel"
