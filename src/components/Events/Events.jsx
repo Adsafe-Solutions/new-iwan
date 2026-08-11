@@ -172,7 +172,11 @@ export default function Events() {
                     <p className="ecard__summary">{e.summary}</p>
                   </span>
                 </button>
-                <Button variant="outline" className="ecard__cta">
+                <Button
+                  variant="outline"
+                  className="ecard__cta"
+                  onClick={() => setOpen(e)}
+                >
                   Register
                 </Button>
               </article>

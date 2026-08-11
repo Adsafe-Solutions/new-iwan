@@ -63,9 +63,13 @@
   color: var(--blue);
   border-color: var(--blue);
 }
+/* a softer blue than the solid buttons — the outline is a secondary action,
+   so its hover sits a step below them in weight */
 .btn--outline:hover,
 .btn--outline.is-filled {
-  background: var(--blue);
+  background: color-mix(in srgb, var(--blue) 84%, #fff);
   color: #fff;
-  border-color: var(--blue);
+  border-color: color-mix(in srgb, var(--blue) 84%, #fff);
+  transform: translateY(-3px);
+  box-shadow: 0 14px 26px -16px var(--blue);
 }
