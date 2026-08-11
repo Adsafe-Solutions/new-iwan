@@ -1,0 +1,108 @@
+/* ===================== TAKE ACTION ===================== */
+.take {
+  position: relative;
+  padding: 5.5rem 0;
+  overflow: hidden;
+}
+/* blue background that sweeps in from the right on scroll (see [data-take-blue]) */
+.take__blue {
+  position: absolute;
+  inset: 0;
+  background: var(--blue);
+  transform: scaleX(0);
+  transform-origin: right center;
+  z-index: 0;
+  will-change: transform;
+}
+.take .container {
+  position: relative;
+  z-index: 1;
+}
+/* display heading: 72px / 900 / uppercase / 1:1 / -0.72px */
+.take__head {
+  font-size: clamp(2.6rem, 6vw, 72px);
+  font-weight: 900;
+  line-height: 1.08;
+  letter-spacing: -0.72px;
+  margin-bottom: 3rem;
+}
+.take__turn {
+  display: block;
+  color: var(--blue);
+}
+.take__head .mark {
+  display: inline-block;
+  margin-top: 0.28em;
+}
+.tgrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.tile {
+  position: relative;
+  border-radius: 0;
+  overflow: hidden;
+  aspect-ratio: 632/474;
+  display: flex;
+  align-items: flex-end;
+  padding: 1.4rem;
+}
+.tile__img {
+  position: absolute;
+  inset: 0;
+  background: var(--img) center/cover;
+  transition: transform 0.6s;
+}
+.tile:not(.tile--brand)::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(transparent 45%, rgba(6, 16, 31, 0.7));
+  z-index: 1;
+}
+.tile:hover .tile__img {
+  transform: scale(1.08);
+}
+/* card label: 28.8px / 900 / uppercase / lh43.2px */
+.tile__label {
+  position: relative;
+  z-index: 2;
+  background: var(--yellow);
+  color: var(--blue);
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: 28.8px;
+  line-height: 43.2px;
+  letter-spacing: 0.02em;
+  padding: 6px 12px;
+  border-radius: 2px;
+}
+.tile--brand {
+  background: var(--blue-dark);
+  display: grid;
+  place-items: center;
+}
+/* the mark ships as near-black artwork — recolour it to the accent on the dark tile */
+.tile--brand .tile__mark {
+  width: 190px;
+  height: auto;
+  filter: brightness(0) saturate(100%) invert(93%) sepia(72%) saturate(2500%)
+    hue-rotate(1deg) brightness(105%) contrast(96%);
+  transition: transform 0.5s;
+}
+.tile--brand:hover .tile__mark {
+  transform: scale(1.08) rotate(-4deg);
+}
+.tile--brand .tile__label {
+  position: absolute;
+  bottom: 1.4rem;
+  left: 1.4rem;
+}
+
+/* ---- responsive ---- */
+@media (max-width: 780px) {
+  .tgrid {
+    grid-template-columns: 1fr;
+  }
+}

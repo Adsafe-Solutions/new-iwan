@@ -1,0 +1,332 @@
+/* ===================== HEADER ===================== */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+  transition: box-shadow 0.3s;
+}
+.header.stuck {
+  box-shadow: 0 10px 34px -22px rgba(10, 16, 32, 0.5);
+}
+.header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  height: var(--header-h);
+  transition: height 0.3s;
+}
+.header.stuck .header__inner {
+  height: 64px;
+}
+
+/* ---- overlay mode: home route, before the page is scrolled ----
+   The topbar and header float over the hero photo instead of capping it.
+   Only ever applied on "/", so every other page keeps the solid white bar. */
+.topbar.overlay,
+.header.overlay {
+  background: transparent;
+  border-bottom-color: transparent;
+}
+/* pinned on the whole home route, not just while overlaid: staying fixed in
+   both states means the chrome never re-enters flow and jolts the page */
+.header.pinned {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  transition:
+    top 0.3s,
+    background 0.3s,
+    box-shadow 0.3s;
+}
+.header.pinned.overlay {
+  top: var(--topbar-h); /* sits below the overlaid topbar */
+}
+.topbar.overlay {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+}
+/* the live-monitor strip is a hero-only flourish — it retires on scroll */
+.topbar.tucked {
+  display: none;
+}
+.topbar.overlay .topbar__inner,
+.topbar.overlay .topbar__live,
+.header.overlay .nav > ul > li > a,
+.header.overlay .nav__parent {
+  color: #fff;
+}
+.header.overlay .nav > ul > li > a::after,
+.header.overlay .nav__parent::after {
+  background: var(--hero-accent);
+}
+.header.overlay .nav > ul > li > a:hover,
+.header.overlay .nav > ul > li > a.active,
+.header.overlay .nav__parent:hover,
+.header.overlay .nav__parent.active {
+  color: var(--hero-accent);
+}
+.header.overlay .burger span {
+  background: #fff;
+}
+
+.nav > ul {
+  display: flex;
+  gap: 1.15rem;
+  align-items: center;
+}
+.nav a,
+.nav__parent {
+  position: relative;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 28px;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--ink);
+  padding: 0.3rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  white-space: nowrap;
+}
+.nav a::after,
+.nav__parent::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 0;
+  height: 2px;
+  background: var(--blue);
+  transition: width 0.3s;
+}
+.nav a:hover,
+.nav__parent:hover {
+  color: var(--blue);
+}
+.nav a:hover::after,
+.nav__parent:hover::after {
+  width: 100%;
+}
+.nav a.active,
+.nav__parent.active {
+  color: var(--blue);
+}
+.nav a.active::after,
+.nav__parent.active::after {
+  width: 100%;
+}
+/* only ever shown inside the drawer — the mega panel covers desktop */
+.nav__sub {
+  display: none;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin: 0.9rem 0 0.3rem 0.9rem;
+  padding-left: 0.9rem;
+  border-left: 2px solid var(--line);
+}
+.nav__sub a {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.caret {
+  font-size: 0.6rem;
+  opacity: 0.6;
+  transition: transform 0.25s;
+}
+.nav__parent.active .caret {
+  transform: rotate(180deg);
+}
+
+/* ---- mega dropdown ---- */
+.mega {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  border-top: 1px solid var(--line);
+  box-shadow: 0 26px 44px -26px rgba(10, 16, 32, 0.4);
+  z-index: 99;
+  animation: megaIn 0.22s ease;
+}
+@keyframes megaIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.mega__inner {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 4rem;
+  padding: 2.6rem 24px 2.8rem;
+  align-items: start;
+}
+/* section label, not a title — sits above the links as a quiet eyebrow */
+.mega__links h4 {
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  padding-bottom: 0.9rem;
+  margin-bottom: 0.4rem;
+  border-bottom: 1px solid var(--line);
+}
+.mega__links a {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--blue);
+  padding: 0.72rem 0.6rem 0.72rem 0;
+  border-radius: var(--radius);
+  transition:
+    padding-left 0.2s,
+    background 0.2s;
+}
+.mega__links a:hover {
+  padding-left: 10px;
+  background: rgba(14, 65, 176, 0.05);
+}
+/* matches the height of the links column beside it */
+.mega__img {
+  align-self: stretch;
+  min-height: 260px;
+  border-radius: 6px;
+  background: var(--img) center/cover;
+  box-shadow: var(--shadow-sm, 0 12px 30px -18px rgba(10, 16, 32, 0.4));
+}
+
+/* the tray is a sibling inside .header, so this has to out-stack its z-index:
+   99 or the open tray swallows the burger that closes it */
+.header__cta {
+  position: relative;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  flex: none;
+}
+.header__cta .btn {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 18px;
+  padding: 0.7rem 1.35rem;
+}
+.header.overlay .header__cta .btn {
+  background: #fff;
+  color: var(--blue-800);
+}
+.burger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+}
+.burger span {
+  width: 24px;
+  height: 2px;
+  background: var(--ink);
+  border-radius: 2px;
+  transition: 0.3s;
+}
+.burger.on span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.burger.on span:nth-child(2) {
+  opacity: 0;
+}
+.burger.on span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ---- responsive ---- */
+/* Nine top-level items need the drawer far earlier than the old 780px — the
+   inline bar runs out of room just under 1000px. */
+@media (max-width: 1240px) {
+  .nav ul {
+    gap: 1.05rem;
+  }
+  .nav a {
+    font-size: 16px;
+  }
+}
+@media (max-width: 1000px) {
+  /* full-width tray that drops from behind the header. It sits at z-index 99
+     against the header's 100, so it slides out from under the bar. */
+  .nav {
+    position: fixed;
+    inset: 0 0 auto 0;
+    width: 100%;
+    max-width: none;
+    background: #fff;
+    padding: calc(var(--header-h) + 1.6rem) 24px 2.4rem;
+    max-height: 100svh;
+    overflow-y: auto;
+    transform: translateY(-100%);
+    transition: transform 0.42s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow);
+    z-index: 99;
+  }
+  .nav.open {
+    transform: translateY(0);
+  }
+  .nav > ul {
+    flex-direction: column;
+    gap: 1.3rem;
+    align-items: flex-start;
+  }
+  .nav a {
+    font-size: 18px;
+  }
+  /* the drawer is a white panel, so undo the overlay's white-on-photo nav text */
+  .header.overlay .nav > ul > li > a,
+  .header.overlay .nav__parent {
+    color: var(--ink);
+  }
+  .header.overlay .nav > ul > li > a.active,
+  .header.overlay .nav__parent.active {
+    color: var(--blue);
+  }
+  .nav__sub {
+    display: flex;
+  }
+  /* the open tray is white and full width, so an overlaid header would lose its
+     reversed logo and burger against it — drop back to the solid treatment */
+  .header.overlay.is-open {
+    background: #fff;
+    border-bottom-color: var(--line);
+  }
+  .header.overlay.is-open .burger span {
+    background: var(--ink);
+  }
+  .header.overlay.is-open .header__cta .btn {
+    background: var(--blue);
+    color: #fff;
+  }
+  .burger {
+    display: flex;
+  }
+  .mega {
+    display: none;
+  }
+}

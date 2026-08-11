@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { BRAND } from "../config/brand.js";
+import { BRAND } from "../../config/brand.js";
+import "./Brand.css";
 
 export default function Brand({ light = false }) {
   const [lightMissing, setLightMissing] = useState(false);

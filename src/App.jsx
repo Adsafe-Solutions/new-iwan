@@ -1,16 +1,15 @@
-import "./components.css";
 import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import Topbar from "./components/Topbar.jsx";
-import Header from "./components/Header.jsx";
-import Footer from "./components/Footer.jsx";
-import Home from "./pages/Home.jsx";
-import Zakat from "./pages/Zakat.jsx";
-import Placeholder from "./pages/Placeholder.jsx";
+import Topbar from "./components/Topbar/Topbar.jsx";
+import Header from "./components/Header/Header.jsx";
+import Footer from "./components/Footer/Footer.jsx";
+import Home from "./pages/Home/Home.jsx";
+import Zakat from "./pages/Zakat/Zakat.jsx";
+import Placeholder from "./pages/Placeholder/Placeholder.jsx";
 import { NAV_PAGES } from "./config/navPages.js";
 import { SECTIONS } from "./config/sections.js";
-import ScrollToTop from "./components/ScrollToTop.jsx";
-import ThemeSwitcher from "./components/ThemeSwitcher.jsx";
+import ScrollToTop from "./components/ScrollToTop/ScrollToTop.jsx";
+import ThemeSwitcher from "./components/ThemeSwitcher/ThemeSwitcher.jsx";
 
 function Shell() {
   const [stuck, setStuck] = useState(false);

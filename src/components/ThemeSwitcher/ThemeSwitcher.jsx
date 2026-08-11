@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { THEMES, DEFAULT_THEME } from "../themes.js";
+import { THEMES, DEFAULT_THEME } from "../../themes.js";
+import "./ThemeSwitcher.css";
 
 export default function ThemeSwitcher() {
   const [open, setOpen] = useState(false);

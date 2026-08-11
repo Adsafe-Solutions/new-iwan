@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useScrollAnimations } from "../hooks/useGsap.js";
-import Typewriter from "../components/Typewriter.jsx";
-import { FOCUS_AREAS } from "../focusAreas.js";
-import { ADVISORS } from "../advisors.js";
-import "./zakat.css";
+import { useScrollAnimations } from "../../hooks/useGsap.js";
+import Typewriter from "../../components/Typewriter/Typewriter.jsx";
+import { FOCUS_AREAS } from "../../focusAreas.js";
+import { ADVISORS } from "../../advisors.js";
+import "./Zakat.css";
 
 /* ---------- data ---------- */
 /* Zakat is distributed through the same four focus areas as everything else. */

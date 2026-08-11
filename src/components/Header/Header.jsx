@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import Brand from "./Brand.jsx";
-import { NAV_PAGES, PROGRAMMES } from "../config/navPages.js";
+import Brand from "../Brand/Brand.jsx";
+import { NAV_PAGES, PROGRAMMES } from "../../config/navPages.js";
+import "./Header.css";
 
 const inGroup = NAV_PAGES.filter((p) => p.group === PROGRAMMES);
 

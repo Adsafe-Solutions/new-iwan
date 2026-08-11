@@ -1,0 +1,233 @@
+/* ===================== EVENT MODAL (content) ===================== */
+.emodal__head {
+  padding: 1.8rem clamp(1.4rem, 4vw, 2.2rem);
+  padding-right: 4.5rem; /* clears the close button */
+  background: var(--blue-800);
+}
+.emodal__date {
+  display: block;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--yellow);
+  margin-bottom: 0.6rem;
+}
+.emodal__head h3 {
+  font-size: clamp(24px, 4vw, 32px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+.emodal__head p {
+  font-size: 15px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.72);
+}
+.emodal__body {
+  padding: clamp(1.4rem, 4vw, 2.2rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.9rem;
+}
+.emodal__blurb {
+  font-size: 17px;
+  line-height: 27px;
+  color: var(--muted);
+}
+.emodal__cols {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.9rem;
+}
+.emodal__agenda {
+  flex: 1 1 280px;
+}
+.emodal__where {
+  flex: 1 1 240px;
+  display: flex;
+  flex-direction: column;
+}
+.emodal__label {
+  display: block;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.9rem;
+}
+.emodal__agenda-row {
+  display: flex;
+  gap: 0.9rem;
+  align-items: baseline;
+  margin-bottom: 0.75rem;
+}
+.emodal__agenda-row span {
+  flex: none;
+  width: 58px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--blue);
+}
+.emodal__agenda-row p {
+  font-size: 15px;
+  line-height: 22px;
+}
+/* a suggestion of a street map, not a real one — no tile provider involved */
+.emodal__map {
+  position: relative;
+  height: 132px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  overflow: hidden;
+  background-color: #f1f4f9;
+  background-image:
+    linear-gradient(#e2e7f0 1px, transparent 1px),
+    linear-gradient(90deg, #e2e7f0 1px, transparent 1px);
+  background-size: 34px 34px;
+  margin-bottom: 0.8rem;
+}
+.emodal__map-h,
+.emodal__map-v,
+.emodal__pin {
+  position: absolute;
+}
+.emodal__map-h {
+  left: 0;
+  right: 0;
+  top: 46%;
+  height: 10px;
+  background: #e2e7f0;
+}
+.emodal__map-v {
+  top: 0;
+  bottom: 0;
+  left: 62%;
+  width: 8px;
+  background: #e2e7f0;
+}
+.emodal__pin {
+  left: 50%;
+  top: 44%;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px 999px 999px 2px;
+  background: var(--blue);
+  transform: translate(-50%, -100%) rotate(-45deg);
+}
+.emodal__where strong {
+  font-size: 15px;
+  font-weight: 700;
+}
+.emodal__address {
+  font-size: 14px;
+  line-height: 21px;
+  color: var(--muted);
+}
+.emodal__reg {
+  border-top: 1px solid var(--line);
+  padding-top: 1.6rem;
+}
+.emodal__reg-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.1rem;
+}
+.emodal__reg-cta span {
+  font-size: 14px;
+  color: var(--muted);
+}
+.emodal__reg-head {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.emodal__fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin-bottom: 1.1rem;
+}
+.emodal__fields label {
+  flex: 1 1 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.emodal__fields input {
+  font-family: inherit;
+  font-size: 15px;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--ink);
+}
+.emodal__fields input:focus {
+  outline: none;
+  border-color: var(--blue);
+}
+.emodal__cancel {
+  background: none;
+  border: 0;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+}
+.emodal__done {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 1.2rem 1.3rem;
+  border-radius: var(--radius);
+  background: rgba(76, 159, 56, 0.12);
+  animation: emodalPanel 0.25s ease-out both;
+}
+.emodal__tick {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: var(--green);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+.emodal__done strong {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+.emodal__done p {
+  font-size: 15px;
+  line-height: 23px;
+  color: var(--ink-2);
+}
+
+/* ---- responsive ---- */
+@media (max-width: 780px) {
+  .emodal__cols {
+    gap: 1.4rem;
+  }
+}
+
+/* the generic close button sits on this modal's dark header */
+.emodal .modal__close {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+.emodal .modal__close:hover {
+  background: var(--blue);
+}

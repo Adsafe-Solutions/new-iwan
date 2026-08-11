@@ -1,0 +1,297 @@
+/* ===================== HERO =====================
+   Full-bleed photo slider with fixed copy. The topbar + header overlay this
+   section on the home route, so the top padding clears both. */
+.hero {
+  position: relative;
+  min-height: 904px;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--hero-bg);
+  display: flex;
+  align-items: center;
+  padding-top: calc(var(--topbar-h) + var(--header-h));
+}
+
+/* The incoming photo sits on top and is uncovered from the left, overlapping
+   the outgoing `.was` slide. Clipping rather than fading keeps the gradient
+   overlays travelling with the photo. */
+.hero__slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  z-index: 0;
+  background: var(--img) center/cover no-repeat;
+}
+.hero__slide.was {
+  opacity: 1;
+  z-index: 1;
+}
+.hero__slide.on {
+  opacity: 1;
+  z-index: 2;
+  animation: heroWipe 2.1s cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+@keyframes heroWipe {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+/* top fade into the section base colour, then a left-side darkening pass so
+   the copy stays legible over any photo */
+.hero__slide::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(var(--hero-bg), rgba(0, 0, 0, 0) 25%),
+    linear-gradient(265deg, rgba(0, 0, 0, 0) 40%, #000000);
+}
+
+.hero__inner {
+  position: relative;
+  z-index: 2;
+}
+.hero__inner > * {
+  max-width: 750px;
+}
+
+/* Spacing lives on the band, not the text inside it — otherwise the rising
+   text leaks into the margin instead of being clipped flush. */
+.hero__rise {
+  overflow: hidden;
+}
+.hero__rise--eyebrow {
+  margin-bottom: 1.1rem;
+}
+.hero__rise--title {
+  margin-bottom: 1.6rem;
+}
+.hero__rise--excerpt {
+  margin-bottom: 2.4rem;
+}
+
+.hero__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-satoshi);
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 30px;
+  color: var(--hero-accent);
+}
+.hero__ico {
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+}
+.hero__ico svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.hero__title {
+  font-family: var(--serif-display);
+  font-size: 80px;
+  font-weight: 400;
+  line-height: 104px;
+  color: #fff;
+}
+
+.hero__excerpt {
+  font-family: var(--font-satoshi);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 30px;
+  color: #fff;
+}
+
+/* deliberately not .btn — that base class forces uppercase / 0.9rem / 700 */
+.hero__cta {
+  display: inline-block;
+  background: #fff;
+  color: var(--hero-bg);
+  font-family: var(--font-satoshi);
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1;
+  padding: 18px 40px;
+  border-radius: 6px;
+  transition:
+    background-color 0.3s,
+    transform 0.3s;
+}
+.hero__cta:hover {
+  background: var(--hero-accent);
+  transform: translateY(-2px);
+}
+
+.hero__arrows {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  display: flex;
+}
+.hero__arrow {
+  width: 80px;
+  height: 80px;
+  border: 0;
+  border-radius: 0;
+  background: var(--hero-accent);
+  color: var(--hero-bg);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition:
+    background-color 0.5s,
+    color 0.5s;
+}
+.hero__arrow svg {
+  width: 28px;
+  height: 28px;
+}
+.hero__arrow:hover {
+  background: var(--hero-bg);
+  color: var(--hero-accent);
+}
+
+@keyframes heroRise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 80px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+@keyframes heroSet {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(0, 80px, 0);
+  }
+}
+
+/* `both` holds the end state, so the copy stays put between transitions */
+.hero__inner.is-in .hero__eyebrow,
+.hero__inner.is-in .hero__title,
+.hero__inner.is-in .hero__excerpt,
+.hero__inner.is-in .hero__cta {
+  animation: heroRise 0.7s ease-out both;
+}
+.hero__inner.is-in .hero__eyebrow {
+  animation-delay: 0.1s;
+}
+.hero__inner.is-in .hero__title {
+  animation-delay: 0.28s;
+}
+.hero__inner.is-in .hero__excerpt {
+  animation-delay: 0.46s;
+}
+.hero__inner.is-in .hero__cta {
+  animation-delay: 0.64s;
+}
+
+/* reversed order — the cascade drains from the bottom up */
+.hero__inner.is-out .hero__eyebrow,
+.hero__inner.is-out .hero__title,
+.hero__inner.is-out .hero__excerpt,
+.hero__inner.is-out .hero__cta {
+  animation: heroSet 0.5s ease-in both;
+}
+.hero__inner.is-out .hero__cta {
+  animation-delay: 0s;
+}
+.hero__inner.is-out .hero__excerpt {
+  animation-delay: 0.06s;
+}
+.hero__inner.is-out .hero__title {
+  animation-delay: 0.12s;
+}
+.hero__inner.is-out .hero__eyebrow {
+  animation-delay: 0.18s;
+}
+/* the global reduced-motion rule kills the animation, which would strand these
+   at opacity 0 — restore the end state explicitly */
+@media (prefers-reduced-motion: reduce) {
+  .hero__eyebrow,
+  .hero__title,
+  .hero__excerpt,
+  .hero__cta {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* .hero__pills and .pill* below are still used by the Zakat page hero */
+.hero__pills {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.2rem;
+  flex-wrap: wrap;
+}
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  padding: 8px 16px;
+  border-radius: 999px;
+}
+.pill--y {
+  background: var(--yellow);
+  color: var(--ink);
+}
+.pill--g {
+  background: var(--green);
+  color: #fff;
+}
+
+/* ---- responsive ---- */
+@media (max-width: 1000px) {
+  .hero__title {
+    font-size: clamp(2.6rem, 8vw, 80px);
+    line-height: 1.2;
+  }
+  .hero__arrow {
+    width: 60px;
+    height: 60px;
+  }
+  .hero__arrow svg {
+    width: 22px;
+    height: 22px;
+  }
+}
+@media (max-width: 780px) {
+  /* svh, not vh — the iOS URL bar otherwise makes the hero jump on scroll */
+  .hero {
+    height: auto;
+    min-height: 100svh;
+    padding: 7rem 0 4rem;
+  }
+  .hero__eyebrow,
+  .hero__excerpt {
+    font-size: 17px;
+    line-height: 26px;
+  }
+  .hero__cta {
+    font-size: 17px;
+    padding: 15px 32px;
+  }
+  .hero__arrow {
+    width: 56px;
+    height: 56px;
+  }
+}

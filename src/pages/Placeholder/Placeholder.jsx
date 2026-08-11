@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { BRAND } from "../config/brand.js";
+import { BRAND } from "../../config/brand.js";
+import "./Placeholder.css";
 
 export default function Placeholder({ title, intro }) {
   return (

@@ -1,0 +1,271 @@
+/* ===================== EVENTS ===================== */
+.events {
+  padding: 4.5rem 0 5.5rem;
+  background: #f7f9fc;
+}
+.events__grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 2.5rem;
+  align-items: start;
+}
+.events__list {
+  /* clears the fixed header when the calendar scrolls this back into view */
+  scroll-margin-top: calc(var(--header-h) + 1.2rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.events__empty {
+  padding: 2rem;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  color: var(--muted);
+}
+.events__empty button,
+.cal__note button {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  color: var(--blue);
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+@keyframes ecardIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.ecard {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 1.1rem 1.3rem;
+  animation: ecardIn 0.45s ease-out both;
+  transition:
+    border-color 0.25s,
+    box-shadow 0.25s,
+    transform 0.25s;
+}
+.ecard:nth-child(2) {
+  animation-delay: 0.06s;
+}
+.ecard:nth-child(3) {
+  animation-delay: 0.12s;
+}
+.ecard:nth-child(4) {
+  animation-delay: 0.18s;
+}
+.ecard:nth-child(5) {
+  animation-delay: 0.24s;
+}
+.ecard:nth-child(n + 6) {
+  animation-delay: 0.3s;
+}
+.ecard:hover {
+  border-color: var(--blue);
+  box-shadow: 0 18px 34px -26px rgba(10, 16, 32, 0.5);
+  transform: translateY(-2px);
+}
+/* the whole left side is the trigger, so the card is one big hit target */
+.ecard__open {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  min-width: 0;
+}
+.ecard__date {
+  flex: none;
+  width: 62px;
+  height: 62px;
+  border-radius: var(--radius);
+  background: var(--blue);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.1;
+}
+.ecard__date b {
+  font-size: 22px;
+  font-weight: 800;
+}
+.ecard__date small {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.85;
+}
+.ecard__body {
+  min-width: 0;
+}
+.ecard__tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--blue);
+  background: rgba(14, 65, 176, 0.08);
+  padding: 3px 8px;
+  border-radius: 999px;
+  margin-bottom: 0.45rem;
+}
+.ecard h3 {
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 0.3rem;
+}
+.ecard__meta {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 0.35rem;
+}
+.ecard__summary {
+  font-size: 14px;
+  line-height: 21px;
+  color: var(--muted);
+}
+.ecard__cta {
+  flex: none;
+  font-size: 13px;
+  padding: 0.7rem 1.3rem;
+}
+
+/* ---- calendar ---- */
+.cal {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 1.2rem;
+  position: sticky;
+  top: calc(var(--header-h) + 1rem);
+}
+.cal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+.cal__head strong {
+  font-size: 16px;
+  font-weight: 800;
+}
+.cal__head button {
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fff;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--ink);
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+.cal__head button:hover {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #fff;
+}
+.cal__week,
+.cal__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.cal__week {
+  margin-bottom: 6px;
+}
+.cal__week span {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+.cal__day,
+.cal__pad {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: var(--radius);
+  color: var(--ink-2);
+}
+.cal__day.today {
+  outline: 1px solid var(--blue);
+}
+/* days carrying events are buttons; the rest are inert spans */
+button.cal__day {
+  border: 0;
+  cursor: pointer;
+  background: var(--yellow);
+  color: var(--ink);
+  font-weight: 800;
+  font-family: inherit;
+}
+button.cal__day:hover {
+  background: var(--blue);
+  color: #fff;
+}
+button.cal__day.on {
+  background: var(--blue);
+  color: #fff;
+}
+.cal__note {
+  margin-top: 0.9rem;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--muted);
+}
+
+/* ---- responsive ---- */
+@media (max-width: 1000px) {
+  .events__grid {
+    grid-template-columns: 1fr;
+  }
+  .cal {
+    position: static;
+    max-width: 420px;
+  }
+}
+@media (max-width: 780px) {
+  .ecard {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.9rem;
+  }
+  .ecard__cta {
+    width: 100%;
+  }
+}

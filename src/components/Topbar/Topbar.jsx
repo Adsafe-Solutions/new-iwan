@@ -1,3 +1,5 @@
+import "./Topbar.css";
+
 export default function Topbar({ overlay = false, hidden = false }) {
   return (
     <div

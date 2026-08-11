@@ -1,0 +1,123 @@
+/* ===================== DIFFERENCE (focus-area donation cards) ===================== */
+.difference {
+  padding: 4.5rem 0;
+}
+/* rotating display heading: ~51-64px / 900 / uppercase / -1.28px */
+.difference .kicker {
+  letter-spacing: -1.28px;
+}
+.typewriter {
+  white-space: nowrap;
+}
+.tw-cursor {
+  display: inline-block;
+  width: 3px;
+  height: 0.95em;
+  background: var(--yellow);
+  margin-left: 3px;
+  vertical-align: -1px;
+  animation: blink 1s steps(1) infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+.dcard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--blue);
+  box-shadow: var(--shadow);
+  transition:
+    transform 0.35s,
+    box-shadow 0.35s;
+}
+.dcard:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-card);
+}
+.dcard__media {
+  position: relative;
+  height: 210px;
+  overflow: hidden;
+}
+.dcard__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgba(4, 16, 31, 0.1), rgba(14, 65, 176, 0.35));
+}
+.dcard__img {
+  position: absolute;
+  inset: 0;
+  background: var(--img) center/cover;
+  transition: transform 0.6s;
+}
+.dcard:hover .dcard__img {
+  transform: scale(1.08);
+}
+/* category badge: 13.8px / 900 / uppercase, 9px 16px padding */
+.dcard__tag {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  font-size: 11.5px;
+  font-weight: 900;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 8px 12px;
+  color: #fff;
+  background: var(--tag);
+}
+.dcard__tag.dark {
+  color: var(--ink);
+}
+/* text panel: 18px top / 20px sides / 16px bottom */
+.dcard__body {
+  padding: 18px 20px 16px;
+  color: #fff;
+}
+/* caption — scaled down from 26.6px now that the row is four cards wide */
+.dcard__body h3 {
+  font-size: 20px;
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 26px;
+  letter-spacing: 0.4px;
+}
+.dcard__rule {
+  width: 100%;
+  height: 4px;
+  background: var(--yellow);
+  margin-top: 1rem;
+  transform: scaleX(0);
+  transform-origin: left center;
+  will-change: transform;
+}
+/* four focus areas, one row */
+.dgrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px 24px;
+}
+/* cards are the anchor targets for the focus-area links — clear the sticky header */
+.dcard[id] {
+  scroll-margin-top: 120px;
+}
+
+/* ---- responsive ---- */
+@media (max-width: 1000px) {
+  .dgrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 780px) {
+  .dgrid {
+    grid-template-columns: 1fr;
+  }
+}
