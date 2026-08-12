@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { EVENTS } from "../../config/events.js";
 import EventModal from "../EventModal/EventModal.jsx";
 import Button from "../Button/Button.jsx";
-import "./Events.css";
+import { cx } from "../../lib/cx.js";
+import { KICKER, MARK_B } from "../../lib/type.js";
 
 const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const MONTHS = [
@@ -45,7 +46,7 @@ const SCROLL_MS = 1100;
 const easeInOutCubic = (t) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
 
 function glideTo(el) {
-  const header = document.querySelector(".header");
+  const header = document.querySelector("header");
   const offset = (header?.offsetHeight ?? 0) + 20;
   const to = Math.max(0, el.getBoundingClientRect().top + window.scrollY - offset);
   const from = window.scrollY;
@@ -58,18 +59,42 @@ function glideTo(el) {
   /* html has `scroll-behavior: smooth`, which would fight these per-frame
      jumps — turn it off for the duration */
   const root = document.documentElement;
-  const prev = root.style.scrollBehavior;
-  root.style.scrollBehavior = "auto";
+  root.classList.add("no-smooth");
 
   const start = performance.now();
   const step = (now) => {
     const t = Math.min(1, (now - start) / SCROLL_MS);
     window.scrollTo(0, from + (to - from) * easeInOutCubic(t));
     if (t < 1) requestAnimationFrame(step);
-    else root.style.scrollBehavior = prev;
+    else root.classList.remove("no-smooth");
   };
   requestAnimationFrame(step);
 }
+
+/* Written out in full because Tailwind scans this file as text — a delay
+   assembled by interpolation would never be generated. Cards past the fifth
+   all share the last beat. */
+const CARD_DELAYS = [
+  "[animation-delay:0s]",
+  "[animation-delay:0.06s]",
+  "[animation-delay:0.12s]",
+  "[animation-delay:0.18s]",
+  "[animation-delay:0.24s]",
+  "[animation-delay:0.3s]",
+];
+
+const LINK_BUTTON =
+  "cursor-pointer border-0 bg-transparent p-0 font-bold text-primary underline [font:inherit]";
+
+const CAL_DAY = cx(
+  "flex aspect-square items-center justify-center rounded",
+  "text-[13px] font-semibold text-ink-2"
+);
+const CAL_NAV = cx(
+  "h-[30px] w-[30px] cursor-pointer rounded border border-line bg-white",
+  "text-[18px] leading-none text-ink transition-colors duration-200",
+  "hover:border-primary hover:bg-primary hover:text-white"
+);
 
 export default function Events() {
   const today = useMemo(() => midnight(new Date()), []);
@@ -130,51 +155,79 @@ export default function Events() {
   };
 
   return (
-    <section className="events" id="events">
-      <div className="container">
-        <h2 className="kicker reveal">
-          Upcoming <span className="mark mark--b">events</span>
+    <section className="bg-mist pb-[5.5rem] pt-[4.5rem]" id="events">
+      <div className="mx-auto w-full max-w-container px-6">
+        <h2 className={cx(KICKER, "reveal")}>
+          Upcoming <span className={MARK_B}>events</span>
         </h2>
 
-        <div className="events__grid">
+        <div className="grid grid-cols-[1fr_340px] items-start gap-10 max-nav:grid-cols-1">
           {/* keyed on the filter so the cards replay their entrance. They are
               deliberately outside the GSAP `.reveal` system: that hook scans
               the DOM once on mount, so cards mounted by a later filter change
               would never be animated in and would sit at opacity 0. */}
-          <div className="events__list" ref={listRef} key={selected || "all"}>
+          <div className="flex flex-col gap-4" ref={listRef} key={selected || "all"}>
             {shown.length === 0 && (
-              <p className="events__empty">
+              <p className="rounded-lg border border-line bg-white p-8 text-muted">
                 Nothing scheduled for that day.{" "}
-                <button type="button" onClick={() => setSelected(null)}>
+                <button
+                  type="button"
+                  className={LINK_BUTTON}
+                  onClick={() => setSelected(null)}
+                >
                   Show all events
                 </button>
               </p>
             )}
 
-            {shown.map((e) => (
-              <article className="ecard" key={e.id}>
+            {shown.map((e, i) => (
+              <article
+                className={cx(
+                  "flex items-center gap-4 rounded-lg border border-line bg-white px-[1.3rem] py-[1.1rem]",
+                  "animate-ecardIn",
+                  CARD_DELAYS[Math.min(i, CARD_DELAYS.length - 1)],
+                  "transition-[border-color,box-shadow,transform] duration-[250ms]",
+                  "hover:-translate-y-0.5 hover:border-primary hover:shadow-ecard",
+                  "max-phone:flex-col max-phone:items-stretch max-phone:gap-[0.9rem]"
+                )}
+                key={e.id}
+              >
+                {/* the whole left side is the trigger, so the card is one big
+                    hit target */}
                 <button
                   type="button"
-                  className="ecard__open"
+                  className="flex min-w-0 flex-1 cursor-pointer items-center gap-[1.2rem] border-0 bg-transparent p-0 text-left text-inherit [font:inherit]"
                   onClick={() => setOpen(e)}
                   aria-label={`More about ${e.title}`}
                 >
-                  <span className="ecard__date" aria-hidden="true">
-                    <b>{parse(e.date).getDate()}</b>
-                    <small>{MONTHS[parse(e.date).getMonth()].slice(0, 3)}</small>
+                  <span
+                    className="flex h-[62px] w-[62px] flex-none flex-col items-center justify-center rounded bg-primary leading-[1.1] text-white"
+                    aria-hidden="true"
+                  >
+                    <b className="text-[22px] font-extrabold">
+                      {parse(e.date).getDate()}
+                    </b>
+                    <small className="text-[11px] font-bold uppercase tracking-[0.08em] opacity-85">
+                      {MONTHS[parse(e.date).getMonth()].slice(0, 3)}
+                    </small>
                   </span>
-                  <span className="ecard__body">
-                    <span className="ecard__tag">{e.tag}</span>
-                    <h3>{e.title}</h3>
-                    <p className="ecard__meta">
+                  <span className="min-w-0">
+                    <span className="mb-[0.45rem] inline-block rounded-full bg-primary/[0.08] px-2 py-[3px] text-[11px] font-extrabold uppercase tracking-[0.12em] text-primary">
+                      {e.tag}
+                    </span>
+                    <h3 className="mb-[0.3rem] text-[19px] font-bold leading-[1.3]">
+                      {e.title}
+                    </h3>
+                    <p className="mb-[0.35rem] text-[13px] font-semibold text-muted">
                       {e.start}–{e.end} · {e.venue}
                     </p>
-                    <p className="ecard__summary">{e.summary}</p>
+                    <p className="text-[14px] leading-[21px] text-muted">{e.summary}</p>
                   </span>
                 </button>
+
                 <Button
                   variant="outline"
-                  className="ecard__cta"
+                  className="flex-none px-[1.3rem] py-[0.7rem] text-[13px] max-phone:w-full"
                   onClick={() => setOpen(e)}
                 >
                   Register
@@ -183,48 +236,67 @@ export default function Events() {
             ))}
           </div>
 
-          <aside className="cal reveal" aria-label="Events calendar">
-            <div className="cal__head">
+          <aside
+            className={cx(
+              "reveal sticky top-[calc(theme(spacing.header)+1rem)]",
+              "rounded-lg border border-line bg-white p-[1.2rem]",
+              "max-nav:static max-nav:max-w-[420px]"
+            )}
+            aria-label="Events calendar"
+          >
+            <div className="mb-4 flex items-center justify-between">
               <button
                 type="button"
+                className={CAL_NAV}
                 onClick={() => shiftMonth(-1)}
                 aria-label="Previous month"
               >
                 ‹
               </button>
-              <strong>
+              <strong className="text-[16px] font-extrabold">
                 {MONTHS[cursor.getMonth()]} {cursor.getFullYear()}
               </strong>
-              <button type="button" onClick={() => shiftMonth(1)} aria-label="Next month">
+              <button
+                type="button"
+                className={CAL_NAV}
+                onClick={() => shiftMonth(1)}
+                aria-label="Next month"
+              >
                 ›
               </button>
             </div>
 
-            <div className="cal__week" aria-hidden="true">
+            <div className="mb-1.5 grid grid-cols-7 gap-1" aria-hidden="true">
               {WEEKDAYS.map((d) => (
-                <span key={d}>{d}</span>
+                <span
+                  key={d}
+                  className="text-center text-[11px] font-bold uppercase tracking-[0.06em] text-muted"
+                >
+                  {d}
+                </span>
               ))}
             </div>
 
-            <div className="cal__grid">
+            <div className="grid grid-cols-7 gap-1">
               {cells.map((d, i) => {
-                if (!d) return <span className="cal__pad" key={`pad-${i}`} />;
+                if (!d) return <span className="aspect-square" key={`pad-${i}`} />;
                 const iso = key(d);
                 const list = byDay.get(iso);
-                const classes = [
-                  "cal__day",
-                  list ? "has" : "",
-                  iso === key(today) ? "today" : "",
-                  iso === selected ? "on" : "",
-                ]
-                  .filter(Boolean)
-                  .join(" ");
+                const isToday = iso === key(today);
 
+                /* days carrying events are buttons; the rest are inert spans */
                 return list ? (
                   <button
                     type="button"
                     key={iso}
-                    className={classes}
+                    className={cx(
+                      CAL_DAY,
+                      "cursor-pointer border-0 font-extrabold [font-family:inherit]",
+                      iso === selected
+                        ? "bg-primary text-white"
+                        : "bg-accent text-ink hover:bg-primary hover:text-white",
+                      isToday && "outline outline-1 outline-primary"
+                    )}
                     onClick={() => {
                       wantScroll.current = true;
                       setSelected(iso === selected ? null : iso);
@@ -234,16 +306,26 @@ export default function Events() {
                     {d.getDate()}
                   </button>
                 ) : (
-                  <span key={iso} className={classes}>
+                  <span
+                    key={iso}
+                    className={cx(
+                      CAL_DAY,
+                      isToday && "outline outline-1 outline-primary"
+                    )}
+                  >
                     {d.getDate()}
                   </span>
                 );
               })}
             </div>
 
-            <p className="cal__note">
+            <p className="mt-[0.9rem] text-[12px] leading-[18px] text-muted">
               {selected ? (
-                <button type="button" onClick={() => setSelected(null)}>
+                <button
+                  type="button"
+                  className={LINK_BUTTON}
+                  onClick={() => setSelected(null)}
+                >
                   Clear filter
                 </button>
               ) : (

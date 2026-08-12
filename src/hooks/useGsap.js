@@ -4,6 +4,12 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+/* Colour for GSAP has to be a concrete string, so it is read back out of the
+   theme variables rather than written as a hex here. Reading at call time also
+   means a tween picks up whichever theme is currently applied. */
+const cssColor = (name) =>
+  `rgb(${getComputedStyle(document.documentElement).getPropertyValue(name).trim()})`;
+
 const reduced =
   typeof window !== "undefined" &&
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -25,7 +31,7 @@ export function useScrollAnimations() {
           el.style.transform = "none";
         });
       document.querySelectorAll("[data-take-turn]").forEach((el) => {
-        el.style.color = "#fff";
+        el.style.color = cssColor("--c-white");
       });
       document.querySelectorAll("[data-count]").forEach((el) => {
         el.textContent = fmt(+el.dataset.count) + (el.dataset.suffix || "");
@@ -124,8 +130,8 @@ export function useScrollAnimations() {
         if (turn)
           tl.fromTo(
             turn,
-            { color: "#0e41b0" },
-            { color: "#ffffff", ease: "none", duration: 0.32 },
+            { color: cssColor("--c-blue") },
+            { color: cssColor("--c-white"), ease: "none", duration: 0.32 },
             0.62
           );
       }

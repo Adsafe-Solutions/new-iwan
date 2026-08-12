@@ -4,6 +4,9 @@ const REDUCED =
   typeof window !== "undefined" &&
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+const CURSOR =
+  "ml-[3px] inline-block h-[0.95em] w-[3px] animate-blink bg-accent align-[-1px]";
+
 /**
  * Types each phrase in left-to-right, holds, deletes, and moves to the next —
  * with a blinking cursor on the right. Reduced-motion shows phrase 1 statically.
@@ -11,7 +14,7 @@ const REDUCED =
 export default function Typewriter({
   phrases,
   className = "",
-  cursorClass = "tw-cursor",
+  cursorClass = CURSOR,
   typeSpeed = 75,
   deleteSpeed = 40,
   hold = 1500,
