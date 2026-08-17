@@ -246,6 +246,12 @@ carries the accessible name; only the hand-written placeholders have real alt.
   the hero at scroll 0 and goes solid past 10px. It must never re-enter flow
   mid-scroll or the page jolts. `--topbar-h` collapses to `0px` when the topbar
   flag is off, and the hero's top padding is measured from it.
+- **Nav dropdowns are click-toggled, not hover.** One `menu` state holds the
+  single open label, so opening one closes the other by construction. Outside
+  click (`mousedown`, which beats a link's own handler), Escape (returns focus
+  to the trigger) and a route change all close it. Panels toggle `hidden`
+  (`display:none`) with **no transition** — they snap, like Webflow's default
+  dropdown. Do not add a fade: the reference behaviour depends on it.
 - **The mobile tray is a sibling inside the `<header>`.** Its `z-index: 99`
   will swallow the logo and the burger unless they out-stack it. The drawer
   breakpoint is the `nav` screen (**1000px**), not 780 — the nav runs out of

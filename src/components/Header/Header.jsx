@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { IconChevronDown } from "@tabler/icons-react";
 import Brand from "../Brand/Brand.jsx";
 import Button from "../Button/Button.jsx";
 import { NAV_PAGES, PROGRAMMES } from "../../config/navPages.js";
@@ -7,31 +8,22 @@ import { BRAND } from "../../config/brand.js";
 import { cx } from "../../lib/cx.js";
 
 const inGroup = NAV_PAGES.filter((p) => p.group === PROGRAMMES);
+const ungrouped = NAV_PAGES.filter((p) => !p.group);
 
+/* A dropdown is either `simple` — one vertical list — or `mega`, a wider
+   panel of columns each holding one or more labelled groups. Everything
+   else is a plain link, About Us included: it is a page of its own, not a
+   menu. The `mega` branch in Panel is therefore unused at the moment —
+   kept because it is a few lines and the shape is already proven. */
 const LINKS = [
   {
     label: PROGRAMMES,
     menu: {
-      title: "Our Programmes",
-      items: inGroup.map(({ label, path }) => [label, path]),
-      img: "https://images.unsplash.com/photo-1509099836639-18ba1795216d?q=80&w=800&auto=format&fit=crop",
+      type: "simple",
+      columns: [{ groups: [{ items: inGroup.map(({ label, path }) => [label, path]) }] }],
     },
   },
-  ...NAV_PAGES.filter((p) => !p.group).map(({ label, path }) => ({ label, to: path })),
-  {
-    label: "About Us",
-    menu: {
-      title: "About Us",
-      items: [
-        ["Our Story", "/"],
-        ["Leadership", "/"],
-        ["Financials", "/"],
-        ["Careers", "/"],
-        ["Contact", "/"],
-      ],
-      img: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=800&auto=format&fit=crop",
-    },
-  },
+  ...ungrouped.map(({ label, path }) => ({ label, to: path })),
 ];
 
 /* Shared by <a> and the dropdown <button> so both get the same underline. */
@@ -45,16 +37,129 @@ const NAV_ITEM = cx(
   "max-wide:text-[16px] max-nav:text-[18px]"
 );
 
+/* Panels snap open and shut — `hidden` is display:none, and there is no
+   transition on it. That is Webflow's default dropdown behaviour, and what
+   the reference does. */
+const PANEL = cx(
+  "absolute z-[99] overflow-hidden rounded-[8px] bg-primary-800 shadow-mega",
+  /* in the drawer it stops floating and becomes an inline accordion */
+  "max-nav:static max-nav:w-full max-nav:translate-x-0 max-nav:shadow-none"
+);
+
+const PANEL_LINK = cx(
+  "group/link flex items-center gap-3 px-6 py-3.5 text-[16px] text-white",
+  "transition-colors duration-[400ms] hover:text-accent",
+  "max-nav:px-4 max-nav:py-3"
+);
+
+/* The reveal indicator: 16×4 at rest only once hovered or current. */
+const PILL = "h-1 w-0 flex-none rounded-[10px] bg-accent transition-[width] duration-300";
+
+function PanelLink({ to, label, current, onNavigate }) {
+  return (
+    <Link
+      to={to}
+      onClick={onNavigate}
+      className={cx(PANEL_LINK, current && "is-current text-accent")}
+    >
+      <span
+        className={cx(PILL, current ? "w-4" : "group-hover/link:w-4")}
+        aria-hidden="true"
+      />
+      <span>{label}</span>
+    </Link>
+  );
+}
+
+function Panel({ menu, id, open, pathname, onNavigate }) {
+  const mega = menu.type === "mega";
+
+  return (
+    <div
+      id={id}
+      className={cx(
+        PANEL,
+        open ? "is-open block" : "hidden",
+        mega
+          ? "left-1/2 top-full mt-10 w-[540px] -translate-x-1/2 py-6 max-nav:mt-2 max-nav:py-4"
+          : "left-0 top-full mt-2 w-[260px] py-2 max-nav:mt-2"
+      )}
+    >
+      <div
+        className={cx(
+          mega && "flex flex-row gap-10 px-2 max-phone:flex-col max-phone:gap-6"
+        )}
+      >
+        {menu.columns.map((col) => (
+          <div className="flex flex-1 flex-col" key={col.groups[0].title ?? "col"}>
+            {col.groups.map((g, gi) => (
+              <div className={cx("flex flex-col", gi > 0 && "mt-7")} key={g.title ?? gi}>
+                {g.title && (
+                  <p className="px-6 pb-2 text-[13px] font-bold uppercase tracking-[0.14em] text-white/50 max-nav:px-4">
+                    {g.title}
+                  </p>
+                )}
+                {g.items.map(([label, to]) => (
+                  <PanelLink
+                    key={label}
+                    to={to}
+                    label={label}
+                    current={to !== "/" && to === pathname}
+                    onNavigate={onNavigate}
+                  />
+                ))}
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function Header({ stuck = false, overlay = false, pinned = false }) {
   const [open, setOpen] = useState(false); // mobile drawer
-  const [menu, setMenu] = useState(null); // active mega-menu label
+  const [menu, setMenu] = useState(null); // the one open dropdown, by label
 
   const { pathname } = useLocation();
-  const active = LINKS.find((l) => l.label === menu && l.menu)?.menu;
-  const close = () => {
+  const nav = useRef(null);
+  const triggers = useRef({});
+
+  const close = useCallback(() => {
     setOpen(false);
     setMenu(null);
-  };
+  }, []);
+
+  /* Clicking a trigger toggles it; opening one closes any other, because
+     `menu` only ever holds a single label. */
+  const toggle = (label) => setMenu((m) => (m === label ? null : label));
+
+  /* Click anywhere outside the nav closes whatever is open. mousedown
+     rather than click, so it fires before a link's own handler. */
+  useEffect(() => {
+    if (!menu) return undefined;
+    const onDown = (e) => {
+      if (nav.current && !nav.current.contains(e.target)) setMenu(null);
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [menu]);
+
+  /* Escape closes and hands focus back to the trigger that opened it. */
+  useEffect(() => {
+    if (!menu) return undefined;
+    const onKey = (e) => {
+      if (e.key !== "Escape") return;
+      const back = triggers.current[menu];
+      setMenu(null);
+      back?.focus();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [menu]);
+
+  /* a route change should never leave a panel hanging open */
+  useEffect(() => close(), [pathname, close]);
 
   /* Below the drawer breakpoint the tray is a white panel, so the overlay's
      white-on-photo treatment has to be undone for anything sitting on it. */
@@ -67,6 +172,7 @@ export default function Header({ stuck = false, overlay = false, pinned = false 
 
   return (
     <header
+      ref={nav}
       className={cx(
         "z-[100] border-b",
         "transition-[top,background-color,border-color,box-shadow] duration-300",
@@ -76,12 +182,9 @@ export default function Header({ stuck = false, overlay = false, pinned = false 
         pinned ? "fixed w-full" : "sticky top-0",
         pinned && (overlay ? "top-topbar" : "top-0"),
         overlay ? "border-transparent bg-transparent" : "border-line bg-white",
-        /* the open tray is white and full width, so an overlaid header would
-           lose its reversed logo and burger against it */
         overlay && open && "max-nav:border-line max-nav:bg-white",
         stuck && "shadow-header"
       )}
-      onMouseLeave={() => setMenu(null)}
     >
       <div
         className={cx(
@@ -94,8 +197,6 @@ export default function Header({ stuck = false, overlay = false, pinned = false 
 
         <nav
           className={cx(
-            /* below 1000px this becomes a full-width tray that drops from
-               behind the header — z-99 against the header's 100 */
             "max-nav:fixed max-nav:inset-x-0 max-nav:top-0 max-nav:z-[99] max-nav:w-full",
             "max-nav:max-h-[100svh] max-nav:overflow-y-auto max-nav:bg-white max-nav:shadow",
             "max-nav:px-6 max-nav:pb-[2.4rem] max-nav:pt-[calc(theme(spacing.header)+1.6rem)]",
@@ -111,25 +212,38 @@ export default function Header({ stuck = false, overlay = false, pinned = false 
             )}
           >
             {LINKS.map((l) => {
-              const isActive = l.menu ? menu === l.label : l.to === pathname;
+              const isOpen = menu === l.label;
+              const isActive = l.menu ? isOpen : l.to === pathname;
+              const panelId = `nav-${l.label.replace(/\s+/g, "-").toLowerCase()}`;
+
               return (
-                <li key={l.label} onMouseEnter={() => setMenu(l.menu ? l.label : null)}>
+                <li className="relative max-nav:w-full" key={l.label}>
                   {l.menu ? (
                     <button
                       type="button"
-                      className={cx(NAV_ITEM, navTone, isActive && navToneActive)}
-                      aria-expanded={menu === l.label}
-                      onClick={() => setMenu(menu === l.label ? null : l.label)}
+                      ref={(el) => {
+                        triggers.current[l.label] = el;
+                      }}
+                      className={cx(
+                        NAV_ITEM,
+                        navTone,
+                        isActive && navToneActive,
+                        isOpen && "is-open"
+                      )}
+                      aria-expanded={isOpen}
+                      aria-controls={panelId}
+                      aria-haspopup="true"
+                      onClick={() => toggle(l.label)}
                     >
                       {l.label}
-                      <span
+                      <IconChevronDown
                         className={cx(
-                          "text-[0.6rem] opacity-60 transition-transform duration-[250ms]",
-                          isActive && "rotate-180"
+                          "h-[18px] w-[18px] opacity-70 transition-transform duration-[250ms]",
+                          isOpen && "rotate-180"
                         )}
-                      >
-                        ▾
-                      </span>
+                        stroke={2.4}
+                        aria-hidden="true"
+                      />
                     </button>
                   ) : (
                     <Link
@@ -141,27 +255,14 @@ export default function Header({ stuck = false, overlay = false, pinned = false 
                     </Link>
                   )}
 
-                  {/* the mega panel is hidden in the drawer, so grouped pages
-                      would be unreachable on mobile without this nested list */}
                   {l.menu && (
-                    <ul className="ml-[0.9rem] mt-[0.9rem] hidden flex-col gap-[0.9rem] border-l-2 border-line pb-[0.3rem] pl-[0.9rem] max-nav:flex">
-                      {l.menu.items.map(([label, to]) => (
-                        <li key={label}>
-                          <Link
-                            to={to}
-                            className={cx(
-                              "text-[16px] font-semibold",
-                              to !== "/" && to === pathname
-                                ? "text-primary"
-                                : "text-muted"
-                            )}
-                            onClick={close}
-                          >
-                            {label}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
+                    <Panel
+                      id={panelId}
+                      menu={l.menu}
+                      open={isOpen}
+                      pathname={pathname}
+                      onNavigate={close}
+                    />
                   )}
                 </li>
               );
@@ -194,7 +295,10 @@ export default function Header({ stuck = false, overlay = false, pinned = false 
             className="hidden cursor-pointer flex-col gap-[5px] border-none bg-transparent p-1.5 max-nav:flex"
             aria-label="Menu"
             aria-expanded={open}
-            onClick={() => setOpen((v) => !v)}
+            onClick={() => {
+              setMenu(null);
+              setOpen((v) => !v);
+            }}
           >
             {[0, 1, 2].map((i) => (
               <span
@@ -211,39 +315,6 @@ export default function Header({ stuck = false, overlay = false, pinned = false 
           </button>
         </div>
       </div>
-
-      {active && (
-        <div className="absolute left-0 top-full z-[99] w-full animate-megaIn border-t border-line bg-white shadow-mega max-nav:hidden">
-          <div className="mx-auto grid w-full max-w-container grid-cols-[1fr_1.15fr] items-start gap-16 px-6 pb-[2.8rem] pt-[2.6rem]">
-            <div>
-              {/* a quiet eyebrow above the links, not a title */}
-              <h4 className="mb-[0.4rem] border-b border-line pb-[0.9rem] text-[12px] font-extrabold uppercase tracking-[0.14em] text-muted">
-                {active.title}
-              </h4>
-              {active.items.map(([label, to]) => (
-                <Link
-                  key={label}
-                  to={to}
-                  onClick={close}
-                  className={cx(
-                    "flex items-center gap-[0.7rem] rounded py-[0.72rem] pl-0 pr-[0.6rem]",
-                    "text-[17px] font-bold text-primary",
-                    "transition-[padding-left,background-color] duration-200",
-                    "hover:bg-primary/5 hover:pl-[10px]"
-                  )}
-                >
-                  {label}
-                </Link>
-              ))}
-            </div>
-            {/* matches the height of the links column beside it */}
-            <div
-              className="min-h-[260px] self-stretch rounded-lg bg-cover bg-center shadow-img"
-              style={{ backgroundImage: `url(${active.img})` }}
-            />
-          </div>
-        </div>
-      )}
     </header>
   );
 }

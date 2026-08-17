@@ -61,4 +61,10 @@ export const NAV_PAGES = [
     intro:
       "Conversations with the volunteers, scholars and families behind our programmes.",
   },
+  {
+    label: "About Us",
+    path: "/about-us",
+    intro:
+      "How Iwan started in Bangalore in 2020, who runs it, and what it is trying to be.",
+  },
 ];
