@@ -38,6 +38,10 @@ export const palette = {
   shade: "#04101f",
   shade2: "#06101f",
 
+  /* warm off-whites — the ground under the two About treatments */
+  cream: "#faf8f5",
+  sand: "#f7f5f0",
+
   /* cool off-whites: section ground and the modal's close button */
   mist: "#f7f9fc",
   cloud: "#f1f4f9",
@@ -68,6 +72,11 @@ export const palette = {
   calc1: "#eceff6",
   calc2: "#f5f6f9",
   calc3: "#f4f1e8",
+
+  /* WhatsApp's own green — the floating button is only recognisable in it,
+     so it stays fixed rather than following the theme */
+  whatsapp: "#25d366",
+  whatsappDark: "#1da851",
 
   /* fixed accents (focus areas, donate button) */
   red: "#e11d2a",
@@ -180,6 +189,8 @@ export default {
         line: palette.line,
         shade: palette.shade,
         shade2: palette.shade2,
+        cream: palette.cream,
+        sand: palette.sand,
         mist: palette.mist,
         cloud: palette.cloud,
         grid: palette.grid,
@@ -209,6 +220,7 @@ export default {
             { primary: t.blue, accent: t.yellow },
           ])
         ),
+        whatsapp: { DEFAULT: palette.whatsapp, dark: palette.whatsappDark },
         red: { DEFAULT: palette.red, dark: palette.redDark },
         pink: palette.pink,
         green: palette.green,
@@ -244,6 +256,11 @@ export default {
         mega: `0 26px 44px -26px ${alpha(palette.ink, 0.4)}`,
         img: `0 12px 30px -18px ${alpha(palette.ink, 0.4)}`,
         ecard: `0 18px 34px -26px ${alpha(palette.ink, 0.5)}`,
+        /* testimonial carousel: the centred card, the same card while
+           hovered (tinted with the theme primary), and the nav arrows */
+        tcard: `0 24px 60px -18px ${alpha(palette.ink, 0.28)}`,
+        tcardHot: "0 34px 74px -16px rgb(var(--c-blue) / 0.32)",
+        arrowSoft: `0 2px 10px ${alpha(palette.ink, 0.06)}`,
         fab: `0 14px 30px -10px ${alpha(palette.ink, 0.55)}`,
         tray: `0 26px 54px -20px ${alpha(palette.ink, 0.4)}`,
         swatch: `0 2px 6px -2px ${alpha(palette.ink, 0.3)}`,

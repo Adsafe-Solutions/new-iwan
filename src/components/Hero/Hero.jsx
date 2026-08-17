@@ -1,17 +1,21 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cx } from "../../lib/cx.js";
+import { BRAND } from "../../config/brand.js";
 
+/* ⚠ The three photos are still the inherited stock images and read as
+   relief-charity photography. Swap `img` for real Iwan pictures — no other
+   change needed. */
 const SLIDES = [
   {
-    title: "Be the Light for Someone in Need",
+    title: "Find Your People, Find Your Purpose",
     img: "https://cdn.prod.website-files.com/67d25bbe842c314895ddb151/67d29bce5aabd85a370d1621_home-hero-image-1.jpg",
   },
   {
-    title: "A World Without Poverty Starts Here",
+    title: "Character Is Built in Good Company",
     img: "https://cdn.prod.website-files.com/67d25bbe842c314895ddb151/67d29bcedc5373f69470adc7_home-hero-image-2.jpg",
   },
   {
-    title: "Support Education, Change the World",
+    title: "Come Learn Something With Us",
     img: "https://cdn.prod.website-files.com/67d25bbe842c314895ddb151/67d29bcec24af2e52edad21b_home-hero-image-3.jpg",
   },
 ];
@@ -156,7 +160,7 @@ export default function Hero() {
                 />
               </svg>
             </span>
-            <span>Together, We Create Impact</span>
+            <span>Believe · Act · Serve — Thrive</span>
           </p>
         </div>
 
@@ -180,9 +184,9 @@ export default function Hero() {
               copyAnim("excerpt")
             )}
           >
-            Your kindness has the power to change lives. Join us in bringing hope,
-            support, and brighter futures to those in need. Every donation makes a
-            difference big or small.
+            Iwan is a community hub in Bangalore — classes, workshops, mentoring and
+            volunteering, built around faith, good character and the kind of friendship
+            that outlasts the session. Everyone is welcome.
           </p>
         </div>
 
@@ -190,7 +194,7 @@ export default function Hero() {
           {/* deliberately not <Button> — that base style forces uppercase /
               0.9rem / 700, and the hero CTA is the one soft, large one */}
           <a
-            href="#contact"
+            href={`mailto:${BRAND.email}`}
             className={cx(
               "inline-block rounded-lg bg-white px-10 py-[18px]",
               "font-satoshi text-[20px] font-medium leading-none text-primary-800",
@@ -200,7 +204,7 @@ export default function Hero() {
               copyAnim("cta")
             )}
           >
-            Contact Us
+            Get Involved
           </a>
         </div>
       </div>

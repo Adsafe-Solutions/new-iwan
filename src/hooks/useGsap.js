@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -20,8 +21,16 @@ const reduced =
  *  - [data-stagger] → cascade its .reveal children
  *  - [data-parallax]→ vertical parallax scrub
  *  - [data-count]   → number count-up
+ *
+ * Keyed on the pathname, not just on mount. Two routes that render the SAME
+ * component — the four programme pages all render `Programme` — are
+ * reconciled by React rather than remounted, so a mount-only effect never
+ * re-runs and every element the new route added is left stranded at
+ * `opacity: 0`. Re-running on pathname reverts the old context and rescans.
  */
 export function useScrollAnimations() {
+  const { pathname } = useLocation();
+
   useEffect(() => {
     if (reduced) {
       document.querySelectorAll(".reveal").forEach((el) => el.classList.add("in"));
@@ -35,6 +44,19 @@ export function useScrollAnimations() {
       });
       document.querySelectorAll("[data-count]").forEach((el) => {
         el.textContent = fmt(+el.dataset.count) + (el.dataset.suffix || "");
+      });
+      document.querySelectorAll("[data-journey-fill]").forEach((el) => {
+        el.style.transform = "scale(1)";
+      });
+      document.querySelectorAll("[data-journey-line]").forEach((el) => {
+        el.style.transform = "scaleX(1)";
+      });
+      document.querySelectorAll("[data-journey-num]").forEach((el) => {
+        el.style.color = cssColor("--c-white");
+      });
+      document.querySelectorAll("[data-journey-copy]").forEach((el) => {
+        el.style.filter = "none";
+        el.style.opacity = "1";
       });
       return;
     }
@@ -136,6 +158,56 @@ export function useScrollAnimations() {
           );
       }
 
+      /* Journey — marker fills, then its rule draws across to the next
+         marker, and so on. Scrubbed to scroll, and the section pins for the
+         length of the sequence so it completes before the page moves on.
+
+         Pinning only above the drawer breakpoint: below it the row is a
+         stack with no connectors, and holding the viewport there would just
+         feel stuck. Crossing that breakpoint on resize needs a refresh,
+         which the ScrollTrigger.refresh() below covers on load. */
+      const journey = document.querySelector("[data-journey]");
+      if (journey) {
+        const fills = journey.querySelectorAll("[data-journey-fill]");
+        const lines = journey.querySelectorAll("[data-journey-line]");
+        const nums = journey.querySelectorAll("[data-journey-num]");
+        const copy = journey.querySelectorAll("[data-journey-copy]");
+        const wide = window.matchMedia("(min-width: 1000px)").matches;
+        const white = cssColor("--c-white");
+
+        if (fills.length) {
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: journey,
+              start: wide ? "center center" : "top 70%",
+              end: wide ? `+=${fills.length * 240}` : "bottom 55%",
+              pin: wide,
+              scrub: 0.7,
+              anticipatePin: 1,
+              /* Pinning inserts a spacer, which pushes every section below
+                 it further down the page. ScrollTriggers refresh in creation
+                 order, so the wipes further down — created earlier in this
+                 file — would measure their start/end against a layout with
+                 no spacer in it and fire hundreds of pixels early. A higher
+                 refreshPriority makes this one recalculate first, so the
+                 rest measure the real, post-pin positions. */
+              refreshPriority: 1,
+            },
+          });
+
+          fills.forEach((fill, i) => {
+            tl.to(fill, { scale: 1, ease: "power2.out", duration: 0.45 });
+            tl.to(nums[i], { color: white, ease: "none", duration: 0.2 }, "<0.15");
+            tl.to(
+              copy[i],
+              { filter: "blur(0px)", opacity: 1, ease: "power1.out", duration: 0.5 },
+              "<"
+            );
+            if (lines[i]) tl.to(lines[i], { scaleX: 1, ease: "none", duration: 0.9 });
+          });
+        }
+      }
+
       // parallax
       gsap.utils.toArray("[data-parallax]").forEach((el) => {
         gsap.to(el, {
@@ -171,7 +243,7 @@ export function useScrollAnimations() {
       clearTimeout(t);
       ctx.revert();
     };
-  }, []);
+  }, [pathname]);
 }
 
 function fmt(n) {

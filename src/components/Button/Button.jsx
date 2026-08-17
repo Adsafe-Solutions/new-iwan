@@ -3,7 +3,7 @@ import { cx } from "../../lib/cx.js";
 
 /* One button for the whole site. The element is chosen by what you pass:
      <Button variant="blue" onClick={…}>      → <button type="button">
-     <Button variant="yellow" href="#donate"> → <a>
+     <Button variant="yellow" href="#programmes"> → <a>
      <Button variant="outline" to="/zakat">   → react-router <Link>
 
    `variant` picks a colour set: blue | red | yellow | ghost | outline.

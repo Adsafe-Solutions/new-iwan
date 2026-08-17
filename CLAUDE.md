@@ -1,14 +1,21 @@
 # Iwan — project guide
 
-Marketing site for **Iwan** (`iwan.community`), a Muslim community organisation.
-Not a relief charity: copy should speak to members about belonging and
-programmes, not to donors about beneficiaries.
+Marketing site for **Iwan** (`iwan.community`), a Muslim community
+organisation founded in **Bangalore in 2020**, out of pandemic relief work
+with Mercy Mission. It runs classes, workshops, mentoring and volunteering —
+Taekwondo, gardening, first aid, Web 3.0, entrepreneurship.
+
+**It is not a relief charity, and it is not Canadian.** Copy speaks to members
+about belonging and programmes, never to donors about beneficiaries. The build
+was inherited from a charity template, so anything that reads like a donor
+appeal is almost certainly leftover and wrong — check it against the live site
+(iwan.community) before keeping it.
 
 ## Stack
 
 Vite 5 + React 18, **plain JS/JSX — no TypeScript**. `react-router-dom` v6,
-**Tailwind CSS 3.4** for all styling, GSAP for scroll animation. No component
-library, no test runner.
+**Tailwind CSS 3.4** for all styling, GSAP for scroll animation,
+`@tabler/icons-react` for iconography. No component library, no test runner.
 
 ```
 npm run dev      # vite dev server, port 5173
@@ -43,22 +50,65 @@ tailwind.config.js     EVERY colour in the project (see Colour below)
 A class set used more than once inside a file is hoisted to a `const` at the top
 of that file (`NAV_ITEM`, `CARD`, `PILL_Y`, …) rather than repeated inline.
 
-Components: Brand, Button, Charity, Difference, EventModal, Events, Footer,
-Header, Hero, Modal, News, ScrollToTop, TakeAction, ThemeSwitcher, Topbar,
-Typewriter.
+Components: About, AboutSplit, AboutStrip, Brand, Button, Contact,
+Difference, EventModal, Events, Footer, Header, Hero, Icon, Instagram,
+Journey, Modal, News, PageHero, Pillars, ScrollToTop, SplitFeature,
+StepsFeature, TakeAction, Testimonials, ThemeSwitcher, Topbar, Typewriter,
+WhatsAppFab, WipeBand.
+
+Homepage order (`pages/Home/Home.jsx`): Hero → About → Pillars → TakeAction
+→ Events → Testimonials → Instagram.
+
+`WhatsAppFab` and `ThemeSwitcher` are rendered by `App.jsx`, so they sit on
+every page — bottom-right and bottom-left respectively, deliberately opposite
+corners so they never collide.
+
+**`News`, `Difference` and `Contact` are deliberately not on the homepage.**
+`News` was invented press copy about worldwide offices Iwan does not have;
+`Difference` was a donor appeal ladder ("sponsor an orphan from $75 a
+month"); `Contact` was the closing get-in-touch band. All three are still in
+the tree and go back with one import each — but `News` only with real
+content. `Difference` also owns the only remaining use of `focusAreas.js`
+outside `/zakat`.
+
+Two consequences of `Contact` being parked: it owned `id="contact"`, so the
+header and hero CTAs point at `mailto:BRAND.email` instead — **there is no
+in-page contact anchor, so do not reintroduce `href="#contact"`**. It was
+also the only place `BRAND.socials` was rendered, so Iwan's four accounts
+currently appear nowhere on the site.
 
 ## Config — change content here, not in components
 
-| file                 | holds                                                                                                                                                                        |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `config/brand.js`    | name, fullName, logos, tagline, email. Everything naming the org reads from this.                                                                                            |
-| `config/sections.js` | boolean feature switches. `topbar: false` currently hides the "Emergency Monitor" strip.                                                                                     |
-| `config/navPages.js` | nav entries + their routes + stub-page copy. `group: PROGRAMMES` folds an entry into the Programmes dropdown. Header and App both read this so links and routes can't drift. |
-| `config/events.js`   | events for the homepage Events section.                                                                                                                                      |
+| file                     | holds                                                                                                                                                                                                                                                                             |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `config/brand.js`        | name, fullName, logos, tagline, email. Everything naming the org reads from this.                                                                                                                                                                                                 |
+| `config/sections.js`     | feature switches. `topbar: false` hides the "Emergency Monitor" strip; `programmeAbout: "v1" \| "v2"` picks which about treatment the programme pages use.                                                                                                                        |
+| `config/navPages.js`     | nav entries + their routes + stub-page copy. `group: PROGRAMMES` folds an entry into the Programmes dropdown and adds `tone` + `tile` (colour + photo) for the programmes grid on the homepage. Header, App and TakeAction all read this, so links, routes and tiles can't drift. |
+| `config/events.js`       | events for the homepage Events section.                                                                                                                                                                                                                                           |
+| `config/pillars.js`      | Believe · Act · Serve · Consult, each with its Arabic and the vision pillar it carries. Folds the brand deck's two four-part lists into one, so the page doesn't run the same beats twice.                                                                                        |
+| `config/stats.js`        | the "Iwan by the numbers" counters.                                                                                                                                                                                                                                               |
+| `config/testimonials.js` | ⚠ **real quotes from real, named members.** Rewrite the marketing copy freely; never these.                                                                                                                                                                                       |
 
-Routes: `/` and `/zakat` are real pages; everything in `navPages.js`
-(`/iwan-youth`, `/iwan-kids`, `/iwan-women`, `/iwan-men`, `/blogs`, `/events`,
-`/podcast`) renders the shared `Placeholder` stub.
+`/zakat` is a full donation funnel inherited from the charity template. It is
+routed but linked from nowhere, and is slated for deletion — do not wire it
+back into the nav.
+
+Routes: `/` and `/zakat` are real pages. A `navPages.js` entry with a matching
+key in `config/programmes.js` renders the shared `Programme` template — that is
+all four programmes today; everything else (`/blogs`, `/events`, `/podcast`)
+still renders the `Placeholder` stub. App picks between them, so adding a
+programmes.js entry is the only step needed to promote a stub to a full page.
+
+**`Programme` is one template for every programme**, coloured by the slug. Each
+section renders only if `programmes.js` supplies content, so a thin entry gives
+a shorter honest page rather than empty scaffolding — Kids, Women and Men have
+no `sessions`, so that whole block is absent for them. Do not invent sessions
+to fill it; a listing of things that never happened is the mistake that got
+`News` pulled. `impact` (the fourth "at a glance" tile) is a factual claim, so
+it likewise only appears where there is a source.
+
+Because the slug drives colour, `Programme.jsx` holds a literal `SKIN` map —
+`text-${tone}` would never be generated by Tailwind's text scan.
 
 ## Shared components
 
@@ -67,6 +117,28 @@ Routes: `/` and `/zakat` are real pages; everything in `navPages.js`
   `<a>`, otherwise `<button type={type}>`. `className` is appended last so a
   caller can resize or recolour it. Border **colour** lives on each variant, not
   in the shared base — see the Tailwind ordering gotcha below.
+- **`WipeBand`** — a section whose background colour sweeps in from one edge
+  on scroll (the `[data-wipe]` / `[data-wipe-scene]` pair `useGsap` scrubs),
+  with the container floating above it. `from` is the edge the colour anchors
+  to, so `right` sweeps leftwards.
+- **`SplitFeature`** / **`StepsFeature`** — the two banded cards the Zakat page
+  introduced, now shared with the programme pages: a dark copy-and-photo card,
+  and a white card with a stack of labelled `[label, text]` steps. Both wrap
+  `WipeBand`; both take the CTA as children so the caller picks the Button
+  variant. Changing either changes Zakat _and_ all four programme pages —
+  a refactor that produced pixel-identical Zakat output, so keep it that way.
+- **`AboutStrip`** (v1) / **`AboutSplit`** (v2) — two interchangeable "about"
+  treatments driven off the same `programmes.js` entry. v1 is a badged lede
+  plus a row of ringed icons; v2 is an editorial two-column spread — ruled
+  eyebrow, oversized heading with one word in italic accent, stat and photo
+  left, numbered rows right. **`SECTIONS.programmeAbout` picks between them**
+  and changes every programme page at once. `about.accent` and `about.stat`
+  are read only by v2; v1 ignores them, so either renders from one entry.
+- **`Icon`** — the shared glyph set, wrapping `@tabler/icons-react`. Import
+  Tabler icons **by name** — a namespace import pulls in several thousand
+  components and defeats tree-shaking. Config files refer to icons by the
+  short names in the `ICONS` map, so swapping the underlying set again is a
+  change to that one file.
 - **`Modal`** — generic dialog shell: backdrop, panel, close button, Escape,
   body scroll lock, initial focus. Wrap feature content in it. It takes
   `panelClassName` and `closeClassName` so a feature can restyle the shell —
@@ -78,7 +150,9 @@ Routes: `/` and `/zakat` are real pages; everything in `navPages.js`
 
 - `palette` — fixed colours, including the four programme colours
   (`women` `#ee5f9e`, `kids` `#3694db`, `men` `#234967`, `youth` `#3994b3`,
-  available as `bg-women`, `text-youth`, … and currently defined but unused).
+  available as `bg-women`, `text-youth`, …). Each programme's own colour is
+  named on its entry in `navPages.js` as `tone`, so the programmes grid and the nav
+  can't disagree about it.
 - `themes` — the four brand themes. A plugin at the bottom of the config emits
   `:root` and `:root[data-theme="…"]` blocks holding the RGB channels
   (`--c-blue`, `--c-yellow`, …). Themeable Tailwind colours are declared as
@@ -97,8 +171,67 @@ JS that needs a real colour string reads it back out of the variables — see
 references `bg-theme-<id>-primary/accent` utilities, since a theme can only be
 previewed with literal colour. **Adding a theme means editing both files.**
 
+## Maps
+
+`lib/map.js` builds the embed and directions URLs for the event modal, in
+order of preference:
+
+1. `coords: [lat, lng]` on the event → **OpenStreetMap**'s official embed.
+   Keyless, no tracking, pins the exact spot. Use this once a venue's real
+   position is known.
+2. an address string → **Google's `output=embed`** query, which is the only
+   keyless way to map a place from text (the OSM embed wants a bounding box,
+   not a search term). It needs no key but is **not** part of Google's
+   documented Embed API — for something that must not break, add `coords` and
+   let route 1 handle it, or move to the official Embed API with a key.
+
+Venue names in `events.js` are placeholders ("Iwan Hall, 14 Main Street"), so
+searching them would pin somewhere arbitrary. Anything without its own
+`coords` or `mapQuery` therefore falls back to `BRAND.address` — which is why
+that value living in one place matters.
+
+## Instagram feed
+
+Real posts are pulled by `.github/workflows/instagram.yml` (daily) via
+`scripts/fetch-instagram.mjs`, which writes `src/config/instagram-feed.json`
+and commits it. **The site never calls Instagram** — no token in the bundle,
+no runtime dependency, and an Instagram outage cannot take the section down.
+Until the secrets exist the wall falls back to placeholder stock images.
+
+To turn it on:
+
+1. Switch the Instagram account to **Professional** (Business or Creator).
+2. Create an app on Meta for Developers and authorise it against the account.
+3. Add repo secrets `IG_USER_ID` and `IG_ACCESS_TOKEN` (a long-lived token).
+4. Run the workflow by hand once (`workflow_dispatch`) to seed the file.
+
+The Basic Display API most guides still describe was **shut down in December
+2024** — this uses the Graph API. Long-lived tokens last ~60 days; the
+`rotate-token` job refreshes and rewrites the secret automatically, but only
+if an optional `GH_PAT` secret with secrets write access exists. Without it
+the job warns and the token must be rotated by hand.
+
+**Captions are not alt text.** Feed images render `alt=""` and the link
+carries the accessible name; only the hand-written placeholders have real alt.
+
 ## Gotchas that have already bitten
 
+- **`[data-count]` counters must render empty.** `useGsap` writes the number
+  in; seeding the element with the final value makes it visibly snap back to
+  zero when the ScrollTrigger fires. See `About.jsx`.
+- **The Journey timeline pins the viewport, and carries `refreshPriority: 1`
+  because of it.** `[data-journey]` scrubs a fill → draw → fill sequence and
+  pins its section until it finishes. Pinning inserts a spacer that pushes
+  everything below further down the page; ScrollTriggers refresh in creation
+  order, so the wipes further up this file measured a layout with no spacer
+  and fired ~1500px early. The higher priority makes the pin refresh first.
+  **Any new pinned trigger needs the same.** It only pins at `nav` and up —
+  the stacked layout has no connectors, so holding there would feel stuck.
+- **`useScrollAnimations` is keyed on the pathname, not just on mount.** Two
+  routes rendering the SAME component — all four programme pages render
+  `Programme` — are reconciled by React rather than remounted, so a
+  mount-only effect never re-runs and everything the new route added is
+  stranded at `opacity: 0` until a hard refresh. Do not drop that dependency.
 - **`.reveal` only works on markup present at mount.** `useGsap` scans the DOM
   once, so anything rendered later (a filtered list, a modal) stays at
   `opacity: 0` forever. Give dynamic content its own keyframe animation instead
@@ -118,6 +251,11 @@ previewed with literal colour. **Adding a theme means editing both files.**
   breakpoint is the `nav` screen (**1000px**), not 780 — the nav runs out of
   room just under 1000. Custom screens: `nav` 1000 · `wide` 1240 · `phone` 780 ·
   `xs` 560, used almost entirely as `max-*` variants.
+- **`body` uses `overflow-x: clip`, not `hidden`.** `hidden` makes the body a
+  scroll container, which silently breaks `position: sticky` for every
+  descendant — the AboutSplit column and the Events calendar both rely on it,
+  and both were broken by it. `clip` cuts off the same overflow without
+  creating a scroll container. Do not change it back.
 - **`html { scroll-behavior: smooth }` is global**, so any hand-animated
   `scrollTo` must disable it for the duration (see `glideTo` in `Events.jsx`).
 - Global `@media (prefers-reduced-motion)` kills all animation. Never put the

@@ -6,10 +6,13 @@ import Footer from "./components/Footer/Footer.jsx";
 import Home from "./pages/Home/Home.jsx";
 import Zakat from "./pages/Zakat/Zakat.jsx";
 import Placeholder from "./pages/Placeholder/Placeholder.jsx";
+import Programme from "./pages/Programme/Programme.jsx";
 import { NAV_PAGES } from "./config/navPages.js";
+import { PROGRAMMES_CONTENT } from "./config/programmes.js";
 import { SECTIONS } from "./config/sections.js";
 import ScrollToTop from "./components/ScrollToTop/ScrollToTop.jsx";
 import ThemeSwitcher from "./components/ThemeSwitcher/ThemeSwitcher.jsx";
+import WhatsAppFab from "./components/WhatsAppFab/WhatsAppFab.jsx";
 
 function Shell() {
   const [stuck, setStuck] = useState(false);
@@ -44,16 +47,25 @@ function Shell() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/zakat" element={<Zakat />} />
-        {NAV_PAGES.map(({ label, path, intro }) => (
+        {/* a nav page with an entry in programmes.js gets the full
+            programme template; everything else stays a stub */}
+        {NAV_PAGES.map((page) => (
           <Route
-            key={path}
-            path={path}
-            element={<Placeholder title={label} intro={intro} />}
+            key={page.path}
+            path={page.path}
+            element={
+              PROGRAMMES_CONTENT[page.path.replace("/", "")] ? (
+                <Programme page={page} />
+              ) : (
+                <Placeholder title={page.label} intro={page.intro} />
+              )
+            }
           />
         ))}
       </Routes>
       <Footer />
       <ThemeSwitcher />
+      <WhatsAppFab />
     </>
   );
 }

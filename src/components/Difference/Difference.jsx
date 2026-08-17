@@ -42,7 +42,7 @@ export default function Difference() {
               )}
               key={a.id}
               id={a.id}
-              href="#donate"
+              href="#programmes"
             >
               <div className="relative h-[210px] overflow-hidden after:absolute after:inset-0 after:bg-card-scrim after:content-['']">
                 {/* category badge */}

@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import Brand from "../Brand/Brand.jsx";
 import Button from "../Button/Button.jsx";
 import { NAV_PAGES, PROGRAMMES } from "../../config/navPages.js";
+import { BRAND } from "../../config/brand.js";
 import { cx } from "../../lib/cx.js";
 
 const inGroup = NAV_PAGES.filter((p) => p.group === PROGRAMMES);
@@ -172,7 +173,7 @@ export default function Header({ stuck = false, overlay = false, pinned = false 
             that is supposed to close it */}
         <div className="relative z-[100] flex flex-none items-center gap-[0.9rem]">
           <Button
-            href="#contact"
+            href={`mailto:${BRAND.email}`}
             className={cx(
               "px-[1.35rem] py-[0.7rem] text-[13px] leading-[18px]",
               /* `!` because Tailwind orders utilities by property, not by the

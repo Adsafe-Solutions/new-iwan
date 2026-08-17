@@ -1,7 +1,9 @@
 import { useState } from "react";
 import Modal from "../Modal/Modal.jsx";
 import Button from "../Button/Button.jsx";
+import { IconArrowUpRight } from "@tabler/icons-react";
 import { cx } from "../../lib/cx.js";
+import { mapEmbed, mapLink } from "../../lib/map.js";
 
 const FULLDOW = [
   "Sunday",
@@ -48,6 +50,8 @@ const FIELD_LABEL =
 
 export default function EventModal({ event, onClose }) {
   const [stage, setStage] = useState("cta"); // cta → form → done
+  const embed = mapEmbed(event);
+  const link = mapLink(event);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
 
@@ -91,16 +95,43 @@ export default function EventModal({ event, onClose }) {
 
           <div className="flex flex-[1_1_240px] flex-col">
             <span className={LABEL}>Where</span>
-            <div
-              className="relative mb-[0.8rem] h-[132px] overflow-hidden rounded border border-line bg-cloud bg-map-grid [background-size:34px_34px]"
-              aria-hidden="true"
-            >
-              <i className="absolute inset-x-0 top-[46%] h-[10px] bg-grid" />
-              <i className="absolute bottom-0 left-[62%] top-0 w-2 bg-grid" />
-              <i className="absolute left-1/2 top-[44%] h-[18px] w-[18px] -translate-x-1/2 -translate-y-full -rotate-45 rounded-[999px_999px_999px_2px] bg-primary" />
-            </div>
+
+            {embed ? (
+              /* lazy so the modal opens instantly and the tiles only load
+                 once someone actually looks at the map */
+              <iframe
+                src={embed}
+                title={`Map showing ${event.venue}`}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="mb-[0.8rem] h-[180px] w-full rounded border border-line"
+              />
+            ) : (
+              /* no coordinates and no address — a suggestion of a street map
+                 rather than a real one */
+              <div
+                className="relative mb-[0.8rem] h-[132px] overflow-hidden rounded border border-line bg-cloud bg-map-grid [background-size:34px_34px]"
+                aria-hidden="true"
+              >
+                <i className="absolute inset-x-0 top-[46%] h-[10px] bg-grid" />
+                <i className="absolute bottom-0 left-[62%] top-0 w-2 bg-grid" />
+                <i className="absolute left-1/2 top-[44%] h-[18px] w-[18px] -translate-x-1/2 -translate-y-full -rotate-45 rounded-[999px_999px_999px_2px] bg-primary" />
+              </div>
+            )}
+
             <strong className="text-[15px] font-bold">{event.venue}</strong>
             <span className="text-[14px] leading-[21px] text-muted">{event.address}</span>
+            {link && (
+              <a
+                href={link}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="mt-2 inline-flex w-fit items-center gap-1 text-[14px] font-bold text-primary underline"
+              >
+                Get directions
+                <IconArrowUpRight className="h-4 w-4" stroke={2} aria-hidden="true" />
+              </a>
+            )}
           </div>
         </div>
 

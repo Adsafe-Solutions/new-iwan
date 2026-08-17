@@ -25,8 +25,12 @@
     scroll-behavior: auto;
   }
 
+  /* `clip`, NOT `hidden`. overflow-x:hidden makes body a scroll container,
+     which silently breaks `position: sticky` for every descendant — the
+     About column and the Events calendar both depend on it. `clip` cuts off
+     the same overflow without creating a scroll container. */
   body {
-    @apply overflow-x-hidden bg-white font-sans leading-[1.55] text-ink antialiased;
+    @apply overflow-x-clip bg-white font-sans leading-[1.55] text-ink antialiased;
   }
 }
 

@@ -1,0 +1,75 @@
+name: Refresh Instagram feed
+
+# Pulls the latest posts into src/config/instagram-feed.json and commits the
+# result, so the site stays fully static and never calls Instagram at runtime.
+#
+# Repository secrets required (Settings → Secrets and variables → Actions):
+#   IG_USER_ID       the Instagram professional account id
+#   IG_ACCESS_TOKEN  a long-lived token — see the rotation job below
+#
+# Optional secret:
+#   GH_PAT           a fine-grained PAT with "Secrets: read and write" on this
+#                    repo. Without it the token cannot be rotated automatically
+#                    and will expire after ~60 days; the rotate job then just
+#                    warns instead.
+
+on:
+  schedule:
+    - cron: "17 4 * * *" # daily, off the hour to dodge peak scheduling
+  workflow_dispatch: # so it can be run by hand after setting the secrets
+
+permissions:
+  contents: write
+
+jobs:
+  feed:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Fetch latest posts
+        env:
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+        run: node scripts/fetch-instagram.mjs
+
+      - name: Commit if the feed changed
+        run: |
+          if git diff --quiet -- src/config/instagram-feed.json; then
+            echo "Feed unchanged — nothing to commit."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/config/instagram-feed.json
+          git commit -m "chore: refresh Instagram feed"
+          git push
+
+  rotate-token:
+    # Long-lived tokens last ~60 days. Refreshing returns a NEW token that has
+    # to be stored, so this runs weekly and writes it back as a secret.
+    needs: feed
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Refresh the long-lived token
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::warning::GH_PAT is not set, so IG_ACCESS_TOKEN cannot be rotated automatically. It will expire ~60 days after it was issued — rotate it by hand before then."
+            exit 0
+          fi
+          NEW=$(curl -sS -G "https://graph.instagram.com/refresh_access_token" \
+            --data-urlencode "grant_type=ig_refresh_token" \
+            --data-urlencode "access_token=$IG_ACCESS_TOKEN" \
+            | node -e "let d='';process.stdin.on('data',c=>d+=c).on('end',()=>{const j=JSON.parse(d);if(!j.access_token){console.error(d);process.exit(1)}process.stdout.write(j.access_token)})")
+          # mask before it can reach a log line
+          echo "::add-mask::$NEW"
+          gh secret set IG_ACCESS_TOKEN --body "$NEW" --repo "${{ github.repository }}"
+          echo "Token rotated."

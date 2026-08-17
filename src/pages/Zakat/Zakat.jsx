@@ -3,6 +3,9 @@ import { useScrollAnimations } from "../../hooks/useGsap.js";
 import Typewriter from "../../components/Typewriter/Typewriter.jsx";
 import { FOCUS_AREAS } from "../../focusAreas.js";
 import Button from "../../components/Button/Button.jsx";
+import PageHero from "../../components/PageHero/PageHero.jsx";
+import SplitFeature from "../../components/SplitFeature/SplitFeature.jsx";
+import StepsFeature from "../../components/StepsFeature/StepsFeature.jsx";
 import { ADVISORS } from "../../advisors.js";
 import { cx } from "../../lib/cx.js";
 import { KICKER, MARK_B, MARK_YB } from "../../lib/type.js";
@@ -104,86 +107,75 @@ export default function Zakat() {
   return (
     <main className="overflow-x-hidden">
       {/* ===== HERO ===== */}
-      <section className="relative flex h-[66vh] min-h-[560px] items-center overflow-hidden bg-shade">
-        <div
-          className="absolute inset-0 bg-cover bg-center after:absolute after:inset-0 after:bg-zhero-scrim after:content-['']"
-          style={{
-            backgroundImage:
-              "url('https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=1920&auto=format&fit=crop')",
-          }}
-        />
-        <div className={cx(CONTAINER, "relative z-[2]")}>
-          <div className="w-[480px] max-w-full rounded-[3px] bg-white px-8 py-10 shadow-card max-xs:px-[22px] max-xs:py-7">
-            <div className="mb-[1.2rem] flex flex-wrap gap-2">
-              <span className={PILL_Y}>⚠ Give Now</span>
-              <span className={PILL_G}>◈ Zakat Eligible</span>
-            </div>
-            <h1 className="mb-[0.7rem] mt-[0.4rem] text-[30px] font-bold leading-[37.5px] tracking-[-0.6px] text-slate">
-              Give Your Zakat
-            </h1>
-            <p className="mb-[0.8rem] text-[16px] leading-[26px] text-muted">
-              Fulfil your spiritual obligation with confidence. Every contribution is
-              administered with unwavering integrity.
+      <PageHero
+        img="https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=1920&auto=format&fit=crop"
+        title="Give Your Zakat"
+        eyebrow={
+          <div className="mb-[1.2rem] flex flex-wrap gap-2">
+            <span className={PILL_Y}>⚠ Give Now</span>
+            <span className={PILL_G}>◈ Zakat Eligible</span>
+          </div>
+        }
+        /* the badge block retires on narrow screens rather than
+           overlapping the card */
+        aside={
+          <div className="absolute bottom-[26px] right-6 z-[2] flex flex-col items-start pb-[66px] text-left text-white max-nav:hidden">
+            <span className="inline-block bg-primary px-[0.2em] py-[0.05em] text-[112px] font-black leading-none tracking-[-0.02em] text-white">
+              ZAKAT
+            </span>
+            <span className="mt-[0.2rem] inline-block text-[49px] font-black leading-[53.9px] tracking-[-0.98px]">
+              AN <span className={MARK_YB}>OBLIGATION</span>
+            </span>
+            {/* absolutely anchored to the block's right edge so it stays visible
+            and the text grows right → left as it types, without shifting
+            ZAKAT / OBLIGATION */}
+            <p className="absolute bottom-0 right-0 m-0 whitespace-nowrap text-right text-[48px] font-bold leading-[1.1] text-white">
+              <Typewriter
+                phrases={[
+                  "Helps alleviate poverty",
+                  "Keeps a child in school",
+                  "Shelters the homeless",
+                  "Feeds the hungry",
+                  "Purifies your wealth",
+                ]}
+                cursorClass="ml-[3px] inline-block h-[0.95em] w-[3px] animate-blink bg-white align-[-1px]"
+              />
             </p>
-            <p className="mb-[0.8rem] text-[16px] font-semibold leading-[26px] text-ink-2">
-              Scholar verified — your Zakat is distributed in strict Sharia compliance.
-            </p>
-            <Button href="#zcalc" className="my-2 w-full p-4 text-[16px]">
-              Give Zakat →
-            </Button>
-            <Button
-              href="#zcalc"
-              variant="outline"
-              /* `!` beats the variant's own border colour, which Tailwind
-                 emits after this one regardless of attribute order */
-              className="w-full !border-line px-4 py-[0.85rem] text-[14px] normal-case hover:!border-primary"
-            >
-              Calculate My Zakat
-            </Button>
+          </div>
+        }
+      >
+        <p className="mb-[0.8rem] text-[16px] leading-[26px] text-muted">
+          Fulfil your spiritual obligation with confidence. Every contribution is
+          administered with unwavering integrity.
+        </p>
+        <p className="mb-[0.8rem] text-[16px] font-semibold leading-[26px] text-ink-2">
+          Scholar verified — your Zakat is distributed in strict Sharia compliance.
+        </p>
+        <Button href="#zcalc" className="my-2 w-full p-4 text-[16px]">
+          Give Zakat →
+        </Button>
+        <Button
+          href="#zcalc"
+          variant="outline"
+          /* `!` beats the variant's own border colour, which Tailwind
+             emits after this one regardless of attribute order */
+          className="w-full !border-line px-4 py-[0.85rem] text-[14px] normal-case hover:!border-primary"
+        >
+          Calculate My Zakat
+        </Button>
 
-            <div className="mt-[1.1rem]">
-              <div className="mb-[0.4rem] flex items-baseline justify-between">
-                <span className="text-[14px] font-bold leading-5 text-ink-2">
-                  $913,847 raised
-                </span>
-                <span className="text-[12px] font-normal text-muted">30%</span>
-              </div>
-              <div className="h-2 overflow-hidden rounded-full bg-line">
-                <div
-                  className="h-full rounded-full bg-primary"
-                  style={{ width: "30%" }}
-                />
-              </div>
-            </div>
+        <div className="mt-[1.1rem]">
+          <div className="mb-[0.4rem] flex items-baseline justify-between">
+            <span className="text-[14px] font-bold leading-5 text-ink-2">
+              $913,847 raised
+            </span>
+            <span className="text-[12px] font-normal text-muted">30%</span>
+          </div>
+          <div className="h-2 overflow-hidden rounded-full bg-line">
+            <div className="h-full rounded-full bg-primary" style={{ width: "30%" }} />
           </div>
         </div>
-
-        {/* the badge block retires on narrow screens rather than overlapping
-            the card */}
-        <div className="absolute bottom-[26px] right-6 z-[2] flex flex-col items-start pb-[66px] text-left text-white max-nav:hidden">
-          <span className="inline-block bg-primary px-[0.2em] py-[0.05em] text-[112px] font-black leading-none tracking-[-0.02em] text-white">
-            ZAKAT
-          </span>
-          <span className="mt-[0.2rem] inline-block text-[49px] font-black leading-[53.9px] tracking-[-0.98px]">
-            AN <span className={MARK_YB}>OBLIGATION</span>
-          </span>
-          {/* absolutely anchored to the block's right edge so it stays visible
-              and the text grows right → left as it types, without shifting
-              ZAKAT / OBLIGATION */}
-          <p className="absolute bottom-0 right-0 m-0 whitespace-nowrap text-right text-[48px] font-bold leading-[1.1] text-white">
-            <Typewriter
-              phrases={[
-                "Helps alleviate poverty",
-                "Keeps a child in school",
-                "Shelters the homeless",
-                "Feeds the hungry",
-                "Purifies your wealth",
-              ]}
-              cursorClass="ml-[3px] inline-block h-[0.95em] w-[3px] animate-blink bg-white align-[-1px]"
-            />
-          </p>
-        </div>
-      </section>
+      </PageHero>
 
       {/* ===== INTRO + PATHWAY ===== */}
       <section className="py-[4.5rem]">
@@ -360,81 +352,30 @@ export default function Zakat() {
       </section>
 
       {/* ===== ACT OF MERCY ===== */}
-      <section className="relative overflow-hidden pb-[4.5rem] pt-12" data-wipe-scene>
-        <div
-          className="absolute inset-0 z-0 origin-[right_center] scale-x-0 bg-primary will-change-transform"
-          data-wipe
-        />
-        <div className={cx(CONTAINER, "relative z-[1]")}>
-          <div className="reveal relative grid min-h-[340px] grid-cols-2 overflow-hidden rounded-lg bg-night max-nav:grid-cols-1">
-            <div className="relative z-[1] flex flex-col justify-center px-[3.75rem] py-14 text-white">
-              <h2 className="mb-4 text-[clamp(2rem,4vw,42.95px)] font-black uppercase leading-[1.08] tracking-[-0.01em]">
-                Every Zakat is
-                <br />
-                an act of mercy.
-              </h2>
-              <p className="mb-[1.4rem] max-w-[420px] text-[16.8px] font-normal leading-[27.3px] text-mercy">
-                Your generosity feeds the hungry, heals the sick and brings dignity to
-                families in need — wherever borders have put them out of reach.
-              </p>
-              <div>
-                <Button href="#zcalc" variant="yellow">
-                  Give Zakat Now →
-                </Button>
-              </div>
-            </div>
-            <div
-              className="relative z-[1] bg-cover bg-center max-nav:min-h-[240px]"
-              style={{
-                backgroundImage:
-                  "url('https://images.unsplash.com/photo-1509099836639-18ba1795216d?q=80&w=900&auto=format&fit=crop')",
-              }}
-            />
-          </div>
-        </div>
-      </section>
+      <SplitFeature
+        heading={
+          <>
+            Every Zakat is
+            <br />
+            an act of mercy.
+          </>
+        }
+        body="Your generosity feeds the hungry, heals the sick and brings dignity to families in need — wherever borders have put them out of reach."
+        img="https://images.unsplash.com/photo-1509099836639-18ba1795216d?q=80&w=900&auto=format&fit=crop"
+      >
+        <Button href="#zcalc" variant="yellow">
+          Give Zakat Now →
+        </Button>
+      </SplitFeature>
 
       {/* ===== ADMINISTER ===== */}
-      <section className="relative overflow-hidden bg-frost py-[4.5rem]" data-wipe-scene>
-        <div
-          className="absolute inset-0 z-0 origin-[left_center] scale-x-0 bg-accent will-change-transform"
-          data-wipe
-        />
-        <div className={cx(CONTAINER, "relative z-[1]")}>
-          <div className="reveal grid grid-cols-2 items-center gap-12 rounded-[3px] bg-white p-16 shadow max-nav:grid-cols-1 max-nav:p-[2.4rem]">
-            <div>
-              <h2
-                className={cx(
-                  KICKER,
-                  "mb-4 text-[clamp(2rem,4vw,44.8px)] font-black leading-[1.5]"
-                )}
-              >
-                How we administer your Zakat
-              </h2>
-              <p className="mb-[1.4rem] text-[17.6px] font-normal leading-[28.6px] text-muted">
-                Transparency, accountability and Sharia compliance are at the heart of
-                everything we do. Your Zakat is separately earmarked, rigorously
-                distributed and fully accounted for.
-              </p>
-              <Button href="#">Download Zakat Policy</Button>
-            </div>
-
-            <div className="flex flex-col gap-[0.9rem]">
-              {STEPS.map(([step, label]) => (
-                <div
-                  className="flex items-center gap-4 rounded-[5px] bg-primary px-[1.3rem] py-[1.1rem] text-[17.6px] font-semibold leading-[26.4px] text-white transition-transform duration-300 hover:translate-x-1.5"
-                  key={step}
-                >
-                  <span className="whitespace-nowrap rounded bg-white/[0.16] px-[0.6rem] py-[0.35rem] text-[14px] font-black uppercase">
-                    {step}
-                  </span>
-                  <span>{label}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
+      <StepsFeature
+        heading="How we administer your Zakat"
+        body="Transparency, accountability and Sharia compliance are at the heart of everything we do. Your Zakat is separately earmarked, rigorously distributed and fully accounted for."
+        steps={STEPS}
+      >
+        <Button href="#">Download Zakat Policy</Button>
+      </StepsFeature>
 
       {/* ===== TRUSTED BY ===== */}
       <section className="py-[3.5rem]">
