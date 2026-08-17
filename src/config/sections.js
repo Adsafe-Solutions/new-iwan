@@ -10,6 +10,14 @@ export const SECTIONS = {
                            photo on the left; numbered rows on the right.
      Flip this and every programme page changes together. */
   programmeAbout: "v2",
+
+  /* Which hero the homepage uses.
+       "v1" — Hero:   the photo slider with the rising headline copy.
+       "v2" — HeroV2: the full-bleed arch photograph with the brand mark
+                      cycling through the programme logos, and the header
+                      held back until you scroll.
+     App.jsx reads this too, because v2 changes how the header behaves. */
+  homeHero: "v2",
 };
 
 export default SECTIONS;

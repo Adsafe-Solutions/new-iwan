@@ -1,5 +1,7 @@
 import { useScrollAnimations } from "../../hooks/useGsap.js";
 import Hero from "../../components/Hero/Hero.jsx";
+import HeroV2 from "../../components/HeroV2/HeroV2.jsx";
+import { SECTIONS } from "../../config/sections.js";
 import About from "../../components/About/About.jsx";
 import Pillars from "../../components/Pillars/Pillars.jsx";
 import TakeAction from "../../components/TakeAction/TakeAction.jsx";
@@ -23,7 +25,7 @@ export default function Home() {
   useScrollAnimations();
   return (
     <main>
-      <Hero />
+      {SECTIONS.homeHero === "v2" ? <HeroV2 /> : <Hero />}
       <About />
       <Pillars />
       <TakeAction />

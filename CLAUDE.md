@@ -59,6 +59,12 @@ WhatsAppFab, WipeBand.
 Homepage order (`pages/Home/Home.jsx`): Hero → About → Pillars → TakeAction
 → Events → Testimonials → Instagram.
 
+Two homepage heroes, chosen by `SECTIONS.homeHero`: **`Hero`** (v1) is the
+photo slider with rising headline copy; **`HeroV2`** is the full-bleed arch
+photograph with the brand mark cycling through the programme logos, reusing
+the same `heroRise`/`heroSet` pair. v2 also hides the header until the page
+is scrolled — that lives in `App.jsx`, since it owns the scroll position.
+
 `WhatsAppFab` and `ThemeSwitcher` are rendered by `App.jsx`, so they sit on
 every page — bottom-right and bottom-left respectively, deliberately opposite
 corners so they never collide.
@@ -79,15 +85,15 @@ currently appear nowhere on the site.
 
 ## Config — change content here, not in components
 
-| file                     | holds                                                                                                                                                                                                                                                                             |
-| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `config/brand.js`        | name, fullName, logos, tagline, email. Everything naming the org reads from this.                                                                                                                                                                                                 |
-| `config/sections.js`     | feature switches. `topbar: false` hides the "Emergency Monitor" strip; `programmeAbout: "v1" \| "v2"` picks which about treatment the programme pages use.                                                                                                                        |
-| `config/navPages.js`     | nav entries + their routes + stub-page copy. `group: PROGRAMMES` folds an entry into the Programmes dropdown and adds `tone` + `tile` (colour + photo) for the programmes grid on the homepage. Header, App and TakeAction all read this, so links, routes and tiles can't drift. |
-| `config/events.js`       | events for the homepage Events section.                                                                                                                                                                                                                                           |
-| `config/pillars.js`      | Believe · Act · Serve · Consult, each with its Arabic and the vision pillar it carries. Folds the brand deck's two four-part lists into one, so the page doesn't run the same beats twice.                                                                                        |
-| `config/stats.js`        | the "Iwan by the numbers" counters.                                                                                                                                                                                                                                               |
-| `config/testimonials.js` | ⚠ **real quotes from real, named members.** Rewrite the marketing copy freely; never these.                                                                                                                                                                                       |
+| file                     | holds                                                                                                                                                                                                                                                                               |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `config/brand.js`        | name, fullName, logos, tagline, email. Everything naming the org reads from this.                                                                                                                                                                                                   |
+| `config/sections.js`     | feature switches. `topbar: false` hides the "Emergency Monitor" strip; `programmeAbout: "v1" \| "v2"` picks the programme pages' about treatment; `homeHero: "v1" \| "v2"` picks the homepage hero — **App.jsx reads this too**, because v2 holds the header back until you scroll. |
+| `config/navPages.js`     | nav entries + their routes + stub-page copy. `group: PROGRAMMES` folds an entry into the Programmes dropdown and adds `tone` + `tile` (colour + photo) for the programmes grid on the homepage. Header, App and TakeAction all read this, so links, routes and tiles can't drift.   |
+| `config/events.js`       | events for the homepage Events section.                                                                                                                                                                                                                                             |
+| `config/pillars.js`      | Believe · Act · Serve · Consult, each with its Arabic and the vision pillar it carries. Folds the brand deck's two four-part lists into one, so the page doesn't run the same beats twice.                                                                                          |
+| `config/stats.js`        | the "Iwan by the numbers" counters.                                                                                                                                                                                                                                                 |
+| `config/testimonials.js` | ⚠ **real quotes from real, named members.** Rewrite the marketing copy freely; never these.                                                                                                                                                                                         |
 
 `/zakat` is a full donation funnel inherited from the charity template. It is
 routed but linked from nowhere, and is slated for deletion — do not wire it

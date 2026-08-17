@@ -1,0 +1,82 @@
+import { useCallback, useEffect, useRef, useState } from "react";
+import { HERO_IMAGE, HERO_LOGOS } from "../../config/heroLogos.js";
+import { cx } from "../../lib/cx.js";
+
+const DWELL = 3200;
+const OUT_MS = 520; // matches the heroSet duration in tailwind.config.js
+
+const reduced = () =>
+  typeof window !== "undefined" &&
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+export default function HeroV2() {
+  const [index, setIndex] = useState(0);
+  const [setting, setSetting] = useState(false);
+  const live = useRef(0);
+  const timers = useRef([]);
+  const still = reduced();
+
+  const clear = () => {
+    timers.current.forEach(clearTimeout);
+    timers.current = [];
+  };
+
+  const next = useCallback(() => {
+    clear();
+    setSetting(true);
+    timers.current.push(
+      setTimeout(() => {
+        live.current = (live.current + 1) % HERO_LOGOS.length;
+        setIndex(live.current);
+        setSetting(false);
+      }, OUT_MS)
+    );
+  }, []);
+
+  useEffect(() => {
+    if (still) return undefined;
+    const t = setInterval(next, DWELL);
+    return () => {
+      clearInterval(t);
+      clear();
+    };
+  }, [still, next]);
+
+  const logo = HERO_LOGOS[index];
+
+  return (
+    <section
+      className="relative flex h-screen min-h-[560px] items-center justify-center overflow-hidden bg-shade"
+      id="top"
+    >
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: `url(${HERO_IMAGE})` }}
+        role="img"
+        aria-label="Light through a carved arch"
+      />
+
+      <div className="relative z-[2] overflow-hidden px-6 py-2">
+        <img
+          src={logo.src}
+          alt={logo.alt}
+          /* scale drives width, not transform — transform is what
+             heroRise/heroSet animate */
+          style={{ "--s": logo.scale ?? 1 }}
+          className={cx(
+            "w-[calc(min(520px,62vw)*var(--s))] max-w-[94vw]",
+            "max-phone:w-[calc(64vw*var(--s))]",
+            !still && (setting ? "animate-heroSet" : "animate-heroRise")
+          )}
+        />
+      </div>
+
+      <span
+        className="absolute bottom-10 left-1/2 z-[2] -translate-x-1/2 text-[12px] font-bold uppercase tracking-[0.2em] text-white/60"
+        aria-hidden="true"
+      >
+        Scroll
+      </span>
+    </section>
+  );
+}

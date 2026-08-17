@@ -117,7 +117,13 @@ function Panel({ menu, id, open, pathname, onNavigate }) {
   );
 }
 
-export default function Header({ stuck = false, overlay = false, pinned = false }) {
+export default function Header({
+  stuck = false,
+  overlay = false,
+  pinned = false,
+  /* v2 homepage hero holds the header off until the page is scrolled */
+  hidden = false,
+}) {
   const [open, setOpen] = useState(false); // mobile drawer
   const [menu, setMenu] = useState(null); // the one open dropdown, by label
 
@@ -175,7 +181,10 @@ export default function Header({ stuck = false, overlay = false, pinned = false 
       ref={nav}
       className={cx(
         "z-[100] border-b",
-        "transition-[top,background-color,border-color,box-shadow] duration-300",
+        "transition-[top,transform,opacity,background-color,border-color,box-shadow] duration-300",
+        /* slides up out of the way rather than vanishing, and stops taking
+           clicks while it is gone */
+        hidden && "pointer-events-none -translate-y-full opacity-0",
         /* pinned for the whole home route, not only while overlaid: staying
            fixed in both states means the chrome never re-enters flow mid-scroll
            and jolts the page */

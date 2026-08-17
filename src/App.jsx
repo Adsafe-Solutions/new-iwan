@@ -35,15 +35,21 @@ function Shell() {
     );
   }, []);
 
+  /* The v2 hero is a full-bleed mark on a photograph with nothing else on
+     it, so the header is held back until the page is scrolled. It then
+     arrives solid rather than overlaid — there is no hero copy left for it
+     to sit over. */
+  const heroV2 = home && SECTIONS.homeHero === "v2";
+
   /* `pinned` stays on for the whole home route, not just while overlaid — the
      chrome must never re-enter flow mid-scroll or the page jolts. */
-  const overlay = home && !stuck;
+  const overlay = home && !stuck && !heroV2;
 
   return (
     <>
       <ScrollToTop />
       {SECTIONS.topbar && <Topbar overlay={overlay} hidden={home && stuck} />}
-      <Header stuck={stuck} overlay={overlay} pinned={home} />
+      <Header stuck={stuck} overlay={overlay} pinned={home} hidden={heroV2 && !stuck} />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/zakat" element={<Zakat />} />
