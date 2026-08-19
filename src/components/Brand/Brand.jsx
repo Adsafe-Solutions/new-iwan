@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { BRAND } from "../../config/brand.js";
+import { useBrand } from "../../content/ContentProvider.jsx";
 import { cx } from "../../lib/cx.js";
 
 /* The lockup stacks the arch above its wordmark (~1.66:1), so it needs far
@@ -8,6 +8,7 @@ import { cx } from "../../lib/cx.js";
    scrolled-header size — the header owns that state, so it passes it down.
    z-100 out-stacks the mobile tray that opens inside .header. */
 export default function Brand({ light = false, compact = false }) {
+  const BRAND = useBrand();
   const [lightMissing, setLightMissing] = useState(false);
   const useLight = light && !lightMissing;
 

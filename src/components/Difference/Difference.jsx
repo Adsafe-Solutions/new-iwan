@@ -1,5 +1,5 @@
 import Typewriter from "../Typewriter/Typewriter.jsx";
-import { FOCUS_AREAS } from "../../focusAreas.js";
+import { useFocus } from "../../content/ContentProvider.jsx";
 import { cx } from "../../lib/cx.js";
 import { KICKER, MARK_BY } from "../../lib/type.js";
 
@@ -13,6 +13,7 @@ const DIFFERENCE_PHRASES = [
 
 /* ---------- YOU CAN MAKE A DIFFERENCE ---------- */
 export default function Difference() {
+  const { areas: FOCUS_AREAS } = useFocus();
   return (
     <section className="py-[4.5rem]" id="difference">
       <div className="mx-auto w-full max-w-container px-6">

@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
-import { BRAND } from "../../config/brand.js";
+import { useBrand, useCopy } from "../../content/ContentProvider.jsx";
 
 const LINK = "font-bold text-primary underline";
 
 export default function Placeholder({ title, intro }) {
+  const BRAND = useBrand();
+  const copy = useCopy().placeholder;
   return (
     <main className="pb-20 pt-24">
       <div className="mx-auto w-full max-w-[760px] px-6">
@@ -15,13 +17,13 @@ export default function Placeholder({ title, intro }) {
         </h1>
         <p className="mb-[1.6rem] text-[20px] leading-8 text-muted">{intro}</p>
         <p className="border-t border-line pt-[1.4rem] text-[16px] leading-[26px]">
-          This page is coming soon. In the meantime, explore{" "}
+          {copy.soon}{" "}
           <Link to="/" className={LINK}>
-            our work
+            {copy.work}
           </Link>{" "}
-          or{" "}
+          {copy.or}{" "}
           <Link to="/zakat" className={LINK}>
-            give your Zakat
+            {copy.zakat}
           </Link>
           .
         </p>

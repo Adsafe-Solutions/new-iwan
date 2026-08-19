@@ -1,30 +1,41 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { IconChevronDown } from "@tabler/icons-react";
 import Brand from "../Brand/Brand.jsx";
 import Button from "../Button/Button.jsx";
-import { NAV_PAGES, PROGRAMMES } from "../../config/navPages.js";
-import { BRAND } from "../../config/brand.js";
+import CountrySwitcher from "../CountrySwitcher/CountrySwitcher.jsx";
+import { useBrand, useCopy, useNav } from "../../content/ContentProvider.jsx";
 import { cx } from "../../lib/cx.js";
 
-const inGroup = NAV_PAGES.filter((p) => p.group === PROGRAMMES);
-const ungrouped = NAV_PAGES.filter((p) => !p.group);
+/* The country switcher shares the nav's single-open-dropdown state under these
+   reserved labels, so opening it closes the Programmes panel and vice versa.
+   Two instances, because at 360px the bar cannot hold the brand, the switcher,
+   the CTA and the burger at once: below the drawer breakpoint it moves into
+   the tray. They take separate labels so each keeps its own trigger ref. */
+const COUNTRY = "__country";
+const COUNTRY_TRAY = "__country-tray";
 
 /* A dropdown is either `simple` — one vertical list — or `mega`, a wider
    panel of columns each holding one or more labelled groups. Everything
    else is a plain link, About Us included: it is a page of its own, not a
    menu. The `mega` branch in Panel is therefore unused at the moment —
    kept because it is a few lines and the shape is already proven. */
-const LINKS = [
-  {
-    label: PROGRAMMES,
-    menu: {
-      type: "simple",
-      columns: [{ groups: [{ items: inGroup.map(({ label, path }) => [label, path]) }] }],
+function buildLinks({ programmesGroup, pages }) {
+  const inGroup = pages.filter((p) => p.group === programmesGroup);
+  const ungrouped = pages.filter((p) => !p.group);
+  return [
+    {
+      label: programmesGroup,
+      menu: {
+        type: "simple",
+        columns: [
+          { groups: [{ items: inGroup.map(({ label, path }) => [label, path]) }] },
+        ],
+      },
     },
-  },
-  ...ungrouped.map(({ label, path }) => ({ label, to: path })),
-];
+    ...ungrouped.map(({ label, path }) => ({ label, to: path })),
+  ];
+}
 
 /* Shared by <a> and the dropdown <button> so both get the same underline. */
 const NAV_ITEM = cx(
@@ -124,6 +135,11 @@ export default function Header({
   /* v2 homepage hero holds the header off until the page is scrolled */
   hidden = false,
 }) {
+  const BRAND = useBrand();
+  const copy = useCopy().header;
+  const navContent = useNav();
+  const LINKS = useMemo(() => buildLinks(navContent), [navContent]);
+
   const [open, setOpen] = useState(false); // mobile drawer
   const [menu, setMenu] = useState(null); // the one open dropdown, by label
 
@@ -276,12 +292,34 @@ export default function Header({
                 </li>
               );
             })}
+            <li className="relative hidden w-full max-nav:block" key={COUNTRY_TRAY}>
+              <CountrySwitcher
+                open={menu === COUNTRY_TRAY}
+                panelId="country-menu-tray"
+                onToggle={() => toggle(COUNTRY_TRAY)}
+                onClose={close}
+                triggerRef={(el) => {
+                  triggers.current[COUNTRY_TRAY] = el;
+                }}
+              />
+            </li>
           </ul>
         </nav>
 
         {/* out-stacks the tray's z-99, or the open tray swallows the burger
             that is supposed to close it */}
         <div className="relative z-[100] flex flex-none items-center gap-[0.9rem]">
+          <CountrySwitcher
+            className="max-nav:hidden"
+            open={menu === COUNTRY}
+            overlay={overlay && !open}
+            onToggle={() => toggle(COUNTRY)}
+            onClose={() => setMenu(null)}
+            triggerRef={(el) => {
+              triggers.current[COUNTRY] = el;
+            }}
+          />
+
           <Button
             href={`mailto:${BRAND.email}`}
             className={cx(
@@ -296,13 +334,13 @@ export default function Header({
                 "max-nav:!bg-primary max-nav:!text-white max-nav:hover:!bg-primary max-nav:hover:!text-white"
             )}
           >
-            Contact Us
+            {copy.cta}
           </Button>
 
           <button
             type="button"
             className="hidden cursor-pointer flex-col gap-[5px] border-none bg-transparent p-1.5 max-nav:flex"
-            aria-label="Menu"
+            aria-label={copy.menu}
             aria-expanded={open}
             onClick={() => {
               setMenu(null);

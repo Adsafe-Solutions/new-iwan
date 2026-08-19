@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { TESTIMONIALS } from "../../config/testimonials.js";
+import { useCopy, useTestimonials } from "../../content/ContentProvider.jsx";
+import { fill } from "../../lib/fill.js";
 import { cx } from "../../lib/cx.js";
 import { KICKER, MARK_B } from "../../lib/type.js";
 
@@ -64,6 +65,8 @@ const ARROW = cx(
    inline `transform` outranks every utility, so a hover scale would have
    silently done nothing. */
 export default function Testimonials() {
+  const TESTIMONIALS = useTestimonials();
+  const copy = useCopy().testimonials;
   const n = TESTIMONIALS.length;
   const START = n * Math.floor(REPEATS / 2);
 
@@ -83,7 +86,7 @@ export default function Testimonials() {
   const still = reduced();
   const loop = useMemo(
     () => Array.from({ length: REPEATS }, () => TESTIMONIALS).flat(),
-    []
+    [TESTIMONIALS]
   );
   const pitch = card + gap;
   /* width of the focused group, so it can be centred as a block */
@@ -161,23 +164,22 @@ export default function Testimonials() {
       className="overflow-hidden bg-white py-[4.5rem]"
       id="testimonials"
       aria-roledescription="carousel"
-      aria-label="Member testimonials"
+      aria-label={copy.carousel}
     >
       <div className="mx-auto w-full max-w-container px-6">
         <h2 className={cx(KICKER, "reveal mb-[1.1rem]")}>
-          In their <span className={MARK_B}>own words</span>
+          {copy.heading} <span className={MARK_B}>{copy.mark}</span>
         </h2>
         <div className="flex items-end justify-between gap-10">
           <p className="reveal max-w-[660px] text-[17px] leading-[1.7] text-muted">
-            Members on the sessions they have been to — gardening, Taekwondo, first aid,
-            entrepreneurship, and whatever is on next.
+            {copy.body}
           </p>
           <div className="reveal flex flex-none gap-3">
             <button
               type="button"
               className={ARROW}
               onClick={() => step(-1)}
-              aria-label="Previous testimonial"
+              aria-label={copy.prev}
             >
               ‹
             </button>
@@ -185,7 +187,7 @@ export default function Testimonials() {
               type="button"
               className={ARROW}
               onClick={() => step(1)}
-              aria-label="Next testimonial"
+              aria-label={copy.next}
             >
               ›
             </button>
@@ -315,7 +317,7 @@ export default function Testimonials() {
             <button
               key={t.author}
               type="button"
-              aria-label={`Show testimonial from ${t.author}`}
+              aria-label={fill(copy.goTo, { author: t.author })}
               aria-current={leading}
               onClick={() => {
                 /* travel whichever way round is shorter */

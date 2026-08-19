@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /* =========================================================
    Pulls the latest posts from the Instagram Graph API and writes them to
-   src/config/instagram-feed.json, which the site imports at build time.
+   src/content/base/instagram-feed.json, which the site imports at build time.
 
    Run by .github/workflows/instagram.yml on a schedule — the site itself
    never talks to Instagram, so there is no token in the bundle, no runtime
@@ -28,7 +28,7 @@ import { fileURLToPath } from "node:url";
 
 const OUT = resolve(
   dirname(fileURLToPath(import.meta.url)),
-  "../src/config/instagram-feed.json"
+  "../src/content/base/instagram-feed.json"
 );
 
 const {
@@ -91,4 +91,4 @@ await writeFile(
   `${JSON.stringify({ fetchedAt: new Date().toISOString(), posts }, null, 2)}\n`
 );
 
-console.log(`Wrote ${posts.length} posts to src/config/instagram-feed.json`);
+console.log(`Wrote ${posts.length} posts to src/content/base/instagram-feed.json`);

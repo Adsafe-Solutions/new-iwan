@@ -1,13 +1,11 @@
 import { Link } from "react-router-dom";
-import { NAV_PAGES, PROGRAMMES } from "../../config/navPages.js";
+import { useCopy, useNav } from "../../content/ContentProvider.jsx";
 import { cx } from "../../lib/cx.js";
 import { MARK_YB } from "../../lib/type.js";
 
 /* One tile per programme, read from the same list the nav is built from, so
    a programme can never appear in one and not the other. Each carries its
    own colour and photo — see navPages.js. */
-const TILES = NAV_PAGES.filter((p) => p.group === PROGRAMMES);
-
 const TILE = cx(
   "reveal group relative flex aspect-[632/474] items-end overflow-hidden rounded-none p-[1.4rem]",
   "before:absolute before:inset-0 before:z-[1] before:bg-tile-scrim before:content-['']"
@@ -24,6 +22,10 @@ const TILE_LABEL = cx(
 
 /* ---------- THE PROGRAMMES WE RUN ---------- */
 export default function TakeAction() {
+  const { programmesGroup, pages } = useNav();
+  const copy = useCopy().takeAction;
+  const TILES = pages.filter((p) => p.group === programmesGroup);
+
   return (
     <section
       className="relative overflow-hidden py-[5.5rem]"
@@ -39,9 +41,9 @@ export default function TakeAction() {
         <h2 className="reveal mb-12 text-[clamp(2.6rem,6vw,72px)] font-black uppercase leading-[1.08] tracking-[-0.72px]">
           {/* flips to white as the blue sweep arrives underneath it */}
           <span className="block text-primary" data-take-turn>
-            The programmes
+            {copy.heading}
           </span>
-          <span className={cx(MARK_YB, "mt-[0.28em] !inline-block")}>we run</span>
+          <span className={cx(MARK_YB, "mt-[0.28em] !inline-block")}>{copy.mark}</span>
         </h2>
 
         <div className="grid grid-cols-2 gap-4 max-phone:grid-cols-1" data-stagger>

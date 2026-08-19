@@ -3,7 +3,7 @@ import Hero from "../../components/Hero/Hero.jsx";
 import HeroV2 from "../../components/HeroV2/HeroV2.jsx";
 import { SECTIONS } from "../../config/sections.js";
 import TrustedBy from "../../components/TrustedBy/TrustedBy.jsx";
-import { PROGRAMME_MARKS } from "../../config/heroLogos.js";
+import { useCopy, useHero } from "../../content/ContentProvider.jsx";
 import Pillars from "../../components/Pillars/Pillars.jsx";
 import TakeAction from "../../components/TakeAction/TakeAction.jsx";
 import Events from "../../components/Events/Events.jsx";
@@ -23,15 +23,13 @@ import Instagram from "../../components/Instagram/Instagram.jsx";
                   so the header and hero CTAs now go to mailto: instead.
                   It is also the only place the social accounts appeared. */
 export default function Home() {
+  const { programmeMarks } = useHero();
+  const { trustedBy } = useCopy();
   useScrollAnimations();
   return (
     <main>
       {SECTIONS.homeHero === "v2" ? <HeroV2 /> : <Hero />}
-      <TrustedBy
-        eyebrow="One community, four programmes"
-        headingLines={["We're a", { mark: "community-led" }, "Muslim organisation."]}
-        items={PROGRAMME_MARKS}
-      />
+      <TrustedBy {...trustedBy} items={programmeMarks} />
       <Pillars />
       <TakeAction />
       <Events />

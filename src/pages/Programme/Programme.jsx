@@ -8,9 +8,13 @@ import PageHero from "../../components/PageHero/PageHero.jsx";
 import Journey from "../../components/Journey/Journey.jsx";
 import SplitFeature from "../../components/SplitFeature/SplitFeature.jsx";
 import StepsFeature from "../../components/StepsFeature/StepsFeature.jsx";
-import { BRAND } from "../../config/brand.js";
-import { PILLARS } from "../../config/pillars.js";
-import { PROGRAMMES_CONTENT, PROGRAMME_CONTACT } from "../../config/programmes.js";
+import {
+  useBrand,
+  useCopy,
+  usePillars,
+  useProgrammes,
+} from "../../content/ContentProvider.jsx";
+import { fill } from "../../lib/fill.js";
 import { SECTIONS } from "../../config/sections.js";
 import { cx } from "../../lib/cx.js";
 import { H_BLOCK, KICKER, MARK_YB } from "../../lib/type.js";
@@ -61,7 +65,9 @@ const CARD_DELAYS = [
 ];
 
 const CONTAINER = "mx-auto w-full max-w-container px-6";
-const ALL = "All";
+/* the sentinel the filter compares against; `copy.allStrands` is what
+   the chip actually reads */
+const ALL = "__all";
 
 /* ---------- ONE PAGE, EVERY PROGRAMME ----------
    `page` is the entry from navPages.js (label, path, tone, tile) and the
@@ -69,6 +75,10 @@ const ALL = "All";
    so a programme with only an intro renders a short honest page rather
    than a scaffold full of empty slots. */
 export default function Programme({ page }) {
+  const BRAND = useBrand();
+  const copy = useCopy().programme;
+  const PILLARS = usePillars();
+  const { content: PROGRAMMES_CONTENT, contact: PROGRAMME_CONTACT } = useProgrammes();
   useScrollAnimations();
 
   const slug = page.path.replace("/", "");
@@ -117,7 +127,7 @@ export default function Programme({ page }) {
               "hover:-translate-y-0.5 hover:bg-accent"
             )}
           >
-            Get involved
+            {copy.cta}
           </a>
           {sessions.length > 0 && (
             <a
@@ -129,7 +139,7 @@ export default function Programme({ page }) {
                 "hover:-translate-y-0.5 hover:bg-white hover:text-primary-800"
               )}
             >
-              What's on
+              {copy.sessionsCta}
             </a>
           )}
         </div>
@@ -141,7 +151,7 @@ export default function Programme({ page }) {
       {c.about &&
         (SECTIONS.programmeAbout === "v2" ? (
           <AboutSplit
-            eyebrow={`About ${page.label}`}
+            eyebrow={fill(copy.aboutEyebrow, { programme: page.label })}
             heading={c.about.heading}
             accent={c.about.accent}
             body={c.about.body}
@@ -153,7 +163,7 @@ export default function Programme({ page }) {
         ) : (
           <AboutStrip
             icon="compass"
-            eyebrow={`About ${page.label}`}
+            eyebrow={fill(copy.aboutEyebrow, { programme: page.label })}
             heading={c.about.heading}
             body={c.about.body}
             items={c.glance ?? []}
@@ -169,11 +179,10 @@ export default function Programme({ page }) {
         <section className="py-16">
           <div className={CONTAINER}>
             <h2 className="reveal mb-2 text-[clamp(1.6rem,2.6vw,30px)] font-black uppercase tracking-[-0.01em]">
-              Where this sits in the mission
+              {copy.pillarsHeading}
             </h2>
             <p className="reveal mb-8 max-w-[58ch] text-[17px] leading-[28px] text-muted">
-              Every programme carries the same four commitments. These are the ones{" "}
-              {page.label} leans on hardest.
+              {fill(copy.pillarsBody, { programme: page.label })}
             </p>
             <div className="flex flex-wrap gap-3" data-stagger>
               {pillars.map((p) => (
@@ -205,7 +214,7 @@ export default function Programme({ page }) {
             {/* same treatment as "Believe. Act. Serve. — thrive" on the
                 homepage: full kicker scale, last word in the accent marker */}
             <h2 className={cx(KICKER, "reveal")}>
-              What's <span className={MARK_YB}>on</span>
+              {copy.sessionsHeading} <span className={MARK_YB}>{copy.sessionsMark}</span>
             </h2>
 
             {strands.length > 0 && (
@@ -225,7 +234,7 @@ export default function Programme({ page }) {
                         : "border-line bg-white text-muted hover:border-ink/30 hover:text-ink"
                     )}
                   >
-                    {s}
+                    {s === ALL ? copy.allStrands : s}
                   </button>
                 ))}
               </div>
@@ -303,12 +312,12 @@ export default function Programme({ page }) {
           heading={c.banner.heading}
           body={c.banner.body}
           img={c.banner.img}
-          imgAlt={`${page.label} together`}
+          imgAlt={fill(copy.bannerAlt, { programme: page.label })}
           wipeTone={skin.solid}
           size="lg"
         >
           <Button href={`mailto:${BRAND.email}`} variant="yellow">
-            Get in touch →
+            {copy.bannerCta}
           </Button>
         </SplitFeature>
       )}
@@ -317,19 +326,19 @@ export default function Programme({ page }) {
           The step chips now carry the contact routes rather than a second
           numbered list — the Journey above already covers the sequence. */}
       <StepsFeature
-        heading="Talk to us"
-        body={`There is no application and no waiting list. Say hello however suits you, and ${BRAND.name} will take it from there.`}
+        heading={copy.contactHeading}
+        body={fill(copy.contactBody, { name: BRAND.name })}
         steps={[
-          ["Email", BRAND.email],
-          ["Phone", PROGRAMME_CONTACT.phone],
-          ["Visit", PROGRAMME_CONTACT.address],
+          [copy.contactSteps.email, BRAND.email],
+          [copy.contactSteps.phone, PROGRAMME_CONTACT.phone],
+          [copy.contactSteps.visit, PROGRAMME_CONTACT.address],
         ]}
         stepTone={skin.solid}
         size="sm"
         /* matched to the SplitFeature above it, so the two read as a pair */
         cardClassName="min-h-[470px]"
       >
-        <Button href={`mailto:${BRAND.email}`}>Email us</Button>
+        <Button href={`mailto:${BRAND.email}`}>{copy.contactCta}</Button>
       </StepsFeature>
     </main>
   );

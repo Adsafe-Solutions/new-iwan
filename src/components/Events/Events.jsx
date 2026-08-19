@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { EVENTS } from "../../config/events.js";
+import { useCopy, useEvents } from "../../content/ContentProvider.jsx";
+import { fill } from "../../lib/fill.js";
 import EventModal from "../EventModal/EventModal.jsx";
 import Button from "../Button/Button.jsx";
 import { cx } from "../../lib/cx.js";
@@ -97,6 +98,8 @@ const CAL_NAV = cx(
 );
 
 export default function Events() {
+  const EVENTS = useEvents();
+  const copy = useCopy().events;
   const today = useMemo(() => midnight(new Date()), []);
   const [cursor, setCursor] = useState(
     () => new Date(today.getFullYear(), today.getMonth(), 1)
@@ -124,7 +127,7 @@ export default function Events() {
       EVENTS.filter((e) => parse(e.date) >= today).sort((a, b) =>
         a.date.localeCompare(b.date)
       ),
-    [today]
+    [EVENTS, today]
   );
 
   const byDay = useMemo(() => {
@@ -158,7 +161,7 @@ export default function Events() {
     <section className="bg-mist pb-[5.5rem] pt-[4.5rem]" id="events">
       <div className="mx-auto w-full max-w-container px-6">
         <h2 className={cx(KICKER, "reveal")}>
-          Upcoming <span className={MARK_B}>events</span>
+          {copy.heading} <span className={MARK_B}>{copy.mark}</span>
         </h2>
 
         <div className="grid grid-cols-[1fr_340px] items-start gap-10 max-nav:grid-cols-1">
@@ -169,13 +172,13 @@ export default function Events() {
           <div className="flex flex-col gap-4" ref={listRef} key={selected || "all"}>
             {shown.length === 0 && (
               <p className="rounded-lg border border-line bg-white p-8 text-muted">
-                Nothing scheduled for that day.{" "}
+                {copy.empty}{" "}
                 <button
                   type="button"
                   className={LINK_BUTTON}
                   onClick={() => setSelected(null)}
                 >
-                  Show all events
+                  {copy.showAll}
                 </button>
               </p>
             )}
@@ -198,7 +201,7 @@ export default function Events() {
                   type="button"
                   className="flex min-w-0 flex-1 cursor-pointer items-center gap-[1.2rem] border-0 bg-transparent p-0 text-left text-inherit [font:inherit]"
                   onClick={() => setOpen(e)}
-                  aria-label={`More about ${e.title}`}
+                  aria-label={fill(copy.more, { title: e.title })}
                 >
                   <span
                     className="flex h-[62px] w-[62px] flex-none flex-col items-center justify-center rounded bg-primary leading-[1.1] text-white"
@@ -230,7 +233,7 @@ export default function Events() {
                   className="flex-none px-[1.3rem] py-[0.7rem] text-[13px] max-phone:w-full"
                   onClick={() => setOpen(e)}
                 >
-                  Register
+                  {copy.register}
                 </Button>
               </article>
             ))}
@@ -242,14 +245,14 @@ export default function Events() {
               "rounded-lg border border-line bg-white p-[1.2rem]",
               "max-nav:static max-nav:max-w-[420px]"
             )}
-            aria-label="Events calendar"
+            aria-label={copy.calendar}
           >
             <div className="mb-4 flex items-center justify-between">
               <button
                 type="button"
                 className={CAL_NAV}
                 onClick={() => shiftMonth(-1)}
-                aria-label="Previous month"
+                aria-label={copy.prevMonth}
               >
                 ‹
               </button>
@@ -260,7 +263,7 @@ export default function Events() {
                 type="button"
                 className={CAL_NAV}
                 onClick={() => shiftMonth(1)}
-                aria-label="Next month"
+                aria-label={copy.nextMonth}
               >
                 ›
               </button>
@@ -301,7 +304,11 @@ export default function Events() {
                       wantScroll.current = true;
                       setSelected(iso === selected ? null : iso);
                     }}
-                    aria-label={`${list.length} event${list.length > 1 ? "s" : ""} on ${longDate(iso)}`}
+                    aria-label={fill(copy.dayLabel, {
+                      count: list.length,
+                      s: list.length > 1 ? "s" : "",
+                      date: longDate(iso),
+                    })}
                   >
                     {d.getDate()}
                   </button>
@@ -326,10 +333,10 @@ export default function Events() {
                   className={LINK_BUTTON}
                   onClick={() => setSelected(null)}
                 >
-                  Clear filter
+                  {copy.clearFilter}
                 </button>
               ) : (
-                "Highlighted days have events — select one to filter."
+                copy.hint
               )}
             </p>
           </aside>

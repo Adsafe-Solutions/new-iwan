@@ -1,12 +1,18 @@
 import { useEffect, useRef } from "react";
+import { IconX } from "@tabler/icons-react";
+import { useCopy } from "../../content/ContentProvider.jsx";
 import { cx } from "../../lib/cx.js";
 
 /* Sits over whatever the feature renders at the top of the panel. Features
-   restyle it through `closeClassName` when that area is dark — see EventModal. */
+   restyle it through `closeClassName` when that area is dark — see EventModal.
+
+   The glyph alone, with no chip behind it. The 38px box stays: it is the touch
+   target, not decoration, and shrinking it to the icon would put it under the
+   24px minimum. */
 const CLOSE = cx(
-  "absolute right-4 top-4 z-[2] h-[38px] w-[38px] cursor-pointer rounded-full border-0",
-  "bg-cloud text-[16px] text-ink transition-colors duration-200",
-  "hover:bg-primary hover:text-white"
+  "absolute right-4 top-4 z-[2] grid h-[38px] w-[38px] cursor-pointer",
+  "place-items-center rounded-full border-0 bg-transparent",
+  "text-ink/55 transition-colors duration-200 hover:text-primary"
 );
 
 /* Generic dialog shell: backdrop, panel, close button, Escape, background
@@ -24,14 +30,19 @@ export default function Modal({
   closeClassName = "",
   children,
 }) {
-  const closeRef = useRef(null);
+  const copy = useCopy().modal;
+  const panelRef = useRef(null);
 
   useEffect(() => {
     const onKey = (e) => e.key === "Escape" && onClose();
     document.addEventListener("keydown", onKey);
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    closeRef.current?.focus();
+    /* the panel rather than the close button: focus has to enter the dialog,
+       but landing it on Close draws a focus ring around the glyph the moment
+       the modal opens, which reads as a chip behind it. Tab from here goes
+       to Close, which does show its ring. */
+    panelRef.current?.focus();
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = prev;
@@ -53,9 +64,11 @@ export default function Modal({
     >
       {/* relative anchors the close button */}
       <div
+        ref={panelRef}
+        tabIndex={-1}
         className={cx(
           "relative max-h-[92vh] w-[min(760px,100%)] overflow-y-auto",
-          "animate-modalPanel rounded-lg bg-white shadow",
+          "animate-modalPanel rounded-lg bg-white shadow outline-none",
           panelClassName
         )}
       >
@@ -63,10 +76,9 @@ export default function Modal({
           type="button"
           className={cx(CLOSE, closeClassName)}
           onClick={onClose}
-          aria-label="Close"
-          ref={closeRef}
+          aria-label={copy.close}
         >
-          ✕
+          <IconX className="h-[22px] w-[22px]" stroke={2} aria-hidden="true" />
         </button>
         {children}
       </div>

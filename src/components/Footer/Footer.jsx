@@ -1,13 +1,16 @@
 import { Link } from "react-router-dom";
-import { BRAND } from "../../config/brand.js";
+import { useBrand, useCopy } from "../../content/ContentProvider.jsx";
+import { fill } from "../../lib/fill.js";
 import { cx } from "../../lib/cx.js";
-
-const MARK_NAME = BRAND.name;
-const MARK_TLD = BRAND.fullName.slice(BRAND.name.length);
 
 const FINE_LINK = "underline transition-opacity duration-200 hover:opacity-65";
 
 export default function Footer() {
+  const BRAND = useBrand();
+  const copy = useCopy().footer;
+  const MARK_NAME = BRAND.name;
+  const MARK_TLD = BRAND.fullName.slice(BRAND.name.length);
+
   return (
     <footer className="overflow-hidden bg-footer text-ink">
       {/* Wider than the container so the wordmark runs near the full viewport.
@@ -19,15 +22,11 @@ export default function Footer() {
             <p className="mb-2 font-inter text-[22px] font-extrabold tracking-[-0.01em]">
               {BRAND.fullName}
             </p>
-            <p className="max-w-[46ch] text-[14px] leading-[21px]">
-              Be the first to hear about our impact and new volunteer opportunities.
-            </p>
+            <p className="max-w-[46ch] text-[14px] leading-[21px]">{copy.blurb}</p>
           </div>
 
           <div className="w-[min(560px,100%)]">
-            <h4 className="mb-[0.7rem] text-[15px] font-bold">
-              Subscribe to receive updates
-            </h4>
+            <h4 className="mb-[0.7rem] text-[15px] font-bold">{copy.subscribeHeading}</h4>
             <form
               className={cx(
                 "flex items-center gap-[0.4rem] rounded-full border border-ink/45 bg-transparent",
@@ -41,8 +40,8 @@ export default function Footer() {
                   "[font-family:inherit] placeholder:text-ink/60 focus:outline-none"
                 )}
                 type="email"
-                placeholder="Enter your email"
-                aria-label="Email address"
+                placeholder={copy.emailPlaceholder}
+                aria-label={copy.emailLabel}
                 required
               />
               <button
@@ -53,14 +52,13 @@ export default function Footer() {
                 )}
                 type="submit"
               >
-                Subscribe
+                {copy.subscribe}
               </button>
             </form>
             <p className="mt-[0.7rem] max-w-[62ch] text-[14px] leading-[21px]">
-              By subscribing you agree to receive updates from {BRAND.name} from time to
-              time and to our{" "}
+              {fill(copy.consent, { name: BRAND.name })}{" "}
               <Link to="/" className={FINE_LINK}>
-                Privacy Policy
+                {copy.privacy}
               </Link>
             </p>
           </div>
@@ -89,14 +87,14 @@ export default function Footer() {
         <div className="flex flex-wrap items-center justify-between gap-6 border-t border-ink/20 pt-[1.4rem]">
           <div className="flex gap-8 text-[14px] max-phone:gap-[1.2rem]">
             <Link to="/" className={FINE_LINK}>
-              Privacy Policy
+              {copy.privacy}
             </Link>
             <Link to="/" className={FINE_LINK}>
-              Terms of Service
+              {copy.terms}
             </Link>
           </div>
           <p className="text-[14px] leading-[21px]">
-            © {new Date().getFullYear()} {BRAND.fullName}. All rights reserved.
+            © {new Date().getFullYear()} {BRAND.fullName}. {copy.rights}
           </p>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Topbar from "./components/Topbar/Topbar.jsx";
 import Header from "./components/Header/Header.jsx";
 import Footer from "./components/Footer/Footer.jsx";
@@ -7,14 +7,18 @@ import Home from "./pages/Home/Home.jsx";
 import Zakat from "./pages/Zakat/Zakat.jsx";
 import Placeholder from "./pages/Placeholder/Placeholder.jsx";
 import Programme from "./pages/Programme/Programme.jsx";
-import { NAV_PAGES } from "./config/navPages.js";
-import { PROGRAMMES_CONTENT } from "./config/programmes.js";
+import NotFound from "./pages/NotFound/NotFound.jsx";
 import { SECTIONS } from "./config/sections.js";
+import { DEFAULT_COUNTRY, basenameFor, countryFromPath } from "./config/countries.js";
+import ContentProvider, { useNav, useProgrammes } from "./content/ContentProvider.jsx";
 import ScrollToTop from "./components/ScrollToTop/ScrollToTop.jsx";
 import ThemeSwitcher from "./components/ThemeSwitcher/ThemeSwitcher.jsx";
 import WhatsAppFab from "./components/WhatsAppFab/WhatsAppFab.jsx";
+import LocationPrompt from "./components/LocationPrompt/LocationPrompt.jsx";
 
 function Shell() {
+  const { pages } = useNav();
+  const { content: PROGRAMMES_CONTENT } = useProgrammes();
   const [stuck, setStuck] = useState(false);
   const [overHero, setOverHero] = useState(true);
   const { pathname } = useLocation();
@@ -59,9 +63,16 @@ function Shell() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/zakat" element={<Zakat />} />
+        {/* the default country carries no prefix, so /in/… is a real URL
+            people will try — send it to the unprefixed one rather than
+            leaving a page that matches nothing */}
+        <Route
+          path={`/${DEFAULT_COUNTRY}/*`}
+          element={<Navigate to={stripDefaultPrefix()} replace />}
+        />
         {/* a nav page with an entry in programmes.js gets the full
             programme template; everything else stays a stub */}
-        {NAV_PAGES.map((page) => (
+        {pages.map((page) => (
           <Route
             key={page.path}
             path={page.path}
@@ -74,18 +85,33 @@ function Shell() {
             }
           />
         ))}
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
       <ThemeSwitcher />
       <WhatsAppFab />
+      <LocationPrompt />
     </>
   );
 }
 
+const stripDefaultPrefix = () =>
+  window.location.pathname.replace(new RegExp(`^/${DEFAULT_COUNTRY}`), "") || "/";
+
+/* The country lives in the URL, and the default country has no prefix: India
+   is `/iwan-youth`, Canada is `/ca/iwan-youth`. Handing that prefix to the
+   router as its `basename` means every <Link to="/…"> and <Route path="/…">
+   in the app is written without it and still lands in the right country.
+   basename is fixed for the life of the router, which is why switching
+   country is a full page load — see ContentProvider. */
 export default function App() {
+  const country = countryFromPath(window.location.pathname);
+
   return (
-    <BrowserRouter>
-      <Shell />
+    <BrowserRouter basename={basenameFor(country)}>
+      <ContentProvider country={country}>
+        <Shell />
+      </ContentProvider>
     </BrowserRouter>
   );
 }

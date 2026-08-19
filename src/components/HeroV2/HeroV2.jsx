@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { IconChevronDown } from "@tabler/icons-react";
-import { HERO_IMAGE, HERO_LOGOS } from "../../config/heroLogos.js";
+import { useCopy, useHero } from "../../content/ContentProvider.jsx";
 import { cx } from "../../lib/cx.js";
 
 const DWELL = 3200;
@@ -11,6 +11,8 @@ const reduced = () =>
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 export default function HeroV2() {
+  const { image: HERO_IMAGE, logos: HERO_LOGOS } = useHero();
+  const copy = useCopy().heroV2;
   const [index, setIndex] = useState(0);
   const [setting, setSetting] = useState(false);
   const live = useRef(0);
@@ -32,7 +34,7 @@ export default function HeroV2() {
         setSetting(false);
       }, OUT_MS)
     );
-  }, []);
+  }, [HERO_LOGOS.length]);
 
   useEffect(() => {
     if (still) return undefined;
@@ -54,7 +56,7 @@ export default function HeroV2() {
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: `url(${HERO_IMAGE})` }}
         role="img"
-        aria-label="Light through a carved arch"
+        aria-label={copy.imageAlt}
       />
 
       <div className="relative z-[2] overflow-hidden px-6 py-2">
@@ -76,7 +78,9 @@ export default function HeroV2() {
         className="absolute bottom-10 left-1/2 z-[2] flex -translate-x-1/2 flex-col items-center gap-2 text-white/60"
         aria-hidden="true"
       >
-        <span className="text-[12px] font-bold uppercase tracking-[0.2em]">Scroll</span>
+        <span className="text-[12px] font-bold uppercase tracking-[0.2em]">
+          {copy.scroll}
+        </span>
         <IconChevronDown className="h-5 w-5 animate-scrollCue" stroke={2} />
       </span>
     </section>

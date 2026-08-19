@@ -1,5 +1,5 @@
 import { IconBrandWhatsapp } from "@tabler/icons-react";
-import { BRAND } from "../../config/brand.js";
+import { useBrand } from "../../content/ContentProvider.jsx";
 import { cx } from "../../lib/cx.js";
 
 /* Floating WhatsApp button, bottom-right — the mirror of the theme
@@ -9,6 +9,7 @@ import { cx } from "../../lib/cx.js";
    only recognisable at a glance in that colour, which is the whole point of
    a floating action button. */
 export default function WhatsAppFab({ label = "Chat with us on WhatsApp" }) {
+  const BRAND = useBrand();
   if (!BRAND.whatsapp) return null;
 
   return (

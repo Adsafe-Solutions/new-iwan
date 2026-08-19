@@ -4,6 +4,8 @@ import Button from "../Button/Button.jsx";
 import { IconArrowUpRight } from "@tabler/icons-react";
 import { cx } from "../../lib/cx.js";
 import { mapEmbed, mapLink } from "../../lib/map.js";
+import { useBrand, useCopy } from "../../content/ContentProvider.jsx";
+import { fill } from "../../lib/fill.js";
 
 const FULLDOW = [
   "Sunday",
@@ -49,9 +51,11 @@ const FIELD_LABEL =
   "flex flex-[1_1_200px] flex-col gap-[0.35rem] text-[13px] font-bold text-muted";
 
 export default function EventModal({ event, onClose }) {
+  const BRAND = useBrand();
+  const copy = useCopy().eventModal;
   const [stage, setStage] = useState("cta"); // cta → form → done
-  const embed = mapEmbed(event);
-  const link = mapLink(event);
+  const embed = mapEmbed(event, BRAND.address);
+  const link = mapLink(event, BRAND.address);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
 
@@ -60,7 +64,9 @@ export default function EventModal({ event, onClose }) {
       onClose={onClose}
       labelledBy="emodal-title"
       /* the generic close button sits on this modal's dark header */
-      closeClassName="bg-white/[0.14] text-white hover:bg-primary"
+      /* `!` because Tailwind orders utilities by property, not by the order
+         they appear — the shared CLOSE's own text colour would win */
+      closeClassName="!text-white/70 hover:!text-accent"
     >
       <div className="bg-primary-800 p-[clamp(1.4rem,4vw,2.2rem)] py-[1.8rem] pr-[4.5rem]">
         <span className="mb-[0.6rem] block text-[13px] font-extrabold uppercase tracking-[0.12em] text-accent">
@@ -82,7 +88,7 @@ export default function EventModal({ event, onClose }) {
 
         <div className="flex flex-wrap gap-[1.9rem] max-phone:gap-[1.4rem]">
           <div className="flex-[1_1_280px]">
-            <span className={LABEL}>How the day runs</span>
+            <span className={LABEL}>{copy.runsHeading}</span>
             {event.agenda.map(([t, label]) => (
               <div className="mb-3 flex items-baseline gap-[0.9rem]" key={t}>
                 <span className="w-[58px] flex-none text-[13px] font-extrabold text-primary">
@@ -94,14 +100,14 @@ export default function EventModal({ event, onClose }) {
           </div>
 
           <div className="flex flex-[1_1_240px] flex-col">
-            <span className={LABEL}>Where</span>
+            <span className={LABEL}>{copy.whereLabel}</span>
 
             {embed ? (
               /* lazy so the modal opens instantly and the tiles only load
                  once someone actually looks at the map */
               <iframe
                 src={embed}
-                title={`Map showing ${event.venue}`}
+                title={fill(copy.mapTitle, { venue: event.venue })}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 className="mb-[0.8rem] h-[180px] w-full rounded border border-line"
@@ -128,7 +134,7 @@ export default function EventModal({ event, onClose }) {
                 rel="noreferrer noopener"
                 className="mt-2 inline-flex w-fit items-center gap-1 text-[14px] font-bold text-primary underline"
               >
-                Get directions
+                {copy.directions}
                 <IconArrowUpRight className="h-4 w-4" stroke={2} aria-hidden="true" />
               </a>
             )}
@@ -138,10 +144,8 @@ export default function EventModal({ event, onClose }) {
         <div className="border-t border-line pt-[1.6rem]">
           {stage === "cta" && (
             <div className={CTA_ROW}>
-              <Button onClick={() => setStage("form")}>Register</Button>
-              <span className="text-[14px] text-muted">
-                Free to attend · everyone welcome
-              </span>
+              <Button onClick={() => setStage("form")}>{copy.register}</Button>
+              <span className="text-[14px] text-muted">{copy.free}</span>
             </div>
           )}
 
@@ -153,38 +157,38 @@ export default function EventModal({ event, onClose }) {
                 setStage("done");
               }}
             >
-              <span className="mb-4 block text-[16px] font-bold">Save your place</span>
+              <span className="mb-4 block text-[16px] font-bold">{copy.formHeading}</span>
               <div className="mb-[1.1rem] flex flex-wrap gap-[0.9rem]">
                 <label className={FIELD_LABEL}>
-                  Your name
+                  {copy.nameLabel}
                   <input
                     className={FIELD}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="First and last"
+                    placeholder={copy.namePlaceholder}
                     required
                   />
                 </label>
                 <label className={FIELD_LABEL}>
-                  Email
+                  {copy.emailLabel}
                   <input
                     className={FIELD}
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@email.com"
+                    placeholder={copy.emailPlaceholder}
                     required
                   />
                 </label>
               </div>
               <div className={CTA_ROW}>
-                <Button type="submit">Confirm my place</Button>
+                <Button type="submit">{copy.submit}</Button>
                 <button
                   type="button"
                   className="cursor-pointer border-0 bg-transparent text-[14px] font-semibold text-muted [font-family:inherit]"
                   onClick={() => setStage("cta")}
                 >
-                  Cancel
+                  {copy.cancel}
                 </button>
               </div>
             </form>
@@ -205,10 +209,15 @@ export default function EventModal({ event, onClose }) {
               </span>
               <div>
                 <strong className="mb-1 block text-[16px] font-bold">
-                  You’re in{name ? `, ${name.split(" ")[0]}` : ""}
+                  {fill(copy.doneHeading, {
+                    name: name ? `, ${name.split(" ")[0]}` : "",
+                  })}
                 </strong>
                 <p className="text-[15px] leading-[23px] text-ink-2">
-                  We’ve noted your place at {event.title} on {longDate(event.date)}.
+                  {fill(copy.doneBody, {
+                    title: event.title,
+                    date: longDate(event.date),
+                  })}
                 </p>
               </div>
             </div>

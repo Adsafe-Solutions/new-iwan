@@ -39,20 +39,22 @@ src/
   index.css            @tailwind directives + base — must load first
   components/<Name>/<Name>.jsx
   pages/<Name>/<Name>.jsx
-  config/              brand.js · sections.js · navPages.js · events.js
+  config/              app configuration — sections.js · countries.js · themes.js
+  content/             all copy — base/ + one folder per country + the provider
   hooks/useGsap.js     scroll animations
   lib/cx.js            className joiner
   lib/type.js          shared heading + highlight class sets (KICKER, MARK_*)
-  themes.js focusAreas.js advisors.js
 tailwind.config.js     EVERY colour in the project (see Colour below)
 ```
 
 A class set used more than once inside a file is hoisted to a `const` at the top
 of that file (`NAV_ITEM`, `CARD`, `PILL_Y`, …) rather than repeated inline.
 
+Pages: Home, Programme, Zakat, Placeholder, NotFound.
+
 Components: About, AboutSplit, AboutStrip, Brand, Button, Contact,
-Difference, EventModal, Events, Footer, Header, Hero, Icon, Instagram,
-Journey, Modal, News, PageHero, Pillars, ScrollToTop, SplitFeature,
+CountrySwitcher, Difference, EventModal, Events, Footer, Header, Hero, Icon,
+Instagram, Journey, Modal, News, PageHero, Pillars, ScrollToTop, SplitFeature,
 StepsFeature, TakeAction, Testimonials, ThemeSwitcher, Topbar, Typewriter,
 WhatsAppFab, WipeBand.
 
@@ -64,12 +66,12 @@ word comes from props (`eyebrow`, `headingLines`, `items`), plus `id`,
 `wipeTone` and `className`, so it can be dropped on any page with different
 copy. `headingLines` is an array where a string is a plain line and
 `{ mark: "…" }` is a highlighted one, which is how the caller controls where
-the block breaks. The homepage passes `PROGRAMME_MARKS` from `heroLogos.js`
+the block breaks. The homepage passes `hero.programmeMarks`
 — the four programme marks minus the community one, carrying the `scale`
 field that evens out the uneven padding in those exports.
 `About` (the 2020 origin story plus the `[data-count]` counters) is parked;
-it was the only thing reading `config/stats.js`, and `advisors.js` is now
-used only by `/zakat`.
+it was the only thing reading `content/base/stats.js`, and `advisors.js` is
+now used only by `/zakat`.
 
 Two homepage heroes, chosen by `SECTIONS.homeHero`: **`Hero`** (v1) is the
 photo slider with rising headline copy; **`HeroV2`** is the full-bleed arch
@@ -86,8 +88,8 @@ corners so they never collide.
 `Difference` was a donor appeal ladder ("sponsor an orphan from $75 a
 month"); `Contact` was the closing get-in-touch band. All three are still in
 the tree and go back with one import each — but `News` only with real
-content. `Difference` also owns the only remaining use of `focusAreas.js`
-outside `/zakat`.
+content. `Difference` also owns the only remaining use of
+`content/base/focusAreas.js` outside `/zakat`.
 
 Two consequences of `Contact` being parked: it owned `id="contact"`, so the
 header and hero CTAs point at `mailto:BRAND.email` instead — **there is no
@@ -95,25 +97,151 @@ in-page contact anchor, so do not reintroduce `href="#contact"`**. It was
 also the only place `BRAND.socials` was rendered, so Iwan's four accounts
 currently appear nowhere on the site.
 
-## Config — change content here, not in components
+## Content vs config — two different folders
 
-| file                     | holds                                                                                                                                                                                                                                                                               |
-| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `config/brand.js`        | name, fullName, logos, tagline, email. Everything naming the org reads from this.                                                                                                                                                                                                   |
-| `config/sections.js`     | feature switches. `topbar: false` hides the "Emergency Monitor" strip; `programmeAbout: "v1" \| "v2"` picks the programme pages' about treatment; `homeHero: "v1" \| "v2"` picks the homepage hero — **App.jsx reads this too**, because v2 holds the header back until you scroll. |
-| `config/navPages.js`     | nav entries + their routes + stub-page copy. `group: PROGRAMMES` folds an entry into the Programmes dropdown and adds `tone` + `tile` (colour + photo) for the programmes grid on the homepage. Header, App and TakeAction all read this, so links, routes and tiles can't drift.   |
-| `config/events.js`       | events for the homepage Events section.                                                                                                                                                                                                                                             |
-| `config/pillars.js`      | Believe · Act · Serve · Consult, each with its Arabic and the vision pillar it carries. Folds the brand deck's two four-part lists into one, so the page doesn't run the same beats twice.                                                                                          |
-| `config/stats.js`        | the "Iwan by the numbers" counters.                                                                                                                                                                                                                                                 |
-| `config/testimonials.js` | ⚠ **real quotes from real, named members.** Rewrite the marketing copy freely; never these.                                                                                                                                                                                         |
+Copy is separated from app configuration, because copy is going to move to a
+CMS and vary by country, and app configuration is not.
+
+**`src/config/` is app configuration.** It ships with the code and no CMS will
+ever own it.
+
+| file           | holds                                                                                                                                                                                                                                                                               |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sections.js`  | feature switches. `topbar: false` hides the "Emergency Monitor" strip; `programmeAbout: "v1" \| "v2"` picks the programme pages' about treatment; `homeHero: "v1" \| "v2"` picks the homepage hero — **App.jsx reads this too**, because v2 holds the header back until you scroll. |
+| `countries.js` | the country registry — `code` (lowercase ISO 3166-1 alpha-2, and the folder name under `src/content/`), `label`, `flag`, `locale`, `currency`, `timeZone` — plus `DEFAULT_COUNTRY`. India and Canada today.                                                                         |
+| `themes.js`    | the theme-switcher entries. Design system, not content (see Colour below).                                                                                                                                                                                                          |
+
+**`src/content/` is everything a CMS will eventually own.**
+
+```
+src/content/
+  base/         the full content set — the default every country inherits
+  in/           India: only the keys that differ from base
+  merge.js      deep merge; objects merge, ARRAYS REPLACE
+  index.js      resolveContent(code) → one merged snapshot, cached
+  ContentProvider.jsx   the context, and every read hook
+```
+
+`base/` holds `brand.js` · `nav.js` · `pillars.js` · `programmes.js` ·
+`events.js` · `testimonials.js` · `stats.js` · `instagram.js` (+ the generated
+`instagram-feed.json`) · `hero.js` · `focusAreas.js` · `advisors.js` — and
+**`copy.js`**, which holds every word the components used to hold themselves.
+`base/index.js` assembles them into the one snapshot shape everything
+downstream reads:
+
+```js
+{ brand, copy, nav: { programmesGroup, pages }, pillars,
+  programmes: { content, contact }, events, testimonials, stats,
+  instagram: { handle, url, posts, isLive },
+  hero: { image, logos, slides, programmeMarks }, focus: { areas, links },
+  advisors }
+```
+
+**`copy.js` is one key per section** — `header`, `hero`, `heroV2`, `trustedBy`,
+`pillars`, `takeAction`, `events`, `testimonials`, `instagram`, `eventModal`,
+`footer`, `programme`, `placeholder`, `notFound`. A component reads its own
+key and nothing else:
+
+```jsx
+const copy = useCopy().pillars;
+…
+<h2>{copy.heading} <span className={MARK_YB}>{copy.mark}</span></h2>
+```
+
+Two conventions in there:
+
+- **A heading that breaks across a plain line and a highlighted one keeps the
+  two parts separate** (`heading` + `mark`), because where it breaks is a
+  decision the copy has to be able to move.
+- **Sentences stay whole**, with `{name}`-style placeholders filled by
+  `lib/fill.js` — never concatenated at the call site, or a rewrite cannot move
+  the value within the sentence.
+
+⚠ Anything that names a real thing stays in its own file, not `copy.js`: the
+org in `brand.js`, the programmes in `nav.js` and `programmes.js`, the quotes
+in `testimonials.js`.
+
+`/zakat` and the parked components (About, Contact, News) still hold their own
+copy — Zakat is slated for deletion and the others render nowhere.
+
+⚠ `testimonials.js` holds **real quotes from real, named members.** Rewrite
+the marketing copy freely; never these.
+
+**Adding a country is two steps** — an entry in `config/countries.js` and a
+`src/content/<code>/index.js` default-exporting only what differs. Country
+folders are discovered with `import.meta.glob`, so there is no list to keep in
+step.
+
+**Every key in the snapshot is overridable, at any depth.** Four rules:
+
+| write in a country file                               | effect                                        |
+| ----------------------------------------------------- | --------------------------------------------- |
+| `{ brand: { email: "…" } }`                           | changes `email`, inherits the rest of `brand` |
+| `{ programmes: { content: { "iwan-women": null } } }` | **deletes** that key                          |
+| `{ events: add({ … }) }`                              | edits base's list — see `content/ops.js`      |
+| `{ events: [ … ] }`                                   | **replaces** the list outright                |
+
+A plain array replaces because merging two unrelated lists by index is a
+footgun. `null` deletes, because merging objects can otherwise only ever add —
+it is the only way to say a country runs _fewer_ of something.
+
+**A function override is handed the base value and returns the new one**, which
+is what makes per-item list edits readable. `content/ops.js` holds the three
+worth naming — `add` / `addFirst`, `remove`, `update` — and anything they do
+not cover is a plain arrow:
+
+```js
+events: add({ title: "Toronto meetup", date: "2026-09-12" }),
+nav: { pages: remove("path", "/iwan-women") },
+testimonials: update("name", "Aisha", { role: "Volunteer lead" }),
+stats: (list) => list.slice(0, 3),
+```
+
+The first argument is whichever field identifies an item in that list — `path`
+for nav pages, `id` for hero logos, `date` for events. Content is data, so
+neither `null` nor a function is ever a real value, and both sentinels are
+unambiguous. Base is never mutated.
+
+`content/ca/index.js` is the worked example: Canada runs three programmes, so
+it removes Women from `nav.pages` (which is also where routes and the homepage
+tiles come from) and from the hero rotation, nulls the programme entry, and
+adjusts the TrustedBy eyebrow — five lines, and a tile or an intro changed in
+base still reaches Canada.
+
+**Components never import a content module.** They call a hook:
+
+```jsx
+const BRAND = useBrand();
+const { pages, programmesGroup } = useNav();
+```
+
+`useContent` · `useCountry` · `useBrand` · `useCopy` · `useNav` · `usePillars` ·
+`useProgrammes` · `useEvents` · `useTestimonials` · `useStats` ·
+`useInstagram` · `useHero` · `useFocus` · `useAdvisors`, all from
+`content/ContentProvider.jsx`. That indirection is the whole point: moving to
+the CMS means changing `resolveContent` and nothing else, and a country toggle
+re-renders the site for free. `useCountry()` returns `[country, setCountry]`,
+which is what `CountrySwitcher` calls. **The API source is not built yet**,
+only the seam it plugs into.
+
+⚠ **`src/content/ca/index.js` only drops the Women programme.** Everything else
+is still India's — the Bangalore address, the +91 WhatsApp number, the "started
+in Bangalore in 2020" story, India's events. The file lists the keys that need
+real values. Nothing there has been invented; do not invent it.
+
+`lib/map.js` is a plain module rather than a component, so it takes the
+fallback address as an argument instead; `EventModal` passes
+`BRAND.address` in.
 
 `/zakat` is a full donation funnel inherited from the charity template. It is
-routed but linked from nowhere, and is slated for deletion — do not wire it
-back into the nav.
+not in the nav (only the `Placeholder` stub links it) and is slated for
+deletion — do not wire it back in.
 
-Routes: `/` and `/zakat` are real pages. A `navPages.js` entry with a matching
-key in `config/programmes.js` renders the shared `Programme` template — that is
-all four programmes today; everything else (`/blogs`, `/events`, `/podcast`)
+Routes: `/` and `/zakat` are real pages. Every other route is built from
+`nav.pages`, so the active country's content decides which pages exist. An
+entry with a matching key in `content/base/programmes.js` renders the shared
+`Programme` template — that is all four programmes in India and three in
+Canada; everything else (`/blogs`, `/events`, `/podcast`)
 still renders the `Placeholder` stub. App picks between them, so adding a
 programmes.js entry is the only step needed to promote a stub to a full page.
 
@@ -127,6 +255,50 @@ it likewise only appears where there is a source.
 
 Because the slug drives colour, `Programme.jsx` holds a literal `SKIN` map —
 `text-${tone}` would never be generated by Tailwind's text scan.
+
+## The country is in the URL
+
+The default country carries no prefix and every other one does: India is
+`/iwan-youth`, Canada is `/ca/iwan-youth`. That prefix is handed to
+`BrowserRouter` as its **`basename`**, which is why every `<Link to="/…">` and
+`<Route path="/…">` in the app is still written without it — the router adds
+and strips it. `countryFromPath`, `basenameFor` and `stripBasename` in
+`config/countries.js` are the only places that know the shape.
+
+- **The URL is the only source of truth.** There is no stored preference to
+  fall out of step with the address bar, and a country link can be shared.
+- **Switching country is a full page load** (`window.location.assign`), because
+  `basename` is fixed for the life of the router. It also means the new country
+  arrives on a clean mount — a client-side swap would strand everything the new
+  content rendered at `opacity: 0`, since `useGsap` scans the DOM once per
+  mount. If you ever make switching client-side, that is the bug you will hit.
+- The switcher keeps you on the same page when the target country has it, and
+  drops you on its home page when it does not (`/iwan-women` → `/ca/`).
+- `/in/…` redirects to the unprefixed path, so the URL people will guess works.
+- `*` renders `NotFound`, which names the active country — `/ca/iwan-women` is
+  a real shareable URL for a programme Canada does not run, and a bare "not
+  found" would read as a broken link.
+- ⚠ Deep links need the host to serve `index.html` for any path. That was
+  already true of `/iwan-youth`; the prefix just makes it easier to notice.
+
+**`LocationPrompt` asks when the guess disagrees with the URL** — it never
+redirects. `lib/geo.js` reads the visitor's own IANA time zone out of `Intl`
+and matches it against the `zones` list on each entry in `config/countries.js`
+(legacy aliases included — a Mac in Bangalore still reports `Asia/Calcutta`),
+falling back to the region in `navigator.languages`. No network call, no
+geo-IP service, nothing to rate-limit or leak an address to, and it works
+offline. It is only ever a guess, which is why nothing acts on it silently.
+
+- It appears only when the guess is **a country we serve** AND differs from
+  the one being viewed. Someone in the UK sees nothing — there is nothing to
+  offer them.
+- Any answer, including dismissing it, is remembered in `localStorage` under
+  `iwan.location-prompt`. That is a "do not ask again" flag, not a country
+  preference — the URL is still the only thing that decides the country.
+- Swapping in a CDN country header (`CF-IPCountry`, `x-vercel-ip-country`) is
+  a change to the body of `detectCountry` and nothing else.
+- ⚠ It intercepts pointer events, so a Playwright run on a machine whose time
+  zone disagrees with the route under test has to seed that flag first.
 
 ## Shared components
 
@@ -157,10 +329,32 @@ Because the slug drives colour, `Programme.jsx` holds a literal `SKIN` map —
   components and defeats tree-shaking. Config files refer to icons by the
   short names in the `ICONS` map, so swapping the underlying set again is a
   change to that one file.
+- **`CountrySwitcher`** — the flag pill in the header. It is _controlled_: it
+  shares Header's single `menu` state under a reserved label, so opening it
+  closes the Programmes panel by construction, and Header's existing
+  outside-click and Escape handlers already cover it because it renders inside
+  the same `<header>`. **It is rendered twice** — in the right-hand cluster at
+  `nav` and up, and inside the mobile tray below it — because at 360px the bar
+  cannot hold the brand, the switcher, the CTA and the burger at once. The two
+  instances take separate `menu` labels and separate `panelId`s so each keeps
+  its own trigger ref. Its panel goes `static` in the drawer, like the nav
+  panels, or it escapes past the tray's bottom edge. Choosing a country
+  navigates (see The country is in the URL), and the provider writes
+  `document.documentElement.lang` from the country's `locale`.
+  `flag` is emoji: Apple and Android draw the real flag, **Windows has no flag
+  glyphs and renders the two letters instead**. Real artwork would be a
+  `flagSrc` on the country entry and an `<img>` in the component.
+- **`LocationPrompt`** — the country mismatch dialog, rendered by `App.jsx`
+  so it covers every route. See The country is in the URL.
 - **`Modal`** — generic dialog shell: backdrop, panel, close button, Escape,
   body scroll lock, initial focus. Wrap feature content in it. It takes
   `panelClassName` and `closeClassName` so a feature can restyle the shell —
-  `EventModal` passes `closeClassName` because its header is dark.
+  `EventModal` passes `closeClassName` because its header is dark, and has to
+  mark it `!` or the shared close's own colour wins on Tailwind's ordering.
+  The close is a bare `IconX` with no chip behind it, keeping the 38px box as
+  the touch target. **Initial focus goes to the panel, not to Close** — the
+  dialog still receives focus, but landing it on Close draws a focus ring
+  around the glyph the moment the modal opens, which reads as a background.
 
 ## Colour — all of it lives in `tailwind.config.js`
 
@@ -169,7 +363,7 @@ Because the slug drives colour, `Programme.jsx` holds a literal `SKIN` map —
 - `palette` — fixed colours, including the four programme colours
   (`women` `#ee5f9e`, `kids` `#3694db`, `men` `#234967`, `youth` `#3994b3`,
   available as `bg-women`, `text-youth`, …). Each programme's own colour is
-  named on its entry in `navPages.js` as `tone`, so the programmes grid and the nav
+  named on its entry in `content/base/nav.js` as `tone`, so the programmes grid and the nav
   can't disagree about it.
 - `themes` — the four brand themes. A plugin at the bottom of the config emits
   `:root` and `:root[data-theme="…"]` blocks holding the RGB channels
@@ -185,7 +379,7 @@ names (`ink`, `mist`, `chip-*`, `theme-<id>-primary`) are for the things that
 must not.
 
 JS that needs a real colour string reads it back out of the variables — see
-`cssColor()` in `useGsap.js`. `themes.js` lists the switcher entries and
+`cssColor()` in `useGsap.js`. `config/themes.js` lists the switcher entries and
 references `bg-theme-<id>-primary/accent` utilities, since a theme can only be
 previewed with literal colour. **Adding a theme means editing both files.**
 
@@ -211,7 +405,7 @@ that value living in one place matters.
 ## Instagram feed
 
 Real posts are pulled by `.github/workflows/instagram.yml` (daily) via
-`scripts/fetch-instagram.mjs`, which writes `src/config/instagram-feed.json`
+`scripts/fetch-instagram.mjs`, which writes `src/content/base/instagram-feed.json`
 and commits it. **The site never calls Instagram** — no token in the bundle,
 no runtime dependency, and an Instagram outage cannot take the section down.
 Until the secrets exist the wall falls back to placeholder stock images.

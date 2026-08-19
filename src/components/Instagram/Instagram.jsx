@@ -1,10 +1,5 @@
 import { IconArrowUpRight, IconBrandInstagram } from "@tabler/icons-react";
-import {
-  INSTAGRAM_HANDLE,
-  INSTAGRAM_IS_LIVE,
-  INSTAGRAM_POSTS,
-  INSTAGRAM_URL,
-} from "../../config/instagram.js";
+import { useCopy, useInstagram } from "../../content/ContentProvider.jsx";
 import { cx } from "../../lib/cx.js";
 import { KICKER, MARK_B } from "../../lib/type.js";
 
@@ -35,6 +30,13 @@ const IMG =
   "h-full w-full object-cover transition-transform duration-[600ms] group-hover:scale-[1.07]";
 
 export default function Instagram() {
+  const {
+    handle: INSTAGRAM_HANDLE,
+    url: INSTAGRAM_URL,
+    posts: INSTAGRAM_POSTS,
+    isLive: INSTAGRAM_IS_LIVE,
+  } = useInstagram();
+  const copy = useCopy().instagram;
   if (INSTAGRAM_POSTS.length === 0) return null;
 
   return (
@@ -43,11 +45,9 @@ export default function Instagram() {
         <div className="mb-9 flex flex-wrap items-center justify-between gap-6">
           <div>
             <h2 className={cx(KICKER, "reveal !mb-2")}>
-              Follow <span className={MARK_B}>along</span>
+              {copy.heading} <span className={MARK_B}>{copy.mark}</span>
             </h2>
-            <p className="reveal text-[17px] leading-[1.7] text-muted">
-              What the sessions actually look like, as they happen.
-            </p>
+            <p className="reveal text-[17px] leading-[1.7] text-muted">{copy.body}</p>
           </div>
 
           <a
@@ -62,7 +62,7 @@ export default function Instagram() {
             )}
           >
             <IconBrandInstagram className="h-5 w-5" stroke={2} aria-hidden="true" />
-            View us on Instagram
+            {copy.cta}
             <IconArrowUpRight
               className="h-4 w-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
               stroke={2}

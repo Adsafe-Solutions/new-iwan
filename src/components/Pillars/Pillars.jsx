@@ -1,4 +1,4 @@
-import { PILLARS } from "../../config/pillars.js";
+import { useCopy, usePillars } from "../../content/ContentProvider.jsx";
 import { cx } from "../../lib/cx.js";
 import { KICKER, MARK_YB } from "../../lib/type.js";
 
@@ -59,16 +59,17 @@ function Mark({ shape }) {
    serves. "Thrive" is the outcome the four produce, so it lands in the
    heading rather than as a fifth card. */
 export default function Pillars() {
+  const PILLARS = usePillars();
+  const copy = useCopy().pillars;
   return (
     <section className="bg-mist py-[4.5rem]" id="pillars">
       <div className="mx-auto w-full max-w-container px-6">
         <h2 className={cx(KICKER, "reveal")}>
-          Believe. Act. Serve. — <span className={MARK_YB}>thrive</span>
+          {copy.heading} <span className={MARK_YB}>{copy.mark}</span>
         </h2>
 
         <p className="reveal mb-[2.6rem] max-w-[62ch] text-[18px] leading-[29px] text-muted">
-          Four commitments we hold each other to. They are the reason the classes, the
-          workshops and the volunteering all belong to the same organisation.
+          {copy.body}
         </p>
 
         <div

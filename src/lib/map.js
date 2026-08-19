@@ -1,5 +1,3 @@
-import { BRAND } from "../config/brand.js";
-
 /* Builds the embed + directions URLs for a venue.
 
    Two routes, in order of preference:
@@ -17,30 +15,31 @@ import { BRAND } from "../config/brand.js";
 
    Venue names in events.js are placeholders ("Iwan Hall, 14 Main Street"),
    and searching those would drop a pin somewhere arbitrary — so anything
-   without its own `coords` or `mapQuery` falls back to Iwan's real address.
+   without its own `coords` or `mapQuery` falls back to `fallback`, which
+   the caller reads out of the active country's brand address.
 */
 
 /* roughly a 400m box around the point — close enough to read the street */
 const SPAN = 0.004;
 
-export function mapEmbed(event = {}) {
+export function mapEmbed(event = {}, fallback = "") {
   if (Array.isArray(event.coords) && event.coords.length === 2) {
     const [lat, lng] = event.coords;
     const bbox = [lng - SPAN, lat - SPAN, lng + SPAN, lat + SPAN].join(",");
     return `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat},${lng}`;
   }
 
-  const q = event.mapQuery || BRAND.address;
+  const q = event.mapQuery || fallback;
   if (!q) return null;
   return `https://maps.google.com/maps?q=${encodeURIComponent(q)}&output=embed`;
 }
 
 /** Opens the location in whatever maps app the visitor actually uses. */
-export function mapLink(event = {}) {
+export function mapLink(event = {}, fallback = "") {
   const q =
     Array.isArray(event.coords) && event.coords.length === 2
       ? event.coords.join(",")
-      : event.mapQuery || BRAND.address;
+      : event.mapQuery || fallback;
   if (!q) return null;
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`;
 }

@@ -39,11 +39,11 @@
 /* Vite resolves this to a hashed URL at build time. The other three
    programmes fall back to their `tile` in navPages.js until real hero
    photography exists for them. */
-import youthHero from "../assests/iwan-youth-hero.png";
+import youthHero from "../../assests/iwan-youth-hero.png";
 import { BRAND } from "./brand.js";
-import womenHero from "../assests/iwan-women-hero.png";
-import kidsHero from "../assests/iwan-men-hero.png";
-import menHero from "../assests/iwan-kids-hero.png";
+import womenHero from "../../assests/iwan-women-hero.png";
+import kidsHero from "../../assests/iwan-men-hero.png";
+import menHero from "../../assests/iwan-kids-hero.png";
 
 export const PROGRAMMES_CONTENT = {
   "iwan-youth": {

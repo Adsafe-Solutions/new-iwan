@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { THEMES, DEFAULT_THEME } from "../../themes.js";
+import { THEMES, DEFAULT_THEME } from "../../config/themes.js";
 import { cx } from "../../lib/cx.js";
 
 export default function ThemeSwitcher() {

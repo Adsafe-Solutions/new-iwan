@@ -1,4 +1,4 @@
-import { BRAND } from "../../config/brand.js";
+import { useBrand } from "../../content/ContentProvider.jsx";
 import Button from "../Button/Button.jsx";
 import { cx } from "../../lib/cx.js";
 
@@ -37,6 +37,7 @@ const GLYPH = {
    went nowhere. The dark band is deliberate: it closes the page the way the
    live site does, and it is the one block that does not follow the theme. */
 export default function Contact() {
+  const BRAND = useBrand();
   return (
     <section className="bg-ink py-[5rem] text-center text-white" id="contact">
       <div className="mx-auto w-full max-w-[720px] px-6">

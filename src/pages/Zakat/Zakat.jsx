@@ -1,18 +1,16 @@
 import { useState } from "react";
 import { useScrollAnimations } from "../../hooks/useGsap.js";
 import Typewriter from "../../components/Typewriter/Typewriter.jsx";
-import { FOCUS_AREAS } from "../../focusAreas.js";
+import { useAdvisors, useFocus } from "../../content/ContentProvider.jsx";
 import Button from "../../components/Button/Button.jsx";
 import PageHero from "../../components/PageHero/PageHero.jsx";
 import SplitFeature from "../../components/SplitFeature/SplitFeature.jsx";
 import StepsFeature from "../../components/StepsFeature/StepsFeature.jsx";
-import { ADVISORS } from "../../advisors.js";
 import { cx } from "../../lib/cx.js";
 import { KICKER, MARK_B, MARK_YB } from "../../lib/type.js";
 
 /* ---------- data ---------- */
 /* Zakat is distributed through the same four focus areas as everything else. */
-const LIVES = FOCUS_AREAS.map((a) => [a.tag, a.tone, a.card, a.img]);
 
 /* Fixed colours, so the row keeps its own identity whichever theme is on. */
 const AMOUNTS = [
@@ -101,6 +99,10 @@ const SCHOLAR_AV =
 
 /* ---------- page ---------- */
 export default function Zakat() {
+  const { areas: FOCUS_AREAS } = useFocus();
+  const ADVISORS = useAdvisors();
+  const LIVES = FOCUS_AREAS.map((a) => [a.tag, a.tone, a.card, a.img]);
+
   useScrollAnimations();
   const [open, setOpen] = useState(0);
 

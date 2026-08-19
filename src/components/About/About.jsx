@@ -1,4 +1,4 @@
-import { STATS } from "../../config/stats.js";
+import { useStats } from "../../content/ContentProvider.jsx";
 import { cx } from "../../lib/cx.js";
 import { H_BLOCK, MARK_B } from "../../lib/type.js";
 
@@ -9,6 +9,7 @@ import { H_BLOCK, MARK_B } from "../../lib/type.js";
    endorsement. The counters use the [data-count] handler in useGsap.js,
    which until now had nothing on the site wired to it. */
 export default function About() {
+  const STATS = useStats();
   return (
     <section className="relative overflow-hidden py-[4.5rem]" id="about" data-wipe-scene>
       {/* full-section block that wipes in from the left on scroll */}

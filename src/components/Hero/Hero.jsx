@@ -1,24 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cx } from "../../lib/cx.js";
-import { BRAND } from "../../config/brand.js";
-
-/* ⚠ The three photos are still the inherited stock images and read as
-   relief-charity photography. Swap `img` for real Iwan pictures — no other
-   change needed. */
-const SLIDES = [
-  {
-    title: "Find Your People, Find Your Purpose",
-    img: "https://cdn.prod.website-files.com/67d25bbe842c314895ddb151/67d29bce5aabd85a370d1621_home-hero-image-1.jpg",
-  },
-  {
-    title: "Character Is Built in Good Company",
-    img: "https://cdn.prod.website-files.com/67d25bbe842c314895ddb151/67d29bcedc5373f69470adc7_home-hero-image-2.jpg",
-  },
-  {
-    title: "Come Learn Something With Us",
-    img: "https://cdn.prod.website-files.com/67d25bbe842c314895ddb151/67d29bcec24af2e52edad21b_home-hero-image-3.jpg",
-  },
-];
+import { useBrand, useCopy, useHero } from "../../content/ContentProvider.jsx";
 
 const DURATION = 8000;
 
@@ -44,6 +26,9 @@ const COPY = {
 };
 
 export default function Hero() {
+  const BRAND = useBrand();
+  const { slides: SLIDES } = useHero();
+  const copy = useCopy().hero;
   const [current, setCurrent] = useState(0);
   const [prev, setPrev] = useState(null);
   const [setting, setSetting] = useState(false);
@@ -56,20 +41,23 @@ export default function Hero() {
     beats.current = [];
   };
 
-  const go = useCallback((n) => {
-    clearBeats();
-    setSetting(true);
-    beats.current.push(
-      setTimeout(() => {
-        /* the outgoing photo keeps rendering underneath, or the wipe would
+  const go = useCallback(
+    (n) => {
+      clearBeats();
+      setSetting(true);
+      beats.current.push(
+        setTimeout(() => {
+          /* the outgoing photo keeps rendering underneath, or the wipe would
            reveal the bare section background instead of the old slide */
-        setPrev(index.current);
-        index.current = (index.current + n + SLIDES.length) % SLIDES.length;
-        setCurrent(index.current);
-      }, OUT_MS),
-      setTimeout(() => setSetting(false), OUT_MS + HOLD_MS)
-    );
-  }, []);
+          setPrev(index.current);
+          index.current = (index.current + n + SLIDES.length) % SLIDES.length;
+          setCurrent(index.current);
+        }, OUT_MS),
+        setTimeout(() => setSetting(false), OUT_MS + HOLD_MS)
+      );
+    },
+    [SLIDES.length]
+  );
 
   const start = useCallback(() => {
     clearInterval(timer.current);
@@ -160,7 +148,7 @@ export default function Hero() {
                 />
               </svg>
             </span>
-            <span>Believe · Act · Serve — Thrive</span>
+            <span>{copy.kicker}</span>
           </p>
         </div>
 
@@ -184,9 +172,7 @@ export default function Hero() {
               copyAnim("excerpt")
             )}
           >
-            Iwan is a community hub in Bangalore — classes, workshops, mentoring and
-            volunteering, built around faith, good character and the kind of friendship
-            that outlasts the session. Everyone is welcome.
+            {copy.body}
           </p>
         </div>
 
@@ -204,15 +190,15 @@ export default function Hero() {
               copyAnim("cta")
             )}
           >
-            Get Involved
+            {copy.cta}
           </a>
         </div>
       </div>
 
       <div className="absolute bottom-0 right-0 z-[3] flex">
         {[
-          { n: -1, label: "Previous slide", d: "M20 12H4m0 0 6-6m-6 6 6 6" },
-          { n: 1, label: "Next slide", d: "M4 12h16m0 0-6-6m6 6-6 6" },
+          { n: -1, label: copy.prevSlide, d: "M20 12H4m0 0 6-6m-6 6 6 6" },
+          { n: 1, label: copy.nextSlide, d: "M4 12h16m0 0-6-6m6 6-6 6" },
         ].map(({ n, label, d }) => (
           <button
             key={label}
