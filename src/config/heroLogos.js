@@ -15,6 +15,11 @@ export const HERO_LOGOS = [
   { id: "women", src: women, alt: "Iwan Women", scale: 1.23 },
 ];
 
+/* the four programme marks, without the community one */
+export const PROGRAMME_MARKS = HERO_LOGOS.filter((l) => l.id !== "community").map(
+  (l) => ({ ...l, label: l.alt.replace(/^Iwan\s+/, "") })
+);
+
 export const HERO_IMAGE = "/hero.webp";
 
 export default HERO_LOGOS;

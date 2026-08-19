@@ -2,7 +2,8 @@ import { useScrollAnimations } from "../../hooks/useGsap.js";
 import Hero from "../../components/Hero/Hero.jsx";
 import HeroV2 from "../../components/HeroV2/HeroV2.jsx";
 import { SECTIONS } from "../../config/sections.js";
-import About from "../../components/About/About.jsx";
+import TrustedBy from "../../components/TrustedBy/TrustedBy.jsx";
+import { PROGRAMME_MARKS } from "../../config/heroLogos.js";
 import Pillars from "../../components/Pillars/Pillars.jsx";
 import TakeAction from "../../components/TakeAction/TakeAction.jsx";
 import Events from "../../components/Events/Events.jsx";
@@ -26,7 +27,11 @@ export default function Home() {
   return (
     <main>
       {SECTIONS.homeHero === "v2" ? <HeroV2 /> : <Hero />}
-      <About />
+      <TrustedBy
+        eyebrow="One community, four programmes"
+        headingLines={["We're a", { mark: "community-led" }, "Muslim organisation."]}
+        items={PROGRAMME_MARKS}
+      />
       <Pillars />
       <TakeAction />
       <Events />

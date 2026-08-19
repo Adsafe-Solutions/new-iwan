@@ -56,8 +56,20 @@ Journey, Modal, News, PageHero, Pillars, ScrollToTop, SplitFeature,
 StepsFeature, TakeAction, Testimonials, ThemeSwitcher, Topbar, Typewriter,
 WhatsAppFab, WipeBand.
 
-Homepage order (`pages/Home/Home.jsx`): Hero → About → Pillars → TakeAction
-→ Events → Testimonials → Instagram.
+Homepage order (`pages/Home/Home.jsx`): Hero → TrustedBy → Pillars →
+TakeAction → Events → Testimonials → Instagram.
+
+`TrustedBy` is the yellow wipe band under the hero, and it is generic — every
+word comes from props (`eyebrow`, `headingLines`, `items`), plus `id`,
+`wipeTone` and `className`, so it can be dropped on any page with different
+copy. `headingLines` is an array where a string is a plain line and
+`{ mark: "…" }` is a highlighted one, which is how the caller controls where
+the block breaks. The homepage passes `PROGRAMME_MARKS` from `heroLogos.js`
+— the four programme marks minus the community one, carrying the `scale`
+field that evens out the uneven padding in those exports.
+`About` (the 2020 origin story plus the `[data-count]` counters) is parked;
+it was the only thing reading `config/stats.js`, and `advisors.js` is now
+used only by `/zakat`.
 
 Two homepage heroes, chosen by `SECTIONS.homeHero`: **`Hero`** (v1) is the
 photo slider with rising headline copy; **`HeroV2`** is the full-bleed arch
