@@ -519,6 +519,21 @@ carries the accessible name; only the hand-written placeholders have real alt.
   creating a scroll container. Do not change it back.
 - **`html { scroll-behavior: smooth }` is global**, so any hand-animated
   `scrollTo` must disable it for the duration (see `glideTo` in `Events.jsx`).
+- **Adding `.no-smooth` is not enough on its own — the style has to be
+  flushed.** `classList.add("no-smooth")` followed immediately by `scrollTo`
+  still animates: the class is set but not yet recalculated, so the browser
+  reads the old `scroll-behavior`. `ScrollToTop` reads `root.offsetHeight`
+  between the two to force the flush.
+- **A route change must scroll instantly, and may have to land twice.** With
+  smooth scrolling, a route change animates the reset over ~1s — during which
+  the outgoing page's GSAP context reverts (removing the Pillars pin spacer),
+  the incoming page refreshes its own triggers, and the header goes `fixed` →
+  `sticky`. The document shrinks under a scroll that is still running, which
+  reads as the page shuddering, and it lands short of the top because the
+  browser clamps the animation against the old page's maximum. `ScrollToTop`
+  jumps instantly, then re-checks on the next frame and jumps again if
+  something moved underneath it. Measured: 24 scroll events landing at y=51,
+  down to 1 landing at y=0.
 - Global `@media (prefers-reduced-motion)` kills all animation. Never put the
   hidden state (`opacity: 0`) in a base rule — put it only in keyframes, or the
   content is stranded invisible.
