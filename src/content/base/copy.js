@@ -80,6 +80,20 @@ export const COPY = {
     seeAll: "See all events",
   },
 
+  podcastPage: {
+    eyebrow: "Listen",
+    heading: "Conversations from",
+    mark: "the community",
+    body: "Shared stories, insights and discussions from the people who turn up. New episodes land here as they are recorded.",
+    episodesHeading: "Episodes",
+    episode: "Episode {n}",
+    by: "by {author}",
+    play: "Play episode",
+    pause: "Pause episode",
+    seek: "Seek within the episode",
+    empty: "Nothing published yet. Check back soon.",
+  },
+
   /* the closing "get in touch" band — About and every blog post carry it */
   contactCta: {
     eyebrow: "Get in touch",

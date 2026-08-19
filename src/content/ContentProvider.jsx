@@ -74,6 +74,7 @@ export const usePillars = () => useContent().pillars;
 export const useProgrammes = () => useContent().programmes;
 export const useEvents = () => useContent().events;
 export const useBlogs = () => useContent().blogs;
+export const usePodcast = () => useContent().podcast;
 export const useTestimonials = () => useContent().testimonials;
 export const useStats = () => useContent().stats;
 export const useInstagram = () => useContent().instagram;

@@ -50,8 +50,8 @@ tailwind.config.js     EVERY colour in the project (see Colour below)
 A class set used more than once inside a file is hoisted to a `const` at the top
 of that file (`NAV_ITEM`, `CARD`, `PILL_Y`, …) rather than repeated inline.
 
-Pages: Home, About, Blogs, BlogPost, Programme, Events, EventDetail, Zakat,
-Placeholder, NotFound.
+Pages: Home, About, Blogs, BlogPost, Podcast, Programme, Events, EventDetail,
+Zakat, Placeholder, NotFound.
 
 **`/about-us`** is transcribed from the live about-us page — the 2020 genesis
 story, the vision and mission statements and the six core values are the
@@ -63,7 +63,8 @@ carries both — each pillar names the vision value it serves. The live page's
 `iwan_vision.webp` is a **mislabelled copy of `iwan_mission.webp`**, so neither
 is used; the lists render as cards instead.
 
-Components: About, AboutSplit, AboutStrip, BlogCard, Brand, Button, Contact,
+Components: About, AboutSplit, AboutStrip, AudioPlayer, BlogCard, Brand,
+Button, Contact,
 ContactCta, Pagination, ReadingProgress,
 CountrySwitcher, Difference, EventModal, Events, Footer, Header, Hero, Icon,
 Instagram, Journey, Modal, News, PageHero, Pillars, ScrollToTop, SplitFeature,
@@ -82,6 +83,15 @@ meant restating the whole list per country to say so. ⚠ India has all six
 today, so **Canada has none** — the homepage section renders nothing at all
 rather than a heading over an empty calendar, and `/ca/events` shows its empty
 state. Add Canadian events to the same array with `country: "ca"`.
+
+**`/podcast`** is one show and one episode, transcribed from the live page
+into `content/base/podcast.js`. `AudioPlayer` wraps a native `<audio>` — the
+element stays the engine, so seeking, buffering and the media keys keep
+working and only the chrome is ours. ⚠ It carries `preload="none"` and takes
+the running time from `length` (seconds) in content: Podbean serves the whole
+file rather than a partial, so `preload="metadata"` pulls **all 5.5MB on page
+load** just to learn the duration. Audio and cover art are hotlinked from
+Podbean.
 
 **Blogs mirror the events shape**: `/blogs` (`pages/Blogs`) lists every post
 with the same programme filter, and `/blogs/:slug` (`pages/BlogPost`) is the
