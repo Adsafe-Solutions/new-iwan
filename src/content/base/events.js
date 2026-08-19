@@ -1,10 +1,35 @@
 /* Upcoming events.
-   `date` is a plain YYYY-MM-DD string — parsed as local time in the components,
-   never through `new Date(string)`, which reads it as UTC and lands on the
-   previous day for anyone west of Greenwich. */
+
+   `id` is also the slug: /events/<id> is that event's own page.
+
+   ⚠ This is ONE list for every country — unlike the rest of the content, which
+   is a base set plus per-country overrides. `country` is what decides where an
+   event shows: a code ("in"), a list of codes (["in", "ca"]) for something
+   open to both, or omitted for everything. `resolveContent` filters the list
+   before any component sees it, so nothing downstream has to remember.
+
+   Adding an event for another country is that one field — there is nothing
+   else to wire up.
+
+   `programme` is the nav path of the programme an event belongs to, or null
+   for one that is open to the whole community. The chip and the filter read
+   the label back out of nav (see lib/events.js), so nothing here can drift
+   from what the programmes are actually called.
+
+   `date` is a plain YYYY-MM-DD string — parsed as local time in the
+   components, never through `new Date(string)`, which reads it as UTC and
+   lands on the previous day for anyone west of Greenwich.
+
+   ⚠ `img` is a stock photograph, like the programme tiles in nav.js. These
+   are not Iwan's own pictures — swap them for real ones and nothing else
+   changes. */
+const u = (id) =>
+  `https://images.unsplash.com/photo-${id}?q=80&w=1200&auto=format&fit=crop`;
+
 export const EVENTS = [
   {
     id: "community-iftar",
+    country: "in",
     kind: "Community meal",
     spots: 60,
     address: "Iwan Hall, 14 Main Street",
@@ -13,7 +38,8 @@ export const EVENTS = [
     start: "18:30",
     end: "21:00",
     venue: "Iwan Hall, Main Street",
-    tag: "Community",
+    programme: null,
+    img: u("1511578314322-379afb476865"),
     summary: "Food, conversation and a short reminder — everyone welcome.",
     details:
       "Our monthly sit-down for the whole community. Doors open at 6:30pm, food is served at 7, and we close with a short reminder and tea. Children are welcome and there is a supervised play corner. Come alone or bring the family — most people arrive not knowing anyone and leave with a table full of friends.",
@@ -26,6 +52,7 @@ export const EVENTS = [
   },
   {
     id: "womens-circle",
+    country: "in",
     kind: "Study circle",
     spots: 25,
     address: "Iwan Community Room, 14 Main Street",
@@ -34,7 +61,8 @@ export const EVENTS = [
     start: "11:00",
     end: "13:00",
     venue: "Iwan Community Room",
-    tag: "Iwan Women",
+    programme: "/iwan-women",
+    img: u("1552664730-d307ca884978"),
     summary: "A relaxed morning circle — study, discussion and a proper cup of tea.",
     details:
       "A monthly circle for women of every age. We read together for the first hour, then open the floor for discussion over tea and cake. No prior study is expected and there is no obligation to speak. Babies and toddlers are welcome in the room.",
@@ -47,6 +75,7 @@ export const EVENTS = [
   },
   {
     id: "youth-leadership",
+    country: "in",
     kind: "Weekend programme",
     spots: 30,
     address: "Riverside Activity Centre, Mill Lane",
@@ -55,7 +84,8 @@ export const EVENTS = [
     start: "09:30",
     end: "17:00",
     venue: "Riverside Activity Centre",
-    tag: "Iwan Youth",
+    programme: "/iwan-youth",
+    img: u("1521737711867-e3b97375f902"),
     summary: "Two days of workshops, outdoor challenges and planning the year ahead.",
     details:
       "Our flagship weekend for 13–18s. Saturday is workshops — public speaking, project planning and running an event from scratch. Sunday moves outdoors for team challenges, then the group sets the youth programme for the coming year. Places are limited and transport can be arranged.",
@@ -69,6 +99,7 @@ export const EVENTS = [
   },
   {
     id: "kids-club",
+    country: "ca",
     kind: "Family morning",
     spots: 40,
     address: "Iwan Community Room, 14 Main Street",
@@ -77,7 +108,8 @@ export const EVENTS = [
     start: "10:00",
     end: "12:00",
     venue: "Iwan Community Room",
-    tag: "Iwan Kids",
+    programme: "/iwan-kids",
+    img: u("1509099836639-18ba1795216d"),
     summary: "Stories, crafts and games for under-10s, with parents welcome to stay.",
     details:
       "A gentle Saturday morning for our youngest members. We open with a story, move on to a craft table, and finish with games in the hall. Parents are welcome to stay for coffee at the back of the room. Suitable for ages 4–10.",
@@ -90,6 +122,7 @@ export const EVENTS = [
   },
   {
     id: "mens-service-day",
+    country: "ca",
     kind: "Volunteering",
     spots: 35,
     address: "Meet at Iwan Hall, 14 Main Street",
@@ -98,7 +131,8 @@ export const EVENTS = [
     start: "08:00",
     end: "14:00",
     venue: "Meet at Iwan Hall",
-    tag: "Iwan Men",
+    programme: "/iwan-men",
+    img: u("1454165804606-c3d57bc86b40"),
     summary: "A morning of practical work across the neighbourhood — all hands welcome.",
     details:
       "We split into small teams and take on jobs around the neighbourhood: garden clearing for elderly neighbours, painting at the community centre, and a litter sweep along the river path. Tools, gloves and lunch are provided. No skills needed — just turn up.",
@@ -111,6 +145,7 @@ export const EVENTS = [
   },
   {
     id: "open-evening",
+    country: "in",
     kind: "Open house",
     spots: 80,
     address: "Iwan Hall, 14 Main Street",
@@ -119,7 +154,8 @@ export const EVENTS = [
     start: "19:00",
     end: "20:30",
     venue: "Iwan Hall, Main Street",
-    tag: "Community",
+    programme: null,
+    img: u("1523240795612-9a054b0db644"),
     summary: "New to the area? Come and meet the people behind every programme.",
     details:
       "An informal evening for anyone who has recently joined the community or is simply curious. Each programme lead gives a short introduction, then it is open floor over refreshments. Bring your questions — this is the easiest way to find where you fit.",

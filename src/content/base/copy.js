@@ -73,6 +73,41 @@ export const COPY = {
     dayLabel: "{count} event{s} on {date}",
     hint: "Highlighted days have events — select one to filter.",
     clearFilter: "Clear filter",
+    /* the chip on an event that is not tied to one programme */
+    community: "Open to all",
+    filterLabel: "Filter by programme",
+    allProgrammes: "All programmes",
+    seeAll: "See all events",
+  },
+
+  /* the /events page and each event's own /events/<slug> page */
+  eventsPage: {
+    eyebrow: "What's on",
+    heading: "Every event,",
+    mark: "in one place",
+    body: "Programmes, gatherings and volunteer days. Pick a programme to narrow the list, or browse everything that is coming up.",
+    count: "{count} event{s}",
+    empty: "Nothing coming up under that programme yet.",
+    details: "Event details",
+    past: "Nothing is scheduled at the moment. Check back soon.",
+  },
+
+  eventDetail: {
+    back: "All events",
+    aboutHeading: "About this event",
+    runsHeading: "How the day runs",
+    whereHeading: "Where",
+    directions: "Get directions",
+    detailsHeading: "At a glance",
+    dateLabel: "Date",
+    timeLabel: "Time",
+    kindLabel: "Type",
+    spotsLabel: "Places",
+    spotsValue: "{spots} places",
+    registerHeading: "Save your place",
+    programmeLink: "More about {programme}",
+    notFound: "We can’t find that event",
+    notFoundBody: "It may have finished, or the link may be wrong.",
   },
 
   testimonials: {

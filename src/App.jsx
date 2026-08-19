@@ -8,6 +8,8 @@ import Zakat from "./pages/Zakat/Zakat.jsx";
 import Placeholder from "./pages/Placeholder/Placeholder.jsx";
 import Programme from "./pages/Programme/Programme.jsx";
 import NotFound from "./pages/NotFound/NotFound.jsx";
+import EventsPage from "./pages/Events/Events.jsx";
+import EventDetail from "./pages/EventDetail/EventDetail.jsx";
 import { SECTIONS } from "./config/sections.js";
 import { DEFAULT_COUNTRY, basenameFor, countryFromPath } from "./config/countries.js";
 import ContentProvider, { useNav, useProgrammes } from "./content/ContentProvider.jsx";
@@ -15,6 +17,13 @@ import ScrollToTop from "./components/ScrollToTop/ScrollToTop.jsx";
 import ThemeSwitcher from "./components/ThemeSwitcher/ThemeSwitcher.jsx";
 import WhatsAppFab from "./components/WhatsAppFab/WhatsAppFab.jsx";
 import LocationPrompt from "./components/LocationPrompt/LocationPrompt.jsx";
+
+/* Nav entries that have a page of their own rather than the shared programme
+   template or the stub. Keyed by path so a country that drops the entry drops
+   the route with it. */
+const PAGES = {
+  "/events": EventsPage,
+};
 
 function Shell() {
   const { pages } = useNav();
@@ -72,19 +81,28 @@ function Shell() {
         />
         {/* a nav page with an entry in programmes.js gets the full
             programme template; everything else stays a stub */}
-        {pages.map((page) => (
-          <Route
-            key={page.path}
-            path={page.path}
-            element={
-              PROGRAMMES_CONTENT[page.path.replace("/", "")] ? (
-                <Programme page={page} />
-              ) : (
-                <Placeholder title={page.label} intro={page.intro} />
-              )
-            }
-          />
-        ))}
+        {pages.map((page) => {
+          const Own = PAGES[page.path];
+          return (
+            <Route
+              key={page.path}
+              path={page.path}
+              element={
+                Own ? (
+                  <Own />
+                ) : PROGRAMMES_CONTENT[page.path.replace("/", "")] ? (
+                  <Programme page={page} />
+                ) : (
+                  <Placeholder title={page.label} intro={page.intro} />
+                )
+              }
+            />
+          );
+        })}
+        {/* each event's own page, only where the events page itself exists */}
+        {pages.some((p) => p.path === "/events") && (
+          <Route path="/events/:slug" element={<EventDetail />} />
+        )}
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />

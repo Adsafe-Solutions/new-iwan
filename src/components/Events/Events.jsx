@@ -1,45 +1,28 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useCopy, useEvents } from "../../content/ContentProvider.jsx";
+import { Link } from "react-router-dom";
+import {
+  useCopy,
+  useCountry,
+  useEvents,
+  useNav,
+} from "../../content/ContentProvider.jsx";
 import { fill } from "../../lib/fill.js";
 import EventModal from "../EventModal/EventModal.jsx";
-import Button from "../Button/Button.jsx";
+import EventCard from "../EventCard/EventCard.jsx";
+import EventFilters from "../EventFilters/EventFilters.jsx";
 import { cx } from "../../lib/cx.js";
 import { KICKER, MARK_B } from "../../lib/type.js";
-
-const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-const MONTHS = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
-/* local-time parse — `new Date("2026-08-21")` is UTC and shifts a day west of GMT */
-const parse = (iso) => {
-  const [y, m, d] = iso.split("-").map(Number);
-  return new Date(y, m - 1, d);
-};
-const key = (d) =>
-  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
-    d.getDate()
-  ).padStart(2, "0")}`;
-const midnight = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
-
-const longDate = (iso) =>
-  parse(iso).toLocaleDateString("en-GB", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+import {
+  ALL_PROGRAMMES,
+  MONTHS,
+  WEEKDAYS,
+  key,
+  longDate,
+  matchesProgramme,
+  parse,
+  midnight,
+  upcomingFrom,
+} from "../../lib/events.js";
 
 /* Native `behavior: "smooth"` gives no control over speed, so the scroll is
    animated by hand. SCROLL_MS is the knob. */
@@ -100,11 +83,22 @@ const CAL_NAV = cx(
 export default function Events() {
   const EVENTS = useEvents();
   const copy = useCopy().events;
+  const [country] = useCountry();
+  const { pages } = useNav();
   const today = useMemo(() => midnight(new Date()), []);
-  const [cursor, setCursor] = useState(
-    () => new Date(today.getFullYear(), today.getMonth(), 1)
-  );
+
+  /* The month the calendar opens on. Today's month only if something is
+     actually happening in it — a country whose next event is two months out
+     would otherwise land on a page with nothing highlighted on it. */
+  const monthOf = (list, from) => {
+    const first = list.find((e) => parse(e.date) >= from);
+    const d = first ? parse(first.date) : from;
+    return new Date(d.getFullYear(), d.getMonth(), 1);
+  };
+
+  const [cursor, setCursor] = useState(() => monthOf(upcomingFrom(EVENTS, today), today));
   const [selected, setSelected] = useState(null); // ISO day filter
+  const [programme, setProgramme] = useState(ALL_PROGRAMMES);
   const [open, setOpen] = useState(null); // event in the modal
   const listRef = useRef(null);
   const wantScroll = useRef(false);
@@ -122,13 +116,16 @@ export default function Events() {
     if (listRef.current) glideTo(listRef.current);
   }, [selected]);
 
+  /* The programme filter narrows the calendar too — highlighting a day that
+     the list has already filtered out would give an empty result on click. */
   const upcoming = useMemo(
     () =>
-      EVENTS.filter((e) => parse(e.date) >= today).sort((a, b) =>
-        a.date.localeCompare(b.date)
-      ),
-    [EVENTS, today]
+      upcomingFrom(EVENTS, today).filter((e) => matchesProgramme(e, programme, pages)),
+    [EVENTS, today, programme, pages]
   );
+
+  /* chips come from the unfiltered list, or picking one would remove the rest */
+  const upcomingAll = useMemo(() => upcomingFrom(EVENTS, today), [EVENTS, today]);
 
   const byDay = useMemo(() => {
     const map = new Map();
@@ -157,12 +154,43 @@ export default function Events() {
     setSelected(null);
   };
 
+  /* a country with nothing coming up gets no section at all, rather than a
+     heading over an empty calendar */
+  if (upcomingAll.length === 0) return null;
+
   return (
     <section className="bg-mist pb-[5.5rem] pt-[4.5rem]" id="events">
       <div className="mx-auto w-full max-w-container px-6">
-        <h2 className={cx(KICKER, "reveal")}>
+        <h2 className={cx(KICKER, "reveal !mb-6")}>
           {copy.heading} <span className={MARK_B}>{copy.mark}</span>
         </h2>
+
+        <div className="reveal mb-[2.2rem] flex flex-wrap items-center justify-between gap-4">
+          <EventFilters
+            events={upcomingAll}
+            value={programme}
+            /* the jump lives in the handler rather than an effect on
+               `programme`: StrictMode double-invokes effects, and a
+               skip-first-render ref survives that, so an effect would move
+               the calendar on mount too */
+            onChange={(v) => {
+              setProgramme(v);
+              setSelected(null);
+              setCursor(
+                monthOf(
+                  upcomingAll.filter((e) => matchesProgramme(e, v, pages)),
+                  today
+                )
+              );
+            }}
+          />
+          <Link
+            to="/events"
+            className="text-[14px] font-bold text-primary underline underline-offset-4"
+          >
+            {copy.seeAll}
+          </Link>
+        </div>
 
         <div className="grid grid-cols-[1fr_340px] items-start gap-10 max-nav:grid-cols-1">
           {/* keyed on the filter so the cards replay their entrance. They are
@@ -184,58 +212,15 @@ export default function Events() {
             )}
 
             {shown.map((e, i) => (
-              <article
-                className={cx(
-                  "flex items-center gap-4 rounded-lg border border-line bg-white px-[1.3rem] py-[1.1rem]",
-                  "animate-ecardIn",
-                  CARD_DELAYS[Math.min(i, CARD_DELAYS.length - 1)],
-                  "transition-[border-color,box-shadow,transform] duration-[250ms]",
-                  "hover:-translate-y-0.5 hover:border-primary hover:shadow-ecard",
-                  "max-phone:flex-col max-phone:items-stretch max-phone:gap-[0.9rem]"
-                )}
+              <EventCard
                 key={e.id}
-              >
-                {/* the whole left side is the trigger, so the card is one big
-                    hit target */}
-                <button
-                  type="button"
-                  className="flex min-w-0 flex-1 cursor-pointer items-center gap-[1.2rem] border-0 bg-transparent p-0 text-left text-inherit [font:inherit]"
-                  onClick={() => setOpen(e)}
-                  aria-label={fill(copy.more, { title: e.title })}
-                >
-                  <span
-                    className="flex h-[62px] w-[62px] flex-none flex-col items-center justify-center rounded bg-primary leading-[1.1] text-white"
-                    aria-hidden="true"
-                  >
-                    <b className="text-[22px] font-extrabold">
-                      {parse(e.date).getDate()}
-                    </b>
-                    <small className="text-[11px] font-bold uppercase tracking-[0.08em] opacity-85">
-                      {MONTHS[parse(e.date).getMonth()].slice(0, 3)}
-                    </small>
-                  </span>
-                  <span className="min-w-0">
-                    <span className="mb-[0.45rem] inline-block rounded-full bg-primary/[0.08] px-2 py-[3px] text-[11px] font-extrabold uppercase tracking-[0.12em] text-primary">
-                      {e.tag}
-                    </span>
-                    <h3 className="mb-[0.3rem] text-[19px] font-bold leading-[1.3]">
-                      {e.title}
-                    </h3>
-                    <p className="mb-[0.35rem] text-[13px] font-semibold text-muted">
-                      {e.start}–{e.end} · {e.venue}
-                    </p>
-                    <p className="text-[14px] leading-[21px] text-muted">{e.summary}</p>
-                  </span>
-                </button>
-
-                <Button
-                  variant="outline"
-                  className="flex-none px-[1.3rem] py-[0.7rem] text-[13px] max-phone:w-full"
-                  onClick={() => setOpen(e)}
-                >
-                  {copy.register}
-                </Button>
-              </article>
+                event={e}
+                onOpen={() => setOpen(e)}
+                className={cx(
+                  "animate-ecardIn",
+                  CARD_DELAYS[Math.min(i, CARD_DELAYS.length - 1)]
+                )}
+              />
             ))}
           </div>
 
@@ -307,7 +292,7 @@ export default function Events() {
                     aria-label={fill(copy.dayLabel, {
                       count: list.length,
                       s: list.length > 1 ? "s" : "",
-                      date: longDate(iso),
+                      date: longDate(iso, country.locale),
                     })}
                   >
                     {d.getDate()}

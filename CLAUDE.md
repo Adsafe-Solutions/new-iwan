@@ -61,6 +61,28 @@ WhatsAppFab, WipeBand.
 Homepage order (`pages/Home/Home.jsx`): Hero → TrustedBy → Pillars →
 TakeAction → Events → Testimonials → Instagram.
 
+**Events are the one content type NOT split by country folder.** They live in
+a single array in `content/base/events.js` and each carries its own `country` —
+`"in"`, a list like `["in", "ca"]`, or omitted for everywhere. `resolveContent`
+filters that list after the merge, so no component has to remember. An event is
+a real thing that happens in one place; a base-plus-override model would have
+meant restating the whole list per country to say so. ⚠ India has all six
+today, so **Canada has none** — the homepage section renders nothing at all
+rather than a heading over an empty calendar, and `/ca/events` shows its empty
+state. Add Canadian events to the same array with `country: "ca"`.
+
+**Events have three surfaces, one card and one form.** The homepage section
+(`components/Events`) opens the `EventModal`; `/events` (`pages/Events`) lists
+everything and links through; `/events/:slug` (`pages/EventDetail`) is the
+event's own page and registers inline. `EventCard` renders in both lists —
+`size="row"` is the compact line the homepage lists, `size="tile"` the large
+photo card the events page grids two-up; pass `onOpen` for the modal, `to` for
+the link — and `RegisterForm` is the
+cta → form → done flow shared by the modal and the detail page, so the two
+cannot drift. `EventFilters` builds its chips from the events themselves, so
+a programme with nothing coming up never gets an empty chip. All the date
+handling lives in `lib/events.js`; nothing parses a date locally any more.
+
 `TrustedBy` is the yellow wipe band under the hero, and it is generic — every
 word comes from props (`eyebrow`, `headingLines`, `items`), plus `id`,
 `wipeTone` and `className`, so it can be dropped on any page with different
@@ -462,8 +484,16 @@ carries the accessible name; only the hand-written placeholders have real alt.
   `opacity: 0` forever. Give dynamic content its own keyframe animation instead
   — `animate-ecardIn` on the cards in `Events.jsx` is the pattern.
 - **Never `new Date("2026-08-21")`.** It parses as UTC and lands a day early
-  west of Greenwich. Event dates are `YYYY-MM-DD` strings parsed field-by-field
-  (`parse()` in `Events.jsx` / `EventModal.jsx`).
+  west of Greenwich. Event dates are `YYYY-MM-DD` strings parsed
+  field-by-field — `parse()` in **`lib/events.js`**, which is the only copy of
+  that logic now. `longDate()` there takes the active country's `locale`, so
+  the same event reads "21 August 2026" in India and "August 21, 2026" in
+  Canada.
+- **An event's programme is a nav path, not a label.** `programmeOf()` reads
+  the label back out of the active country's nav, so the chip, the filter and
+  the programme page cannot disagree — and an event pointing at a programme
+  the country does not run (Canada has no `/iwan-women`) degrades to the
+  community chip with no dangling link, rather than breaking.
 - **StrictMode double-invokes effects and refs survive it**, so a
   "skip the first render" ref guard fires on mount anyway. Use an explicit
   intent flag set by the interaction (see `wantScroll` in `Events.jsx`).

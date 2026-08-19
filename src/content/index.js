@@ -1,6 +1,7 @@
 import { DEFAULT_COUNTRY } from "../config/countries.js";
 import { BASE_CONTENT } from "./base/index.js";
 import { merge } from "./merge.js";
+import { eventsForCountry } from "../lib/events.js";
 
 /* Country folders are discovered rather than imported by name, so adding
    src/content/<code>/index.js is all it takes — there is no list here to keep
@@ -21,7 +22,16 @@ const cache = new Map();
    this becomes the fallback the API response is merged onto, which is also
    what renders before the request lands. */
 export function resolveContent(code = DEFAULT_COUNTRY) {
-  if (!cache.has(code)) cache.set(code, merge(BASE_CONTENT, OVERRIDES[code]));
+  if (!cache.has(code)) {
+    const snapshot = merge(BASE_CONTENT, OVERRIDES[code]);
+    /* Events are the one list kept whole across countries and split here by
+       their own `country` field — see content/base/events.js. Filtering after
+       the merge means a country override of `events` is filtered too. */
+    cache.set(code, {
+      ...snapshot,
+      events: eventsForCountry(snapshot.events, code),
+    });
+  }
   return cache.get(code);
 }
 

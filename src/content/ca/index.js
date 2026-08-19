@@ -20,14 +20,18 @@ export default {
 };
 
 /* ⚠ Everything else is still inherited from India — the Bangalore address, the
-   +91 WhatsApp number, the "started in Bangalore in 2020" story, India's
-   events. Nothing above has been invented; these are the keys that need real
-   Canadian values before this country is shown publicly:
+   +91 WhatsApp number, the "started in Bangalore in 2020" story.
+
+   Events are the exception: they live in one list in base/events.js and carry
+   their own `country`, so Canada shows only the ones tagged for it rather than
+   inheriting India's.
+
+   Nothing above has been invented; these are the keys that need real Canadian
+   values before this country is shown publicly:
 
      brand.address        · the map fallback in the event modal reads this
      brand.whatsapp       · digits only, country code first
      brand.email          · if it differs
-     events               · add()/remove(), or a plain array for a fresh list
      programmes.contact   · phone + address on the programme pages
      programmes.content   · the three entries' copy, if Canada's differs
      testimonials         · ⚠ real quotes from real people — never invent these

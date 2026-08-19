@@ -1,63 +1,24 @@
-import { useState } from "react";
 import Modal from "../Modal/Modal.jsx";
-import Button from "../Button/Button.jsx";
+import RegisterForm from "../RegisterForm/RegisterForm.jsx";
 import { IconArrowUpRight } from "@tabler/icons-react";
 import { cx } from "../../lib/cx.js";
 import { mapEmbed, mapLink } from "../../lib/map.js";
-import { useBrand, useCopy } from "../../content/ContentProvider.jsx";
+import { useBrand, useCopy, useCountry, useNav } from "../../content/ContentProvider.jsx";
 import { fill } from "../../lib/fill.js";
-
-const FULLDOW = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
-const FULLMON = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
-const parse = (iso) => {
-  const [y, m, d] = iso.split("-").map(Number);
-  return new Date(y, m - 1, d);
-};
-const longDate = (iso) => {
-  const d = parse(iso);
-  return `${FULLDOW[d.getDay()]}, ${d.getDate()} ${FULLMON[d.getMonth()]}`;
-};
+import { longDate, programmeOf } from "../../lib/events.js";
 
 const LABEL =
   "mb-[0.9rem] block text-[12px] font-extrabold uppercase tracking-[0.12em] text-muted";
-const CTA_ROW = "flex flex-wrap items-center gap-[1.1rem]";
-const FIELD = cx(
-  "rounded border border-line px-[0.9rem] py-3 text-[15px] text-ink [font-family:inherit]",
-  "focus:border-primary focus:outline-none"
-);
-const FIELD_LABEL =
-  "flex flex-[1_1_200px] flex-col gap-[0.35rem] text-[13px] font-bold text-muted";
 
 export default function EventModal({ event, onClose }) {
   const BRAND = useBrand();
   const copy = useCopy().eventModal;
-  const [stage, setStage] = useState("cta"); // cta → form → done
+  const eventsCopy = useCopy().events;
+  const [country] = useCountry();
+  const { pages } = useNav();
   const embed = mapEmbed(event, BRAND.address);
   const link = mapLink(event, BRAND.address);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const programme = programmeOf(event, pages);
 
   return (
     <Modal
@@ -69,9 +30,14 @@ export default function EventModal({ event, onClose }) {
       closeClassName="!text-white/70 hover:!text-accent"
     >
       <div className="bg-primary-800 p-[clamp(1.4rem,4vw,2.2rem)] py-[1.8rem] pr-[4.5rem]">
-        <span className="mb-[0.6rem] block text-[13px] font-extrabold uppercase tracking-[0.12em] text-accent">
-          {longDate(event.date)}
-        </span>
+        <div className="mb-[0.7rem] flex flex-wrap items-center gap-3">
+          <span className="text-[13px] font-extrabold uppercase tracking-[0.12em] text-accent">
+            {longDate(event.date, country.locale)}
+          </span>
+          <span className="rounded-full bg-white/[0.14] px-[0.6rem] py-[3px] text-[11px] font-extrabold uppercase tracking-[0.12em] text-white/85">
+            {programme ? programme.label : eventsCopy.community}
+          </span>
+        </div>
         <h3
           id="emodal-title"
           className="mb-2 text-[clamp(24px,4vw,32px)] font-extrabold leading-[1.15] tracking-[-0.02em] text-white"
@@ -142,86 +108,7 @@ export default function EventModal({ event, onClose }) {
         </div>
 
         <div className="border-t border-line pt-[1.6rem]">
-          {stage === "cta" && (
-            <div className={CTA_ROW}>
-              <Button onClick={() => setStage("form")}>{copy.register}</Button>
-              <span className="text-[14px] text-muted">{copy.free}</span>
-            </div>
-          )}
-
-          {stage === "form" && (
-            /* nothing is submitted anywhere — this is the visual flow only */
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                setStage("done");
-              }}
-            >
-              <span className="mb-4 block text-[16px] font-bold">{copy.formHeading}</span>
-              <div className="mb-[1.1rem] flex flex-wrap gap-[0.9rem]">
-                <label className={FIELD_LABEL}>
-                  {copy.nameLabel}
-                  <input
-                    className={FIELD}
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder={copy.namePlaceholder}
-                    required
-                  />
-                </label>
-                <label className={FIELD_LABEL}>
-                  {copy.emailLabel}
-                  <input
-                    className={FIELD}
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder={copy.emailPlaceholder}
-                    required
-                  />
-                </label>
-              </div>
-              <div className={CTA_ROW}>
-                <Button type="submit">{copy.submit}</Button>
-                <button
-                  type="button"
-                  className="cursor-pointer border-0 bg-transparent text-[14px] font-semibold text-muted [font-family:inherit]"
-                  onClick={() => setStage("cta")}
-                >
-                  {copy.cancel}
-                </button>
-              </div>
-            </form>
-          )}
-
-          {stage === "done" && (
-            <div
-              className={cx(
-                "flex items-start gap-4 rounded bg-green/[0.12] px-[1.3rem] py-[1.2rem]",
-                "animate-modalPanel"
-              )}
-            >
-              <span
-                className="grid h-[30px] w-[30px] flex-none place-items-center rounded-full bg-green text-[15px] font-bold text-white"
-                aria-hidden="true"
-              >
-                ✓
-              </span>
-              <div>
-                <strong className="mb-1 block text-[16px] font-bold">
-                  {fill(copy.doneHeading, {
-                    name: name ? `, ${name.split(" ")[0]}` : "",
-                  })}
-                </strong>
-                <p className="text-[15px] leading-[23px] text-ink-2">
-                  {fill(copy.doneBody, {
-                    title: event.title,
-                    date: longDate(event.date),
-                  })}
-                </p>
-              </div>
-            </div>
-          )}
+          <RegisterForm event={event} locale={country.locale} />
         </div>
       </div>
     </Modal>
