@@ -431,6 +431,19 @@ carries the accessible name; only the hand-written placeholders have real alt.
 - **`[data-count]` counters must render empty.** `useGsap` writes the number
   in; seeding the element with the final value makes it visibly snap back to
   zero when the ScrollTrigger fires. See `About.jsx`.
+- **`Pillars` deals its four cards out of a pile, and pins to do it.** The
+  cards start stacked centre-of-row and scrub into their grid positions, one
+  after another, with the section pinned until the last one lands. Three
+  things it has to get right, all of them already bitten elsewhere:
+  the pin needs `refreshPriority: 1` (see the Journey note below); positions
+  come from `offsetLeft`, which is layout and so unaffected by the transform
+  GSAP is writing, with `invalidateOnRefresh` to recompute on resize; and the
+  deck transform lives on a **wrapper**, not on the card, because GSAP's
+  inline transform would otherwise override the card's `hover:-translate-y-2`
+  outright. It pins only at `nav` and up — the narrow layout is a vertical
+  stack with no row to deal into, so below that the cards take an ordinary
+  staggered reveal. Their rules are `[data-pillar-line]`, not `[data-line]`,
+  so the generic rule pass does not measure them through the deck transform.
 - **The Journey timeline pins the viewport, and carries `refreshPriority: 1`
   because of it.** `[data-journey]` scrubs a fill → draw → fill sequence and
   pins its section until it finishes. Pinning inserts a spacer that pushes

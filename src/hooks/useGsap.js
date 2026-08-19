@@ -35,7 +35,7 @@ export function useScrollAnimations() {
     if (reduced) {
       document.querySelectorAll(".reveal").forEach((el) => el.classList.add("in"));
       document
-        .querySelectorAll("[data-wipe],[data-line],[data-take-blue]")
+        .querySelectorAll("[data-wipe],[data-line],[data-pillar-line],[data-take-blue]")
         .forEach((el) => {
           el.style.transform = "none";
         });
@@ -156,6 +156,104 @@ export function useScrollAnimations() {
             { color: cssColor("--c-white"), ease: "none", duration: 0.32 },
             0.62
           );
+      }
+
+      /* Pillars — the four cards start piled up as a deck and deal out into
+         their grid positions, scrubbed to scroll, with the section pinned so
+         the whole hand lands before the page moves on.
+
+         Only above the drawer breakpoint: the narrow layout stacks the cards
+         vertically, so there is no row for them to deal into and holding the
+         viewport would just feel stuck. Below it they take the ordinary
+         staggered reveal instead.
+
+         Positions are read from `offsetLeft`, which is the layout position and
+         so is not affected by the transform GSAP is writing — reading
+         getBoundingClientRect here would compound each refresh. Function-based
+         values plus invalidateOnRefresh recompute them when the grid resizes. */
+      const pillars = document.querySelector("[data-pillars]");
+      if (pillars) {
+        const cards = gsap.utils.toArray("[data-pillar]", pillars);
+        const wide = window.matchMedia("(min-width: 1000px)").matches;
+
+        if (cards.length && wide) {
+          const mid = (cards.length - 1) / 2;
+          const last = cards[cards.length - 1];
+          /* distance from a card's own centre to the centre of the whole row */
+          const toCentre = (card) =>
+            (cards[0].offsetLeft + last.offsetLeft + last.offsetWidth) / 2 -
+            (card.offsetLeft + card.offsetWidth / 2);
+
+          /* the pile reads top-down, so the last card sits on top */
+          gsap.set(cards, { zIndex: (i) => i });
+
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: pillars,
+              start: "center center",
+              end: `+=${cards.length * 210}`,
+              pin: true,
+              scrub: 0.7,
+              anticipatePin: 1,
+              invalidateOnRefresh: true,
+              /* same reason as the Journey pin below: the spacer this inserts
+                 moves everything under it, and a lower-priority trigger would
+                 have measured the pre-pin layout */
+              refreshPriority: 1,
+            },
+          });
+
+          cards.forEach((card, i) => {
+            const at = i * 0.55;
+            tl.fromTo(
+              card,
+              {
+                x: () => toCentre(card) + (i - mid) * 18,
+                y: i * 15,
+                rotation: (i - mid) * 3.2,
+                scale: 0.9,
+              },
+              { x: 0, y: 0, rotation: 0, scale: 1, ease: "power2.out", duration: 0.85 },
+              at
+            );
+            const rule = card.querySelector("[data-pillar-line]");
+            if (rule)
+              tl.fromTo(
+                rule,
+                { scaleX: 0 },
+                { scaleX: 1, ease: "none", duration: 0.5 },
+                at + 0.5
+              );
+          });
+        } else if (cards.length) {
+          gsap.fromTo(
+            cards,
+            { y: 42, opacity: 0 },
+            {
+              y: 0,
+              opacity: 1,
+              duration: 0.7,
+              ease: "power3.out",
+              stagger: 0.12,
+              scrollTrigger: { trigger: pillars, start: "top 82%" },
+            }
+          );
+          gsap.fromTo(
+            pillars.querySelectorAll("[data-pillar-line]"),
+            { scaleX: 0 },
+            {
+              scaleX: 1,
+              ease: "none",
+              stagger: 0.12,
+              scrollTrigger: {
+                trigger: pillars,
+                start: "top 70%",
+                end: "bottom 60%",
+                scrub: 1.2,
+              },
+            }
+          );
+        }
       }
 
       /* Journey — marker fills, then its rule draws across to the next

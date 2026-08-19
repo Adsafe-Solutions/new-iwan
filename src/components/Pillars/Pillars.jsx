@@ -62,7 +62,7 @@ export default function Pillars() {
   const PILLARS = usePillars();
   const copy = useCopy().pillars;
   return (
-    <section className="bg-mist py-[4.5rem]" id="pillars">
+    <section className="bg-mist py-[4.5rem]" id="pillars" data-pillars>
       <div className="mx-auto w-full max-w-container px-6">
         <h2 className={cx(KICKER, "reveal")}>
           {copy.heading} <span className={MARK_YB}>{copy.mark}</span>
@@ -72,55 +72,60 @@ export default function Pillars() {
           {copy.body}
         </p>
 
+        {/* The wrapper carries the deck transform and the card keeps its own
+            hover lift: GSAP writes an inline transform, which would otherwise
+            override `hover:-translate-y-2` outright. `relative` is what makes
+            the stacking order stick while they are piled up. */}
         <div
-          className="grid grid-cols-4 gap-4 max-nav:grid-cols-2 max-phone:grid-cols-1"
-          data-stagger
+          className="relative grid grid-cols-4 gap-4 max-nav:grid-cols-2 max-phone:grid-cols-1"
+          data-pillars-grid
         >
           {PILLARS.map((p) => (
-            <article
-              className={cx(
-                "reveal flex flex-col rounded p-6 shadow-card",
-                "transition-transform duration-[350ms] hover:-translate-y-2",
-                p.tone,
-                p.ink
-              )}
-              key={p.id}
-              id={p.id}
-            >
-              <span className={cx("mb-6 block", p.markTone)}>
-                <Mark shape={p.mark} />
-              </span>
-
-              {/* English left, Arabic right — the same two-column pairing the
-                  brand deck sets these lists in */}
-              <div className="flex items-baseline justify-between gap-3">
-                <h3 className="text-[26px] font-black uppercase leading-none tracking-[-0.01em]">
-                  {p.name}
-                </h3>
-                <span
-                  className="text-[22px] font-bold leading-none opacity-90"
-                  lang="ar"
-                  dir="rtl"
-                >
-                  {p.ar}
+            <div className="relative" key={p.id} data-pillar>
+              <article
+                className={cx(
+                  "flex h-full flex-col rounded p-6 shadow-card",
+                  "transition-transform duration-[350ms] hover:-translate-y-2",
+                  p.tone,
+                  p.ink
+                )}
+                id={p.id}
+              >
+                <span className={cx("mb-6 block", p.markTone)}>
+                  <Mark shape={p.mark} />
                 </span>
-              </div>
 
-              <p className="mt-4 text-[15px] leading-[23px] opacity-90">{p.body}</p>
+                {/* English left, Arabic right — the same two-column pairing the
+                    brand deck sets these lists in */}
+                <div className="flex items-baseline justify-between gap-3">
+                  <h3 className="text-[26px] font-black uppercase leading-none tracking-[-0.01em]">
+                    {p.name}
+                  </h3>
+                  <span
+                    className="text-[22px] font-bold leading-none opacity-90"
+                    lang="ar"
+                    dir="rtl"
+                  >
+                    {p.ar}
+                  </span>
+                </div>
 
-              <div
-                className="mt-5 h-1 w-full origin-[left_center] scale-x-0 bg-current opacity-40 will-change-transform"
-                data-line
-              />
+                <p className="mt-4 text-[15px] leading-[23px] opacity-90">{p.body}</p>
 
-              {/* the vision pillar this commitment carries */}
-              <p className="mt-4 text-[12px] font-bold uppercase tracking-[0.1em] opacity-75">
-                {p.serves}{" "}
-                <span lang="ar" dir="rtl" className="tracking-normal">
-                  {p.servesAr}
-                </span>
-              </p>
-            </article>
+                <div
+                  className="mt-5 h-1 w-full origin-[left_center] scale-x-0 bg-current opacity-40 will-change-transform"
+                  data-pillar-line
+                />
+
+                {/* the vision pillar this commitment carries */}
+                <p className="mt-4 text-[12px] font-bold uppercase tracking-[0.1em] opacity-75">
+                  {p.serves}{" "}
+                  <span lang="ar" dir="rtl" className="tracking-normal">
+                    {p.servesAr}
+                  </span>
+                </p>
+              </article>
+            </div>
           ))}
         </div>
       </div>
