@@ -6,6 +6,7 @@ import AboutStrip from "../../components/AboutStrip/AboutStrip.jsx";
 import AboutSplit from "../../components/AboutSplit/AboutSplit.jsx";
 import PageHero from "../../components/PageHero/PageHero.jsx";
 import Journey from "../../components/Journey/Journey.jsx";
+import Typewriter from "../../components/Typewriter/Typewriter.jsx";
 import SplitFeature from "../../components/SplitFeature/SplitFeature.jsx";
 import StepsFeature from "../../components/StepsFeature/StepsFeature.jsx";
 import {
@@ -104,10 +105,10 @@ export default function Programme({ page }) {
           exists, otherwise the programme's stock tile. */}
       <PageHero
         variant="overlay"
+        anchor="bottom-left"
         img={c.hero ?? page.tile}
         imgAlt={`${page.label} session`}
         title={page.label}
-        excerpt={c.lede ?? page.intro}
         eyebrow={
           /* accent rather than the programme colour — the darker programme
              tones lose too much contrast against the scrim */
@@ -117,6 +118,26 @@ export default function Programme({ page }) {
           </p>
         }
       >
+        {/* the lede and the CTAs come through as children rather than as
+            `excerpt`, so the typed line can sit directly under the name */}
+        {(c.heroPhrases ?? []).length > 0 && (
+          <p
+            className={cx(
+              "mb-5 font-satoshi text-[clamp(1.3rem,2.4vw,30px)] font-bold leading-[1.2]",
+              "text-accent max-phone:text-[20px]"
+            )}
+          >
+            <Typewriter
+              phrases={c.heroPhrases}
+              cursorClass="ml-[3px] inline-block h-[0.95em] w-[3px] animate-blink bg-white align-[-1px]"
+            />
+          </p>
+        )}
+
+        <p className="mb-9 max-w-[46ch] font-satoshi text-[18px] leading-[28px] text-white/85 max-phone:text-[16px] max-phone:leading-[25px]">
+          {c.lede ?? page.intro}
+        </p>
+
         <div className="flex flex-wrap gap-3">
           <a
             href={`mailto:${BRAND.email}`}

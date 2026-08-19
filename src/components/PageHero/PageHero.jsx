@@ -17,6 +17,10 @@ export default function PageHero({
   img,
   imgAlt = "",
   variant = "card",
+  /* overlay only: "left" centres the copy block against the left edge,
+     "bottom-left" drops it to the foot of the photograph. Both keep the copy
+     on the left, which is the side `hero-scrim` darkens. */
+  anchor = "left",
   eyebrow,
   title,
   excerpt,
@@ -30,7 +34,8 @@ export default function PageHero({
   return (
     <section
       className={cx(
-        "relative flex items-center overflow-hidden",
+        "relative flex overflow-hidden",
+        overlay && anchor === "bottom-left" ? "items-end" : "items-center",
         overlay ? "bg-primary-800" : "bg-shade",
         className ?? (overlay ? "h-[78vh] min-h-[620px]" : "h-[66vh] min-h-[560px]"),
         overlay && "max-phone:h-auto max-phone:min-h-[70svh] max-phone:py-20"
@@ -49,7 +54,7 @@ export default function PageHero({
       <div className="relative z-[2] mx-auto w-full max-w-container px-6">
         {overlay ? (
           /* copy straight on the photo — same scale as the homepage hero */
-          <div className="max-w-[750px]">
+          <div className={cx("max-w-[750px]", anchor === "bottom-left" && "pb-10")}>
             {eyebrow}
             {title && (
               <h1

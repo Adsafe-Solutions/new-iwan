@@ -19,6 +19,10 @@
    Kids have one for every session; without one a session card falls back to a
    colour block in the programme's own tone.
 
+   `heroPhrases` is what the hero types out under the programme name — short
+   lines that restate what the programme already claims elsewhere, never a new
+   fact. The same mechanic as the Zakat hero.
+
    `hero` is the full-bleed hero photograph. Only Youth has a real one
    (src/assests/iwan-youth-hero.png); the rest fall back to the stock
    `tile` from navPages.js.
@@ -59,6 +63,12 @@ import menHero from "../../assests/iwan-kids-hero.png";
 export const PROGRAMMES_CONTENT = {
   "iwan-youth": {
     hero: youthHero,
+    heroPhrases: [
+      "Builds real skills",
+      "Trains young leaders",
+      "Runs on mentorship",
+      "Starts by turning up",
+    ],
     lede: "A programme for young people who want more than somewhere to pass the time — mentoring, real skills, and the room to lead something of their own.",
     about: {
       heading: "Growing up with purpose, together",
@@ -155,6 +165,12 @@ export const PROGRAMMES_CONTENT = {
 
   "iwan-kids": {
     hero: kidsHero,
+    heroPhrases: [
+      "Learning that sticks",
+      "Curiosity out loud",
+      "Taekwondo to gardening",
+      "Habits that outlast the session",
+    ],
     lede: "Somewhere for the youngest members of the community to be curious out loud — and to pick up the habits that outlast the session.",
     about: {
       heading: "Learning that doesn't feel like school",
@@ -268,6 +284,12 @@ export const PROGRAMMES_CONTENT = {
 
   "iwan-women": {
     hero: womenHero,
+    heroPhrases: [
+      "Skills you keep",
+      "A network that holds",
+      "Built with women",
+      "Independence, together",
+    ],
     lede: "Skills, livelihoods and a network that holds — built with women, not designed for them.",
     about: {
       heading: "Independence, built alongside other people",
@@ -325,6 +347,12 @@ export const PROGRAMMES_CONTENT = {
 
   "iwan-men": {
     hero: menHero,
+    heroPhrases: [
+      "Work worth doing",
+      "People worth knowing",
+      "Show up, keep showing up",
+      "A straightforward way in",
+    ],
     lede: "Volunteering, mentorship and the community work that gets done when men turn up for it.",
     about: {
       heading: "Show up, and keep showing up",
