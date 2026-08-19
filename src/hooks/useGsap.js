@@ -35,7 +35,7 @@ export function useScrollAnimations() {
     if (reduced) {
       document.querySelectorAll(".reveal").forEach((el) => el.classList.add("in"));
       document
-        .querySelectorAll("[data-wipe],[data-line],[data-pillar-line],[data-take-blue]")
+        .querySelectorAll("[data-wipe],[data-line],[data-deck-line],[data-take-blue]")
         .forEach((el) => {
           el.style.transform = "none";
         });
@@ -158,9 +158,10 @@ export function useScrollAnimations() {
           );
       }
 
-      /* Pillars — the four cards start piled up as a deck and deal out into
-         their grid positions, scrubbed to scroll, with the section pinned so
-         the whole hand lands before the page moves on.
+      /* Decks — the cards in a [data-deck] section start piled up and deal out
+         into their grid positions, scrubbed to scroll, with the section pinned
+         so the whole hand lands before the page moves on. The homepage pillars
+         and the About page's programme cards both use it.
 
          Only above the drawer breakpoint: the narrow layout stacks the cards
          vertically, so there is no row for them to deal into and holding the
@@ -171,12 +172,13 @@ export function useScrollAnimations() {
          so is not affected by the transform GSAP is writing — reading
          getBoundingClientRect here would compound each refresh. Function-based
          values plus invalidateOnRefresh recompute them when the grid resizes. */
-      const pillars = document.querySelector("[data-pillars]");
-      if (pillars) {
-        const cards = gsap.utils.toArray("[data-pillar]", pillars);
-        const wide = window.matchMedia("(min-width: 1000px)").matches;
+      const wideDeck = window.matchMedia("(min-width: 1000px)").matches;
 
-        if (cards.length && wide) {
+      gsap.utils.toArray("[data-deck]").forEach((deck) => {
+        const cards = gsap.utils.toArray("[data-deck-card]", deck);
+        if (!cards.length) return;
+
+        if (wideDeck) {
           const mid = (cards.length - 1) / 2;
           const last = cards[cards.length - 1];
           /* distance from a card's own centre to the centre of the whole row */
@@ -189,7 +191,7 @@ export function useScrollAnimations() {
 
           const tl = gsap.timeline({
             scrollTrigger: {
-              trigger: pillars,
+              trigger: deck,
               start: "center center",
               end: `+=${cards.length * 210}`,
               pin: true,
@@ -216,7 +218,7 @@ export function useScrollAnimations() {
               { x: 0, y: 0, rotation: 0, scale: 1, ease: "power2.out", duration: 0.85 },
               at
             );
-            const rule = card.querySelector("[data-pillar-line]");
+            const rule = card.querySelector("[data-deck-line]");
             if (rule)
               tl.fromTo(
                 rule,
@@ -225,7 +227,7 @@ export function useScrollAnimations() {
                 at + 0.5
               );
           });
-        } else if (cards.length) {
+        } else {
           gsap.fromTo(
             cards,
             { y: 42, opacity: 0 },
@@ -235,26 +237,72 @@ export function useScrollAnimations() {
               duration: 0.7,
               ease: "power3.out",
               stagger: 0.12,
-              scrollTrigger: { trigger: pillars, start: "top 82%" },
+              scrollTrigger: { trigger: deck, start: "top 82%" },
             }
           );
-          gsap.fromTo(
-            pillars.querySelectorAll("[data-pillar-line]"),
-            { scaleX: 0 },
-            {
-              scaleX: 1,
-              ease: "none",
-              stagger: 0.12,
-              scrollTrigger: {
-                trigger: pillars,
-                start: "top 70%",
-                end: "bottom 60%",
-                scrub: 1.2,
-              },
-            }
-          );
+          const rules = deck.querySelectorAll("[data-deck-line]");
+          if (rules.length)
+            gsap.fromTo(
+              rules,
+              { scaleX: 0 },
+              {
+                scaleX: 1,
+                ease: "none",
+                stagger: 0.12,
+                scrollTrigger: {
+                  trigger: deck,
+                  start: "top 70%",
+                  end: "bottom 60%",
+                  scrub: 1.2,
+                },
+              }
+            );
         }
-      }
+      });
+
+      /* Horizontal strips — a [data-hscroll] section pins and the row inside it
+         scrolls sideways as you scroll down, releasing once the last card has
+         come past.
+
+         It drives the wrapper's own `scrollLeft` rather than translating a
+         track, so the base state is a plainly scrollable strip: it swipes on a
+         phone, takes the keyboard, and needs no JavaScript at all. GSAP only
+         takes the wheel when the section is pinned. */
+      gsap.utils.toArray("[data-hscroll]").forEach((scene) => {
+        const wrap = scene.querySelector("[data-hscroll-wrap]");
+        if (!wrap || !window.matchMedia("(min-width: 1000px)").matches) return;
+
+        const overflow = () => Math.max(0, wrap.scrollWidth - wrap.clientWidth);
+        if (overflow() === 0) return;
+
+        const at = { v: 0 };
+        gsap.fromTo(
+          at,
+          { v: 0 },
+          {
+            v: 1,
+            ease: "none",
+            scrollTrigger: {
+              trigger: scene,
+              start: "center center",
+              /* the tail keeps the last card on screen for a beat before the
+                 page moves on, rather than releasing the pin the instant it
+                 finishes travelling */
+              end: () => `+=${overflow() + window.innerHeight * 0.35}`,
+              pin: true,
+              scrub: 0.6,
+              anticipatePin: 1,
+              invalidateOnRefresh: true,
+              /* the pin's spacer moves everything below it — same reason the
+                 deck above carries this */
+              refreshPriority: 1,
+            },
+            onUpdate: () => {
+              wrap.scrollLeft = at.v * overflow();
+            },
+          }
+        );
+      });
 
       /* Journey — marker fills, then its rule draws across to the next
          marker, and so on. Scrubbed to scroll, and the section pins for the

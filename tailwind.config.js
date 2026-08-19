@@ -26,6 +26,14 @@ export const palette = {
   men: "#234967",
   youth: "#3994b3",
 
+  /* Each programme's colour at 10% over white, written out rather than left
+     as `bg-youth/10` so it is a colour with a name — the About cards take
+     their ground from the nav entry, which points at these. */
+  womenSoft: "#fdeff5",
+  kidsSoft: "#eaf4fb",
+  menSoft: "#e9edf0",
+  youthSoft: "#ebf4f7",
+
   /* neutrals */
   ink: "#0a1020",
   ink2: "#1a2233",
@@ -180,10 +188,10 @@ export default {
         teal: themed("c-teal"),
 
         /* fixed */
-        women: palette.women,
-        kids: palette.kids,
-        men: palette.men,
-        youth: palette.youth,
+        women: { DEFAULT: palette.women, soft: palette.womenSoft },
+        kids: { DEFAULT: palette.kids, soft: palette.kidsSoft },
+        men: { DEFAULT: palette.men, soft: palette.menSoft },
+        youth: { DEFAULT: palette.youth, soft: palette.youthSoft },
         ink: { DEFAULT: palette.ink, 2: palette.ink2 },
         muted: palette.muted,
         line: palette.line,

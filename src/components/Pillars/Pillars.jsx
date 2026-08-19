@@ -62,7 +62,7 @@ export default function Pillars() {
   const PILLARS = usePillars();
   const copy = useCopy().pillars;
   return (
-    <section className="bg-mist py-[4.5rem]" id="pillars" data-pillars>
+    <section className="bg-mist py-[4.5rem]" id="pillars" data-deck>
       <div className="mx-auto w-full max-w-container px-6">
         <h2 className={cx(KICKER, "reveal")}>
           {copy.heading} <span className={MARK_YB}>{copy.mark}</span>
@@ -78,10 +78,10 @@ export default function Pillars() {
             the stacking order stick while they are piled up. */}
         <div
           className="relative grid grid-cols-4 gap-4 max-nav:grid-cols-2 max-phone:grid-cols-1"
-          data-pillars-grid
+          data-deck-grid
         >
           {PILLARS.map((p) => (
-            <div className="relative" key={p.id} data-pillar>
+            <div className="relative" key={p.id} data-deck-card>
               <article
                 className={cx(
                   "flex h-full flex-col rounded p-6 shadow-card",
@@ -114,7 +114,7 @@ export default function Pillars() {
 
                 <div
                   className="mt-5 h-1 w-full origin-[left_center] scale-x-0 bg-current opacity-40 will-change-transform"
-                  data-pillar-line
+                  data-deck-line
                 />
 
                 {/* the vision pillar this commitment carries */}

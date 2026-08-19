@@ -15,6 +15,7 @@ import { HERO_IMAGE, HERO_LOGOS, HERO_SLIDES, PROGRAMME_MARKS } from "./hero.js"
 import { FOCUS_AREAS, FOCUS_LINKS } from "./focusAreas.js";
 import { ADVISORS } from "./advisors.js";
 import { COPY } from "./copy.js";
+import { ABOUT } from "./about.js";
 
 /* The shape every country resolves to. A country folder overrides any subtree
    of this and inherits the rest; the CMS will be asked for the same shape, so
@@ -22,6 +23,7 @@ import { COPY } from "./copy.js";
 export const BASE_CONTENT = {
   brand: BRAND,
   copy: COPY,
+  about: ABOUT,
   nav: { programmesGroup: PROGRAMMES, pages: NAV_PAGES },
   pillars: PILLARS,
   programmes: { content: PROGRAMMES_CONTENT, contact: PROGRAMME_CONTACT },

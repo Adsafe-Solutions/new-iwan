@@ -50,7 +50,18 @@ tailwind.config.js     EVERY colour in the project (see Colour below)
 A class set used more than once inside a file is hoisted to a `const` at the top
 of that file (`NAV_ITEM`, `CARD`, `PILL_Y`, …) rather than repeated inline.
 
-Pages: Home, Programme, Zakat, Placeholder, NotFound.
+Pages: Home, About, Programme, Events, EventDetail, Zakat, Placeholder,
+NotFound.
+
+**`/about-us`** is transcribed from the live about-us page — the 2020 genesis
+story, the vision and mission statements and the six core values are the
+organisation's own account of itself, so `content/base/about.js` keeps them
+verbatim and only the section furniture is ours. Two things it deliberately
+does not restate: the programme cards come from `nav` (so Canada shows three),
+and the vision/mission four-part lists come from `pillars.js`, which already
+carries both — each pillar names the vision value it serves. The live page's
+`iwan_vision.webp` is a **mislabelled copy of `iwan_mission.webp`**, so neither
+is used; the lists render as cards instead.
 
 Components: About, AboutSplit, AboutStrip, Brand, Button, Contact,
 CountrySwitcher, Difference, EventModal, Events, Footer, Header, Hero, Icon,

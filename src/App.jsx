@@ -10,6 +10,7 @@ import Programme from "./pages/Programme/Programme.jsx";
 import NotFound from "./pages/NotFound/NotFound.jsx";
 import EventsPage from "./pages/Events/Events.jsx";
 import EventDetail from "./pages/EventDetail/EventDetail.jsx";
+import About from "./pages/About/About.jsx";
 import { SECTIONS } from "./config/sections.js";
 import { DEFAULT_COUNTRY, basenameFor, countryFromPath } from "./config/countries.js";
 import ContentProvider, { useNav, useProgrammes } from "./content/ContentProvider.jsx";
@@ -23,6 +24,7 @@ import LocationPrompt from "./components/LocationPrompt/LocationPrompt.jsx";
    the route with it. */
 const PAGES = {
   "/events": EventsPage,
+  "/about-us": About,
 };
 
 function Shell() {

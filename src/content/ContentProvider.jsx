@@ -68,6 +68,7 @@ export function useCountry() {
 
 export const useBrand = () => useContent().brand;
 export const useCopy = () => useContent().copy;
+export const useAbout = () => useContent().about;
 export const useNav = () => useContent().nav;
 export const usePillars = () => useContent().pillars;
 export const useProgrammes = () => useContent().programmes;
