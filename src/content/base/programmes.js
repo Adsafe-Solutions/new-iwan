@@ -5,15 +5,19 @@
    to a shorter page rather than a broken one.
 
    ⚠ WHAT IS REAL AND WHAT IS NOT
-   `sessions` on Iwan Youth are real, taken from the live
-   iwan.community/iwan-youth page. Kids, Women and Men have none
-   listed, because none were available — the section simply does not
-   render for them. Do not invent sessions to fill it: a listing of
-   things that never happened is the same mistake as the press
-   releases that got News pulled off the homepage.
+   `sessions` on Iwan Youth and Iwan Kids are real, taken from the live
+   iwan.community programme pages. Women and Men have none listed,
+   because none were available — the section simply does not render for
+   them. Do not invent sessions to fill it: a listing of things that
+   never happened is the same mistake as the press releases that got
+   News pulled off the homepage.
 
    `impact` is a factual claim about what a programme has already
    done, so it only appears where there is a source.
+
+   `img` on a session is the photograph the live page shows for it. Youth and
+   Kids have one for every session; without one a session card falls back to a
+   colour block in the programme's own tone.
 
    `hero` is the full-bleed hero photograph. Only Youth has a real one
    (src/assests/iwan-youth-hero.png); the rest fall back to the stock
@@ -39,6 +43,13 @@
 /* Vite resolves this to a hashed URL at build time. The other three
    programmes fall back to their `tile` in navPages.js until real hero
    photography exists for them. */
+/* The session photographs on the live site, served from Iwan's own CDN. They
+   are real pictures of these sessions — the only real photography on the
+   programme pages — so they are linked rather than replaced with stock.
+   ⚠ Hotlinked: they load from cdn.iwan.community, not from this build, so a
+   rename there breaks them here. Copy them into public/ to cut that tie. */
+const img = (name) => `https://cdn.iwan.community/${name}.webp`;
+
 import youthHero from "../../assests/iwan-youth-hero.png";
 import { BRAND } from "./brand.js";
 import womenHero from "../../assests/iwan-women-hero.png";
@@ -85,26 +96,31 @@ export const PROGRAMMES_CONTENT = {
         title: "Stepping into the Future: Understanding Web 3.0",
         strand: "Tech Hub",
         body: "What the decentralised web actually is, and what it changes for the rest of us.",
+        img: img("iwan-youth-tech-1"),
       },
       {
         title: "Early Islam in India: Lessons from History",
         strand: "Spiritual Growth",
         body: "Key moments from the history of Islam in India, and what still holds up today.",
+        img: img("iwan-youth-spiritual-1"),
       },
       {
         title: "Fuel and Strength: Nutrition",
         strand: "Fitness",
         body: "The basics of eating well, for training and for everything else.",
+        img: img("iwan-youth-fitness-2"),
       },
       {
         title: "Reflect on Stories: Men Around the Messenger",
         strand: "Spiritual Growth",
         body: "Lessons in faith and leadership from the lives of the men around the Messenger ﷺ.",
+        img: img("iwan-youth-spiritual-2"),
       },
       {
         title: "Fitness for a Better You",
         strand: "Fitness",
         body: "Weightlifting technique — building strength safely, without guesswork.",
+        img: img("iwan-youth-fitness-1"),
       },
     ],
     banner: {
@@ -161,10 +177,66 @@ export const PROGRAMMES_CONTENT = {
         title: "What you get",
         body: "Life skills and good manners, picked up sideways while having fun.",
       },
+      {
+        icon: "growth",
+        title: "What it's led to",
+        body: "Dozens of children this year, through workshops, hands-on activities and community projects.",
+      },
     ],
     pillars: ["believe", "act"],
-    strands: [],
-    sessions: [],
+    strands: [
+      "Taekwondo",
+      "Creativity and Learning",
+      "Science and Exploration",
+      "Culture and Community",
+    ],
+    sessions: [
+      {
+        title: "Building Strength and Discipline: Taekwondo",
+        strand: "Taekwondo",
+        /* ⚠ The live page repeats the Youth "Early Islam" copy under this
+           title, which is plainly a paste error there. Described from the
+           title instead of copying the mistake across. */
+        body: "Belt by belt — technique, control and the discipline that comes with both.",
+        img: img("iwan-kids-1"),
+      },
+      {
+        title: "Magic with Light: Exploring Reflections and Refractions",
+        strand: "Science and Exploration",
+        body: "The wonders of light with prisms, sparking curiosity about how physics works.",
+        img: img("iwan-kids-se-2"),
+      },
+      {
+        title: "Little Gardeners: Growing Vegetables",
+        strand: "Science and Exploration",
+        body: "The basics of gardening, growing your own vegetables and a connection with nature.",
+        img: img("iwan-kids-se-1"),
+      },
+      {
+        title: "Wisdom Through Stories: Prophetic Tales and Lessons",
+        strand: "Culture and Community",
+        body: "Life lessons drawn out through storytelling sessions on the life of the Prophet ﷺ.",
+        img: img("iwan-kids-cc-2"),
+      },
+      {
+        title: "Colors of Creativity: Painting for Kids",
+        strand: "Creativity and Learning",
+        body: "Imagination and feeling let loose through vibrant painting activities.",
+        img: img("iwan-kids-cl-1"),
+      },
+      {
+        title: "Exploring Nature: An Adventure Trip to Lalbagh",
+        strand: "Culture and Community",
+        body: "A day out at Lalbagh — flora, fauna and how an ecosystem holds together.",
+        img: img("iwan-kids-cc-1"),
+      },
+      {
+        title: "Crafting with Threads: Stitching and Embroidery",
+        strand: "Creativity and Learning",
+        body: "Weaving and stitching into finished crafts, and the patience that takes.",
+        img: img("iwan-kids-cl-2"),
+      },
+    ],
     banner: {
       heading: "Bring them along.",
       body: "Children work out within one session whether something is for them. Come and let yours find out — parents are welcome to stay.",
