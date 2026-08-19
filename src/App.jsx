@@ -14,6 +14,7 @@ import About from "./pages/About/About.jsx";
 import BlogsPage from "./pages/Blogs/Blogs.jsx";
 import BlogPost from "./pages/BlogPost/BlogPost.jsx";
 import PodcastPage from "./pages/Podcast/Podcast.jsx";
+import ContactPage from "./pages/Contact/Contact.jsx";
 import { SECTIONS } from "./config/sections.js";
 import { DEFAULT_COUNTRY, basenameFor, countryFromPath } from "./config/countries.js";
 import ContentProvider, { useNav, useProgrammes } from "./content/ContentProvider.jsx";
@@ -79,6 +80,8 @@ function Shell() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/zakat" element={<Zakat />} />
+        {/* not a nav entry — the header CTA is what points at it */}
+        <Route path="/contact-us" element={<ContactPage />} />
         {/* the default country carries no prefix, so /in/… is a real URL
             people will try — send it to the unprefixed one rather than
             leaving a page that matches nothing */}

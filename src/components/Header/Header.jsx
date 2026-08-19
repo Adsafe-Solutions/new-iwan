@@ -4,7 +4,7 @@ import { IconChevronDown } from "@tabler/icons-react";
 import Brand from "../Brand/Brand.jsx";
 import Button from "../Button/Button.jsx";
 import CountrySwitcher from "../CountrySwitcher/CountrySwitcher.jsx";
-import { useBrand, useCopy, useNav } from "../../content/ContentProvider.jsx";
+import { useCopy, useNav } from "../../content/ContentProvider.jsx";
 import { cx } from "../../lib/cx.js";
 
 /* The country switcher shares the nav's single-open-dropdown state under these
@@ -135,7 +135,6 @@ export default function Header({
   /* v2 homepage hero holds the header off until the page is scrolled */
   hidden = false,
 }) {
-  const BRAND = useBrand();
   const copy = useCopy().header;
   const navContent = useNav();
   const LINKS = useMemo(() => buildLinks(navContent), [navContent]);
@@ -321,7 +320,7 @@ export default function Header({
           />
 
           <Button
-            href={`mailto:${BRAND.email}`}
+            to="/contact-us"
             className={cx(
               "px-[1.35rem] py-[0.7rem] text-[13px] leading-[18px]",
               /* `!` because Tailwind orders utilities by property, not by the

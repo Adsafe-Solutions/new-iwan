@@ -1,4 +1,8 @@
 import {
+  IconBrandFacebook,
+  IconBrandInstagram,
+  IconBrandX,
+  IconBrandYoutube,
   IconAward,
   IconBulb,
   IconCalendarEvent,
@@ -33,6 +37,11 @@ const ICONS = {
   award: IconAward,
   heart: IconHeart,
   globe: IconWorld,
+  /* the four accounts on brand.js — `icon` there names one of these */
+  instagram: IconBrandInstagram,
+  x: IconBrandX,
+  youtube: IconBrandYoutube,
+  facebook: IconBrandFacebook,
 };
 
 /* Tabler ships at stroke 2, which is the weight these are drawn for —

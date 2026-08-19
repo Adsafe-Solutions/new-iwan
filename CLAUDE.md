@@ -50,8 +50,8 @@ tailwind.config.js     EVERY colour in the project (see Colour below)
 A class set used more than once inside a file is hoisted to a `const` at the top
 of that file (`NAV_ITEM`, `CARD`, `PILL_Y`, …) rather than repeated inline.
 
-Pages: Home, About, Blogs, BlogPost, Podcast, Programme, Events, EventDetail,
-Zakat, Placeholder, NotFound.
+Pages: Home, About, Blogs, BlogPost, Contact, Podcast, Programme, Events,
+EventDetail, Zakat, Placeholder, NotFound.
 
 **`/about-us`** is transcribed from the live about-us page — the 2020 genesis
 story, the vision and mission statements and the six core values are the
@@ -83,6 +83,17 @@ meant restating the whole list per country to say so. ⚠ India has all six
 today, so **Canada has none** — the homepage section renders nothing at all
 rather than a heading over an empty calendar, and `/ca/events` shows its empty
 state. Add Canadian events to the same array with `country: "ca"`.
+
+**`/contact-us`** is a real page now, not a nav entry — the header CTA and
+`ContactCta` point at it, so `Contact.jsx` (the parked homepage band) is the
+only thing still reaching for `mailto:` as a CTA. ⚠ **The form does not post
+anywhere.** The live site runs Contact Form 7, whose REST route this site
+cannot call: `access-control-allow-origin` names another domain, and it also
+wants a page-specific `_wpcf7_unit_tag`, a session `_wpnonce` and an hCaptcha
+token. `lib/contact.js` is the seam — it opens a pre-filled email today, the
+page awaits it and shows the same confirmation either way, and the copy says
+plainly what happens. Swapping in a real request is a change to that one
+function; delete `form.note` when it is no longer true.
 
 **`/podcast`** is one show and one episode, transcribed from the live page
 into `content/base/podcast.js`. `AudioPlayer` wraps a native `<audio>` — the

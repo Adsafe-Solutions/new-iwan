@@ -1,5 +1,5 @@
 import Button from "../Button/Button.jsx";
-import { useBrand, useCopy } from "../../content/ContentProvider.jsx";
+import { useCopy } from "../../content/ContentProvider.jsx";
 import { cx } from "../../lib/cx.js";
 import { KICKER, MARK_YB } from "../../lib/type.js";
 
@@ -9,7 +9,6 @@ import { KICKER, MARK_YB } from "../../lib/type.js";
    in its own dark card. */
 export default function ContactCta({ className = "py-16" }) {
   const copy = useCopy().contactCta;
-  const BRAND = useBrand();
 
   return (
     <section className={cx("bg-primary-800", className)}>
@@ -25,7 +24,7 @@ export default function ContactCta({ className = "py-16" }) {
         <p className="reveal mb-8 max-w-[52ch] text-[17px] leading-[28px] text-white/80">
           {copy.body}
         </p>
-        <Button href={`mailto:${BRAND.email}`} variant="yellow" className="reveal">
+        <Button to="/contact-us" variant="yellow" className="reveal">
           {copy.cta}
         </Button>
       </div>
