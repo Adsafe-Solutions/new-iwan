@@ -89,3 +89,12 @@ export const inCountry = (event, code) => {
 
 export const eventsForCountry = (events = [], code) =>
   events.filter((e) => inCountry(e, code));
+
+/* Newest first, with anything undated last — two of the blog posts carry no
+   date on the live site and none has been invented for them. */
+export const byNewest = (a, b) => {
+  if (!a.date && !b.date) return 0;
+  if (!a.date) return 1;
+  if (!b.date) return -1;
+  return b.date.localeCompare(a.date);
+};

@@ -11,6 +11,8 @@ import NotFound from "./pages/NotFound/NotFound.jsx";
 import EventsPage from "./pages/Events/Events.jsx";
 import EventDetail from "./pages/EventDetail/EventDetail.jsx";
 import About from "./pages/About/About.jsx";
+import BlogsPage from "./pages/Blogs/Blogs.jsx";
+import BlogPost from "./pages/BlogPost/BlogPost.jsx";
 import { SECTIONS } from "./config/sections.js";
 import { DEFAULT_COUNTRY, basenameFor, countryFromPath } from "./config/countries.js";
 import ContentProvider, { useNav, useProgrammes } from "./content/ContentProvider.jsx";
@@ -24,6 +26,7 @@ import LocationPrompt from "./components/LocationPrompt/LocationPrompt.jsx";
    the route with it. */
 const PAGES = {
   "/events": EventsPage,
+  "/blogs": BlogsPage,
   "/about-us": About,
 };
 
@@ -101,9 +104,12 @@ function Shell() {
             />
           );
         })}
-        {/* each event's own page, only where the events page itself exists */}
+        {/* each event's and post's own page, only where its listing exists */}
         {pages.some((p) => p.path === "/events") && (
           <Route path="/events/:slug" element={<EventDetail />} />
+        )}
+        {pages.some((p) => p.path === "/blogs") && (
+          <Route path="/blogs/:slug" element={<BlogPost />} />
         )}
         <Route path="*" element={<NotFound />} />
       </Routes>

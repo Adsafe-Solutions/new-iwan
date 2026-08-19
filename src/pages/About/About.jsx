@@ -1,11 +1,10 @@
 import { Link } from "react-router-dom";
 import { IconArrowUpRight } from "@tabler/icons-react";
 import { useScrollAnimations } from "../../hooks/useGsap.js";
-import Button from "../../components/Button/Button.jsx";
+import ContactCta from "../../components/ContactCta/ContactCta.jsx";
 import WipeBand from "../../components/WipeBand/WipeBand.jsx";
 import {
   useAbout,
-  useBrand,
   useHero,
   useNav,
   usePillars,
@@ -47,7 +46,6 @@ function Named({ name, ar, size = "text-[19px]", className }) {
 
 export default function About() {
   const about = useAbout();
-  const BRAND = useBrand();
   const PILLARS = usePillars();
   const { programmesGroup, pages } = useNav();
   const { logos } = useHero();
@@ -321,32 +319,7 @@ export default function About() {
         </div>
       </section>
 
-      {/* ===== GET IN TOUCH ===== */}
-      {/* ===== GET IN TOUCH =====
-          A solid band, not a WipeBand: the copy here is white, and a wipe
-          leaves it white-on-white until the sweep arrives — SplitFeature gets
-          away with it only because its copy sits in its own dark card. */}
-      <section className="bg-primary-800 py-16">
-        <div className={CONTAINER}>
-          <p className="reveal mb-4 text-[12px] font-bold uppercase leading-4 tracking-[0.16em] text-accent">
-            {about.contact.eyebrow}
-          </p>
-          <h2
-            className={cx(
-              KICKER,
-              "reveal !mb-5 !text-[clamp(1.9rem,4vw,44px)] text-white"
-            )}
-          >
-            {about.contact.heading} <span className={MARK_YB}>{about.contact.mark}</span>
-          </h2>
-          <p className="reveal mb-8 max-w-[52ch] text-[17px] leading-[28px] text-white/80">
-            {about.contact.body}
-          </p>
-          <Button href={`mailto:${BRAND.email}`} variant="yellow" className="reveal">
-            {about.contact.cta}
-          </Button>
-        </div>
-      </section>
+      <ContactCta />
     </main>
   );
 }

@@ -16,7 +16,15 @@ const CHIP = cx(
 /* Chips are built from the events themselves, so a programme with nothing
    coming up never gets an empty filter — and a country that does not run a
    programme never sees it here, because the labels come from its own nav. */
-export default function EventFilters({ events, value, onChange, className }) {
+/* `communityLabel` overrides the chip for items tied to no programme —
+   events call that "Open to all", blogs call it "Default". */
+export default function EventFilters({
+  events,
+  value,
+  onChange,
+  communityLabel,
+  className,
+}) {
   const { pages } = useNav();
   const copy = useCopy().events;
 
@@ -26,7 +34,7 @@ export default function EventFilters({ events, value, onChange, className }) {
   const options = [
     [ALL_PROGRAMMES, copy.allProgrammes],
     ...programmes.map((p) => [p.path, p.label]),
-    ...(hasCommunity ? [[NO_PROGRAMME, copy.community]] : []),
+    ...(hasCommunity ? [[NO_PROGRAMME, communityLabel ?? copy.community]] : []),
   ];
 
   if (options.length < 3) return null;

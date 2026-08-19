@@ -100,7 +100,9 @@ export default function EventDetail() {
 
           <span className="grid h-[112px] w-[156px] flex-none place-items-center rounded-2xl bg-white px-5 shadow-card max-nav:h-[92px] max-nav:w-[130px] max-nav:px-4">
             <img
-              src={mark.src}
+              /* the dark cut where there is one — these panels are white, and the
+                   community mark's default is drawn for a photograph */
+              src={mark.dark ?? mark.src}
               alt=""
               style={{ "--s": mark.scale ?? 1 }}
               className="w-[calc(88px*var(--s))] max-w-full max-nav:w-[calc(74px*var(--s))]"

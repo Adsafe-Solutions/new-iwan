@@ -80,6 +80,42 @@ export const COPY = {
     seeAll: "See all events",
   },
 
+  /* the closing "get in touch" band — About and every blog post carry it */
+  contactCta: {
+    eyebrow: "Get in touch",
+    heading: "We'd love to hear",
+    mark: "from you",
+    body: "We're here to assist you with any questions, support, or partnership inquiries — reach out to us today.",
+    cta: "Contact us",
+  },
+
+  /* the /blogs page and each post's own /blogs/<slug> page */
+  blogsPage: {
+    eyebrow: "Writing",
+    heading: "Notes from",
+    mark: "the sessions",
+    body: "Summaries, reflections and write-ups from the sessions and workshops we run. Pick a programme to narrow the list.",
+    count: "{count} post{s}",
+    empty: "Nothing published under that programme yet.",
+    none: "Nothing published yet. Check back soon.",
+    read: "Read",
+    /* blogs are filed by category, not by who they are open to — the live site
+       calls the uncategorised one "Default" */
+    community: "Default",
+    more: "Read {title}",
+    prev: "Previous",
+    next: "Next",
+    page: "Page {page} of {total}",
+    goToPage: "Go to page {page}",
+  },
+
+  blogPost: {
+    back: "All posts",
+    programmeLink: "More about {programme}",
+    notFound: "We can’t find that post",
+    notFoundBody: "It may have moved, or the link may be wrong.",
+  },
+
   /* the /events page and each event's own /events/<slug> page */
   eventsPage: {
     eyebrow: "What's on",

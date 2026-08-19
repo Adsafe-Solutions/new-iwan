@@ -50,8 +50,8 @@ tailwind.config.js     EVERY colour in the project (see Colour below)
 A class set used more than once inside a file is hoisted to a `const` at the top
 of that file (`NAV_ITEM`, `CARD`, `PILL_Y`, …) rather than repeated inline.
 
-Pages: Home, About, Programme, Events, EventDetail, Zakat, Placeholder,
-NotFound.
+Pages: Home, About, Blogs, BlogPost, Programme, Events, EventDetail, Zakat,
+Placeholder, NotFound.
 
 **`/about-us`** is transcribed from the live about-us page — the 2020 genesis
 story, the vision and mission statements and the six core values are the
@@ -63,7 +63,8 @@ carries both — each pillar names the vision value it serves. The live page's
 `iwan_vision.webp` is a **mislabelled copy of `iwan_mission.webp`**, so neither
 is used; the lists render as cards instead.
 
-Components: About, AboutSplit, AboutStrip, Brand, Button, Contact,
+Components: About, AboutSplit, AboutStrip, BlogCard, Brand, Button, Contact,
+ContactCta, Pagination, ReadingProgress,
 CountrySwitcher, Difference, EventModal, Events, Footer, Header, Hero, Icon,
 Instagram, Journey, Modal, News, PageHero, Pillars, ScrollToTop, SplitFeature,
 StepsFeature, TakeAction, Testimonials, ThemeSwitcher, Topbar, Typewriter,
@@ -82,6 +83,25 @@ today, so **Canada has none** — the homepage section renders nothing at all
 rather than a heading over an empty calendar, and `/ca/events` shows its empty
 state. Add Canadian events to the same array with `country: "ca"`.
 
+**Blogs mirror the events shape**: `/blogs` (`pages/Blogs`) lists every post
+with the same programme filter, and `/blogs/:slug` (`pages/BlogPost`) is the
+post's own page. Content is `content/base/blogs.js`, transcribed from the live
+site — 13 posts, each `[kind, text]` blocks (`h` / `p` / `li`), which is as
+much structure as the source pages carry. Two posts have no date and none has
+been invented for them: `byNewest` sorts them last and both the card and the
+page render without one. **Pagination is component state, not the URL** — six
+per page, and paging never remounts the route or resets the filter. Posts tied
+to no programme are filed as **"Default"**, not events' "Open to all"
+(`EventFilters` takes a `communityLabel`), and a post with no photo falls back
+to its programme's mark — the community one on a dark ground, because that
+mark is drawn light. Every post closes with `ContactCta`; the comment
+markup the source pages included was stripped from `blogs.js`, and one
+slug lost a percent-encoded emoji, which could never have matched since React
+Router decodes a param before it reaches us.
+⚠ Post images are hotlinked from the live site's uploads **with `?w=1200`**,
+which is not optional: the originals are 8–9MB camera JPEGs and i0.wp.com
+(Jetpack's CDN) returns 429 when several are pulled at once.
+
 **Events have three surfaces, one card and one form.** The homepage section
 (`components/Events`) opens the `EventModal`; `/events` (`pages/Events`) lists
 everything and links through; `/events/:slug` (`pages/EventDetail`) is the
@@ -93,6 +113,10 @@ cta → form → done flow shared by the modal and the detail page, so the two
 cannot drift. `EventFilters` builds its chips from the events themselves, so
 a programme with nothing coming up never gets an empty chip. All the date
 handling lives in `lib/events.js`; nothing parses a date locally any more.
+
+`TakeAction`'s tiles use each programme's own **hero** photograph, so the tile
+and the page it opens are the same picture; `tile` in `nav.js` is the stock
+fallback for a programme with no hero of its own.
 
 `TrustedBy` is the yellow wipe band under the hero, and it is generic — every
 word comes from props (`eyebrow`, `headingLines`, `items`), plus `id`,

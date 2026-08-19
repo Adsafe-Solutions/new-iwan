@@ -115,14 +115,6 @@ export const ABOUT = {
       { src: img("people.webp"), alt: "Iwan volunteers together" },
     ],
   },
-
-  contact: {
-    eyebrow: "Get in touch",
-    heading: "We'd love to hear",
-    mark: "from you",
-    body: "We're here to assist you with any questions, support, or partnership inquiries — reach out to us today.",
-    cta: "Contact us",
-  },
 };
 
 export default ABOUT;

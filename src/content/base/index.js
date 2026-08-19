@@ -16,6 +16,7 @@ import { FOCUS_AREAS, FOCUS_LINKS } from "./focusAreas.js";
 import { ADVISORS } from "./advisors.js";
 import { COPY } from "./copy.js";
 import { ABOUT } from "./about.js";
+import { BLOGS } from "./blogs.js";
 
 /* The shape every country resolves to. A country folder overrides any subtree
    of this and inherits the rest; the CMS will be asked for the same shape, so
@@ -28,6 +29,7 @@ export const BASE_CONTENT = {
   pillars: PILLARS,
   programmes: { content: PROGRAMMES_CONTENT, contact: PROGRAMME_CONTACT },
   events: EVENTS,
+  blogs: BLOGS,
   testimonials: TESTIMONIALS,
   stats: STATS,
   instagram: {
