@@ -16,11 +16,15 @@ import WhatsAppFab from "./components/WhatsAppFab/WhatsAppFab.jsx";
 
 function Shell() {
   const [stuck, setStuck] = useState(false);
+  const [overHero, setOverHero] = useState(true);
   const { pathname } = useLocation();
   const home = pathname === "/";
 
   useEffect(() => {
-    const onScroll = () => setStuck(window.scrollY > 10);
+    const onScroll = () => {
+      setStuck(window.scrollY > 10);
+      setOverHero(window.scrollY < window.innerHeight - 80);
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
@@ -43,7 +47,9 @@ function Shell() {
 
   /* `pinned` stays on for the whole home route, not just while overlaid — the
      chrome must never re-enter flow mid-scroll or the page jolts. */
-  const overlay = home && !stuck && !heroV2;
+  /* transparent for as long as the header sits on the hero photo, so the
+     hero reads as one uninterrupted image; solid white once past it */
+  const overlay = home && overHero;
 
   return (
     <>

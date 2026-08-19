@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { IconChevronDown } from "@tabler/icons-react";
 import { HERO_IMAGE, HERO_LOGOS } from "../../config/heroLogos.js";
 import { cx } from "../../lib/cx.js";
 
@@ -72,10 +73,11 @@ export default function HeroV2() {
       </div>
 
       <span
-        className="absolute bottom-10 left-1/2 z-[2] -translate-x-1/2 text-[12px] font-bold uppercase tracking-[0.2em] text-white/60"
+        className="absolute bottom-10 left-1/2 z-[2] flex -translate-x-1/2 flex-col items-center gap-2 text-white/60"
         aria-hidden="true"
       >
-        Scroll
+        <span className="text-[12px] font-bold uppercase tracking-[0.2em]">Scroll</span>
+        <IconChevronDown className="h-5 w-5 animate-scrollCue" stroke={2} />
       </span>
     </section>
   );

@@ -347,6 +347,10 @@ export default {
           to: { opacity: "0", transform: "translate3d(0, 80px, 0)" },
         },
         blink: { "50%": { opacity: "0" } },
+        scrollCue: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(9px)" },
+        },
         livedot: {
           "70%": { boxShadow: `0 0 0 9px ${alpha(palette.red, 0)}` },
           "100%": { boxShadow: `0 0 0 0 ${alpha(palette.red, 0)}` },
@@ -361,6 +365,7 @@ export default {
         heroRise: "heroRise 0.7s ease-out both",
         heroSet: "heroSet 0.5s ease-in both",
         blink: "blink 1s step-end infinite",
+        scrollCue: "scrollCue 2.4s ease-in-out infinite",
         livedot: "livedot 1.6s infinite",
       },
     },

@@ -190,7 +190,7 @@ export default function Header({
            and jolts the page */
         pinned ? "fixed w-full" : "sticky top-0",
         pinned && (overlay ? "top-topbar" : "top-0"),
-        overlay ? "border-transparent bg-transparent" : "border-line bg-white",
+        overlay && !open ? "border-transparent bg-transparent" : "border-line bg-white",
         overlay && open && "max-nav:border-line max-nav:bg-white",
         stuck && "shadow-header"
       )}
