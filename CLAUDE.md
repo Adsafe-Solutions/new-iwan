@@ -356,8 +356,13 @@ and strips it. `countryFromPath`, `basenameFor` and `stripBasename` in
 - `*` renders `NotFound`, which names the active country — `/ca/iwan-women` is
   a real shareable URL for a programme Canada does not run, and a bare "not
   found" would read as a broken link.
-- ⚠ Deep links need the host to serve `index.html` for any path. That was
-  already true of `/iwan-youth`; the prefix just makes it easier to notice.
+- ⚠ **Deep links need the host to serve `index.html` for any path**, and
+  `public/_redirects` is what does that on Netlify (`/* /index.html 200`).
+  Without it every direct hit or hard refresh outside `/` gets the host's own
+  404 — `/ca/`, `/blogs`, `/events/kids-club`, all of them. It has to be a
+  200 rewrite, not a 301: the URL must stay as it was, because the router
+  reads the country out of it. Another host needs the same rule in its own
+  form — `vercel.json` rewrites, an nginx `try_files`.
 
 **`LocationPrompt` asks when the guess disagrees with the URL** — it never
 redirects. `lib/geo.js` reads the visitor's own IANA time zone out of `Intl`
