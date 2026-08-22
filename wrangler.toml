@@ -16,6 +16,14 @@ name = "iwan-community"
 account_id = "655eda9ca541b4af737153f0f1ea6966"
 compatibility_date = "2024-11-01"
 
+# ⚠ `routes` MUST stay above [assets]. In TOML every key after a table header
+# belongs to that table, so putting it below makes it `assets.routes`, which
+# wrangler ignores with "Unexpected fields found in assets field" — the Worker
+# deploys but never gets its domain.
+routes = [
+  { pattern = "new.iwan.community", custom_domain = true },
+]
+
 # ⚠ Feature switches and site URL are NOT here. Vite inlines VITE_* into the
 # bundle at build time, so a `[vars]` block would never reach the browser —
 # .env.production is what configures a production build. See src/config/env.js.
@@ -27,7 +35,3 @@ directory = "./dist"
 # the Cloudflare equivalent of the `/* /index.html 200` in public/_redirects,
 # which is left in place for any host that reads it.
 not_found_handling = "single-page-application"
-
-routes = [
-  { pattern = "new.iwan.community", custom_domain = true },
-]

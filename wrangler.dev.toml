@@ -6,10 +6,11 @@ name = "iwan-community-dev"
 account_id = "655eda9ca541b4af737153f0f1ea6966"
 compatibility_date = "2024-11-01"
 
-[assets]
-directory = "./dist"
-not_found_handling = "single-page-application"
-
+# ⚠ Must stay above [assets] — see the note in wrangler.toml.
 routes = [
   { pattern = "dev.iwan.community", custom_domain = true },
 ]
+
+[assets]
+directory = "./dist"
+not_found_handling = "single-page-application"
