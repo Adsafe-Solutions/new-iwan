@@ -3,14 +3,7 @@ import { useEffect, useRef } from "react";
 const SCRIPT_ID = "cloudflare-turnstile-script";
 const SCRIPT_SRC =
   "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
-const DEPLOYED_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY;
-const LOCAL_TEST_SITE_KEY = "1x00000000000000000000AA";
-
-const getSiteKey = () =>
-  ["localhost", "127.0.0.1", "::1"].includes(window.location.hostname) ||
-  window.location.hostname.endsWith(".localhost")
-    ? LOCAL_TEST_SITE_KEY
-    : DEPLOYED_SITE_KEY;
+const SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY;
 
 function loadTurnstile() {
   if (window.turnstile) return Promise.resolve(window.turnstile);
@@ -43,8 +36,7 @@ export default function Turnstile({ action, onChange }) {
   }, [onChange]);
 
   useEffect(() => {
-    const sitekey = getSiteKey();
-    if (!sitekey) {
+    if (!SITE_KEY) {
       console.error("TURNSTILE_SITE_KEY is missing for this deployment.");
       onChangeRef.current("");
       return undefined;
@@ -57,7 +49,7 @@ export default function Turnstile({ action, onChange }) {
       .then((turnstile) => {
         if (!active || !container.current) return;
         widgetId = turnstile.render(container.current, {
-          sitekey,
+          sitekey: SITE_KEY,
           action,
           appearance: "always",
           theme: "auto",

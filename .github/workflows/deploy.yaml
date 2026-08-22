@@ -22,19 +22,23 @@ on:
 
 jobs:
   deploy:
-    name: Deploy ${{ startsWith(github.ref, 'refs/tags/') && 'prod' || inputs.environment || 'dev' }}
+    name: Deploy Worker (${{ startsWith(github.ref, 'refs/tags/') && 'prod' || inputs.environment || 'dev' }})
     runs-on: ubuntu-latest
     env:
+      IS_PROD: ${{ startsWith(github.ref, 'refs/tags/') }}
       ENV_NAME: ${{ startsWith(github.ref, 'refs/tags/') && 'prod' || inputs.environment || 'dev' }}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
 
+      # -------- SOPS + GPG (shared) --------
       - name: Setup SOPS
         uses: mdgreenwald/mozilla-sops-action@v1
         with:
@@ -66,8 +70,10 @@ jobs:
           else
             sops --decrypt --in-place .env.development
           fi
+      # -------------------------------------
 
-      - run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
       # the build is what bakes in .env.<mode>, so it has to happen per
       # environment — a single build cannot serve both
