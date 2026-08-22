@@ -1,9 +1,19 @@
-# PRODUCTION. Deployed by `npm run deploy:prod`, or by the tag push in
-# .github/workflows/deploy.yaml.
+# PRODUCTION build of the NEW site. `npm run deploy:prod`, or a v* tag.
 #
 # This is a Vite SPA, so there is no Worker script — Cloudflare serves the
 # built `dist/` directly as static assets. That is why there is no `main`.
+#
+# ⚠ iwan.community is ALREADY on this Cloudflare account, live, serving the
+# existing WordPress site from its own origin with no Worker attached. This
+# config deliberately does NOT claim `www.iwan.community` or the apex: a
+# `custom_domain` route would take that hostname over and replace the live
+# site. `new.` is a hostname that does not exist yet, so attaching it creates
+# a fresh DNS record and touches nothing that is already serving.
+#
+# At cutover, change the pattern below to www.iwan.community (and add the
+# apex), redeploy, and the switch happens at that moment — not before.
 name = "iwan-community"
+account_id = "655eda9ca541b4af737153f0f1ea6966"
 compatibility_date = "2024-11-01"
 
 # ⚠ Feature switches and site URL are NOT here. Vite inlines VITE_* into the
@@ -14,11 +24,10 @@ compatibility_date = "2024-11-01"
 directory = "./dist"
 # Every unknown path returns index.html with a 200 and the router takes over.
 # Without this /ca/, /blogs and every other deep link 404s on a direct hit —
-# it is the Cloudflare equivalent of the `/* /index.html 200` in
-# public/_redirects, which is left in place for any host that reads it.
+# the Cloudflare equivalent of the `/* /index.html 200` in public/_redirects,
+# which is left in place for any host that reads it.
 not_found_handling = "single-page-application"
 
-# Uncomment once the domain is on Cloudflare, and remove the workers.dev host.
-# routes = [
-#   { pattern = "www.iwan.community", custom_domain = true },
-# ]
+routes = [
+  { pattern = "new.iwan.community", custom_domain = true },
+]
