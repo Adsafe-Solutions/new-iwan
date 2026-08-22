@@ -1,0 +1,24 @@
+# PRODUCTION. Deployed by `npm run deploy:prod`, or by the tag push in
+# .github/workflows/deploy.yaml.
+#
+# This is a Vite SPA, so there is no Worker script — Cloudflare serves the
+# built `dist/` directly as static assets. That is why there is no `main`.
+name = "iwan-community"
+compatibility_date = "2024-11-01"
+
+# ⚠ Feature switches and site URL are NOT here. Vite inlines VITE_* into the
+# bundle at build time, so a `[vars]` block would never reach the browser —
+# .env.production is what configures a production build. See src/config/env.js.
+
+[assets]
+directory = "./dist"
+# Every unknown path returns index.html with a 200 and the router takes over.
+# Without this /ca/, /blogs and every other deep link 404s on a direct hit —
+# it is the Cloudflare equivalent of the `/* /index.html 200` in
+# public/_redirects, which is left in place for any host that reads it.
+not_found_handling = "single-page-application"
+
+# Uncomment once the domain is on Cloudflare, and remove the workers.dev host.
+# routes = [
+#   { pattern = "www.iwan.community", custom_domain = true },
+# ]

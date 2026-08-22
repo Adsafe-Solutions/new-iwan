@@ -60,11 +60,15 @@ export const COUNTRIES = [
   },
 ];
 
-export const DEFAULT_COUNTRY = "in";
+/* Which country is served at the unprefixed root. Overridable per deployment
+   so a dev build can lead with another country without a code change. */
+export const DEFAULT_COUNTRY = ENV.defaultCountry;
 
 export const getCountry = (code) =>
   COUNTRIES.find((c) => c.code === code) ||
   COUNTRIES.find((c) => c.code === DEFAULT_COUNTRY);
+
+import { ENV } from "./env.js";
 
 /* `zones` is every IANA time zone that means "in this country", which is what
    lib/geo.js matches the visitor's own zone against. Legacy aliases are listed

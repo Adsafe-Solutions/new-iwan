@@ -18,10 +18,43 @@ Vite 5 + React 18, **plain JS/JSX — no TypeScript**. `react-router-dom` v6,
 `@tabler/icons-react` for iconography. No component library, no test runner.
 
 ```
-npm run dev      # vite dev server, port 5173
-npm run build    # production build — use this as the check, there are no tests
-npm run format   # prettier --write .
+npm run dev          # vite dev server, port 5173
+npm run build        # production build — use this as the check, there are no tests
+npm run build:dev    # same, but bakes in .env.development
+npm run build:prod   # same, but bakes in .env.production
+npm run preview:cf   # dev build served through the real Workers runtime
+npm run deploy:dev   # → the iwan-community-dev Worker
+npm run deploy:prod  # → the iwan-community Worker
+npm run format       # prettier --write .
 ```
+
+## Hosting and environments
+
+Cloudflare Workers static assets — no Worker script, the built `dist/` is
+served directly. Two Workers rather than one with Cloudflare "environments",
+so dev and prod stay completely independent: `wrangler.dev.toml`
+(`iwan-community-dev`) and `wrangler.toml` (`iwan-community`). Both set
+`not_found_handling = "single-page-application"`, which is what makes `/ca/`
+and every other deep link work; `public/_redirects` does the same job for any
+host that reads it.
+
+⚠ **Config is baked in at BUILD time, not read at runtime.** Vite inlines
+`import.meta.env.VITE_*` into the bundle, so a `[vars]` block in wrangler.toml
+would never reach the browser — `.env.development` and `.env.production` are
+what configure a build, and dev and prod therefore need _separate builds_.
+`src/config/env.js` is the only place that reads them; `sections.js` and
+`countries.js` take their defaults from it, so a deployment can run a
+different hero or default country without a code change.
+
+Both env files are **committed**, because nothing in them is secret — a
+`VITE_` key is public by definition. The reference project (RBB) encrypts its
+env files with SOPS because it has runtime secrets; this site has none, and
+the Instagram token stays in GitHub Actions secrets where the browser never
+sees it. If that ever changes, the secret must not become a `VITE_` key.
+
+`.github/workflows/deploy.yaml` deploys on a push to `develop` (dev) or a
+`v*` tag (prod), and needs `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`
+as repository secrets.
 
 Prettier 3.9.6 is pinned; run `npx prettier --write src` after editing and
 `npm run build` before calling anything done.
