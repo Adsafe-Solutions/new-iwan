@@ -12,6 +12,7 @@
     "preview:cf": "npm run build:dev && wrangler dev --config wrangler.dev.toml",
     "deploy:dev": "npm run build:dev && wrangler deploy --config wrangler.dev.toml",
     "deploy:prod": "npm run build:prod && wrangler deploy --config wrangler.toml",
+    "prepare": "sh scripts/install-git-hooks.sh",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },

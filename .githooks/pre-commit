@@ -1,0 +1,22 @@
+#!/usr/bin/env sh
+set -eu
+
+for file in .env.development .env.production .env.local; do
+  if git diff --cached --name-only --diff-filter=ACMR -- "$file" | grep -q .; then
+    if ! command -v sops >/dev/null 2>&1; then
+      echo "pre-commit: sops is required to validate $file" >&2
+      exit 1
+    fi
+
+    if ! sops filestatus "$file" 2>/dev/null | grep -q '"encrypted":true'; then
+      echo "pre-commit: refusing to commit plaintext $file; encrypt it with SOPS first" >&2
+      exit 1
+    fi
+  fi
+done
+
+staged_files=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(css|html|js|jsx|json|md|mjs|toml|ya?ml)$' || true)
+if [ -n "$staged_files" ]; then
+  # Repository paths contain no spaces; keep the hook dependency-free.
+  npx --no-install prettier --check --ignore-unknown $staged_files
+fi
