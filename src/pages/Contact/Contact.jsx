@@ -8,6 +8,7 @@ import { submitContact } from "../../lib/contact.js";
 import { fill } from "../../lib/fill.js";
 import { cx } from "../../lib/cx.js";
 import { KICKER, MARK_B } from "../../lib/type.js";
+import Turnstile from "../../components/Turnstile/Turnstile.jsx";
 
 const CONTAINER = "mx-auto w-full max-w-container px-6";
 
@@ -59,6 +60,7 @@ export default function ContactPage() {
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -230,8 +232,14 @@ export default function ContactPage() {
                     />
                   </label>
 
+                  <div className="mb-5 max-w-[420px]">
+                    <Turnstile action="contact" onChange={setTurnstileToken} />
+                  </div>
+
                   <div className="flex flex-wrap items-center gap-4">
-                    <Button type="submit">{copy.form.submit}</Button>
+                    <Button type="submit" disabled={!turnstileToken}>
+                      {copy.form.submit}
+                    </Button>
                     <span className="text-[13px] leading-[20px] text-muted">
                       {copy.form.note}
                     </span>

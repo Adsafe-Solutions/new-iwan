@@ -4,6 +4,7 @@ import { useCopy } from "../../content/ContentProvider.jsx";
 import { fill } from "../../lib/fill.js";
 import { longDate } from "../../lib/events.js";
 import { cx } from "../../lib/cx.js";
+import Turnstile from "../Turnstile/Turnstile.jsx";
 
 const FIELD = cx(
   "rounded border border-line px-[0.9rem] py-3 text-[15px] text-ink [font-family:inherit]",
@@ -23,6 +24,7 @@ export default function RegisterForm({ event, locale = "en-GB" }) {
   const [stage, setStage] = useState("cta");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
 
   if (stage === "cta") {
     return (
@@ -65,8 +67,13 @@ export default function RegisterForm({ event, locale = "en-GB" }) {
             />
           </label>
         </div>
+        <div className="mb-[1.1rem] max-w-[420px]">
+          <Turnstile action="event_registration" onChange={setTurnstileToken} />
+        </div>
         <div className={CTA_ROW}>
-          <Button type="submit">{copy.submit}</Button>
+          <Button type="submit" disabled={!turnstileToken}>
+            {copy.submit}
+          </Button>
           <button
             type="button"
             className="cursor-pointer border-0 bg-transparent text-[14px] font-semibold text-muted [font-family:inherit]"

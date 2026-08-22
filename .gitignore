@@ -19,9 +19,6 @@ pnpm-debug.log*
 # only the public build-time config each deployment needs. Anything genuinely
 # secret belongs in GitHub Actions secrets or Cloudflare, never in a VITE_ key.
 .env
-.env.local
-.env.*.local
-
 # Cloudflare
 .wrangler/
 
