@@ -39,7 +39,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - run: npm ci
@@ -54,6 +54,11 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # ⚠ Pin to the version this repo is built against. Left alone the
+          # action installs its own default (3.90.0 as of writing) and ignores
+          # the devDependency, which is a different major line to the one the
+          # wrangler.toml files were written and tested for.
+          wranglerVersion: "4.125.0"
           command: >-
             deploy --config
             ${{ env.ENV_NAME == 'prod' && 'wrangler.toml' || 'wrangler.dev.toml' }}
