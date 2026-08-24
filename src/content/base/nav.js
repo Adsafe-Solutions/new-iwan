@@ -9,6 +9,7 @@
    text: a class assembled by interpolation is never generated — because the "take action" grid on the homepage and
    an event's own page are built from this same list. */
 export const PROGRAMMES = "Programmes";
+export const ABOUT = "About Us";
 
 export const NAV_PAGES = [
   {
@@ -82,8 +83,16 @@ export const NAV_PAGES = [
   },
   {
     label: "About Us",
+    group: ABOUT,
     path: "/about-us",
     intro:
       "How Iwan started in Bangalore in 2020, who runs it, and what it is trying to be.",
+  },
+  {
+    label: "Careers & Volunteering",
+    group: ABOUT,
+    path: "/careers-and-volunteering",
+    intro:
+      "Open roles and volunteering opportunities — ways to give your time and skills to Iwan's programmes.",
   },
 ];

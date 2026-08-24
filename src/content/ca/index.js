@@ -1,22 +1,13 @@
-import { remove } from "../ops.js";
-
-/* Canada runs three programmes — Youth, Kids and Men. Women comes out of the
-   nav (which is also where the routes and the homepage tiles come from), out
-   of the hero rotation, and out of the programme content.
-
-   `remove(key, value)` edits base's list in place of restating it, so a tile
-   or an intro changed upstream still reaches Canada. `null` deletes a key from
-   an object (see ../merge.js) — the route is already gone with the nav entry,
-   but leaving unreachable content behind would make `programmes.content` a
-   liar about what Canada runs. */
+/* Canada runs all four programmes in nav, but only Youth and Men have real
+   Canadian content today — Kids and Women stay in the nav (so the tile,
+   the route and the homepage link all still exist) with their
+   `programmes.content` entry nulled. That makes `Programme` render nothing,
+   so App.jsx's routing falls through to the `Placeholder` stub instead — the
+   same "this page is coming soon" treatment every other unbuilt page gets,
+   using each programme's own nav intro rather than India's Bangalore-specific
+   copy. See ../ops.js for `null`-deletes-a-key. */
 export default {
-  nav: { pages: remove("path", "/iwan-women") },
-  programmes: { content: { "iwan-women": null } },
-  hero: {
-    logos: remove("id", "women"),
-    programmeMarks: remove("id", "women"),
-  },
-  copy: { trustedBy: { eyebrow: "One community, three programmes" } },
+  programmes: { content: { "iwan-kids": null, "iwan-women": null } },
 };
 
 /* ⚠ Everything else is still inherited from India — the Bangalore address, the
@@ -32,7 +23,8 @@ export default {
      brand.address        · the map fallback in the event modal reads this
      brand.whatsapp       · digits only, country code first
      brand.email          · if it differs
-     programmes.contact   · phone + address on the programme pages
-     programmes.content   · the three entries' copy, if Canada's differs
+     programmes.contact   · phone + address on Youth and Men's programme pages
+     programmes.content   · Youth and Men's copy, if Canada's differs; Kids and
+                             Women stay "coming soon" until there is real content
      testimonials         · ⚠ real quotes from real people — never invent these
 */

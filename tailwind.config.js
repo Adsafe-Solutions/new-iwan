@@ -102,12 +102,12 @@ export const palette = {
  */
 export const themes = {
   ocean: {
-    blue: "#0e41b0",
-    blueDark: "#0a3090",
-    blue800: "#0a2f86",
-    yellow: "#f2ec0f",
+    blue: "#244967",
+    blueDark: "#1d3b54",
+    blue800: "#1b374e",
+    yellow: "#f9be00",
     yellow2: "#e8e347",
-    teal: "#26bde2",
+    teal: "#3993b5",
   },
   emerald: {
     blue: "#0b7a4b",

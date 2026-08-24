@@ -63,7 +63,7 @@ export default function TrustedBy({
               {items.map((it) => (
                 <div
                   className="reveal flex flex-col items-center gap-2.5"
-                  key={it.label ?? it.alt}
+                  key={it.id ?? it.label ?? it.alt}
                 >
                   <span className="grid h-[104px] w-full place-items-center rounded-xl bg-white px-5 shadow max-phone:h-[88px]">
                     <img

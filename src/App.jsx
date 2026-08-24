@@ -6,12 +6,14 @@ import Footer from "./components/Footer/Footer.jsx";
 import Home from "./pages/Home/Home.jsx";
 import Zakat from "./pages/Zakat/Zakat.jsx";
 import Placeholder from "./pages/Placeholder/Placeholder.jsx";
+import ComingSoon from "./pages/ComingSoon/ComingSoon.jsx";
 import Programme from "./pages/Programme/Programme.jsx";
 import NotFound from "./pages/NotFound/NotFound.jsx";
 import EventsPage from "./pages/Events/Events.jsx";
 import EventDetail from "./pages/EventDetail/EventDetail.jsx";
 import About from "./pages/About/About.jsx";
 import BlogsPage from "./pages/Blogs/Blogs.jsx";
+import Careers from "./pages/Careers/Careers.jsx";
 import BlogPost from "./pages/BlogPost/BlogPost.jsx";
 import PodcastPage from "./pages/Podcast/Podcast.jsx";
 import ContactPage from "./pages/Contact/Contact.jsx";
@@ -31,10 +33,11 @@ const PAGES = {
   "/blogs": BlogsPage,
   "/podcast": PodcastPage,
   "/about-us": About,
+  "/careers-and-volunteering": Careers,
 };
 
 function Shell() {
-  const { pages } = useNav();
+  const { pages, programmesGroup } = useNav();
   const { content: PROGRAMMES_CONTENT } = useProgrammes();
   const [stuck, setStuck] = useState(false);
   const [overHero, setOverHero] = useState(true);
@@ -89,8 +92,12 @@ function Shell() {
           path={`/${DEFAULT_COUNTRY}/*`}
           element={<Navigate to={stripDefaultPrefix()} replace />}
         />
-        {/* a nav page with an entry in programmes.js gets the full
-            programme template; everything else stays a stub */}
+        {/* a nav page with an entry in programmes.js gets the full programme
+            template; a programme this country doesn't run yet (still in the
+            nav, just nulled out of programmes.content — see content/ca) gets
+            the ComingSoon stand-in instead of Placeholder's generic one, since
+            it can show the programme's own logo; everything else stays a
+            plain stub */}
         {pages.map((page) => {
           const Own = PAGES[page.path];
           return (
@@ -102,6 +109,8 @@ function Shell() {
                   <Own />
                 ) : PROGRAMMES_CONTENT[page.path.replace("/", "")] ? (
                   <Programme page={page} />
+                ) : page.group === programmesGroup ? (
+                  <ComingSoon page={page} />
                 ) : (
                   <Placeholder title={page.label} intro={page.intro} />
                 )

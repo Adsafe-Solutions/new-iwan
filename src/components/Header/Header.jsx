@@ -17,24 +17,35 @@ const COUNTRY_TRAY = "__country-tray";
 
 /* A dropdown is either `simple` — one vertical list — or `mega`, a wider
    panel of columns each holding one or more labelled groups. Everything
-   else is a plain link, About Us included: it is a page of its own, not a
-   menu. The `mega` branch in Panel is therefore unused at the moment —
-   kept because it is a few lines and the shape is already proven. */
-function buildLinks({ programmesGroup, pages }) {
-  const inGroup = pages.filter((p) => p.group === programmesGroup);
-  const ungrouped = pages.filter((p) => !p.group);
-  return [
-    {
-      label: programmesGroup,
+   ungrouped is a plain link. The `mega` branch in Panel is therefore unused
+   at the moment — kept because it is a few lines and the shape is already
+   proven.
+
+   One dropdown per distinct `group` found in `pages`, built in the order
+   groups first appear — so nav.js's ordering is the only thing that decides
+   where a dropdown's trigger sits in the bar. Everything else in that group
+   is folded into its panel rather than shown again as its own link. */
+function buildLinks({ pages }) {
+  const seen = new Set();
+  return pages.reduce((links, page) => {
+    if (!page.group) {
+      links.push({ label: page.label, to: page.path });
+      return links;
+    }
+    if (seen.has(page.group)) return links;
+    seen.add(page.group);
+    const inGroup = pages.filter((p) => p.group === page.group);
+    links.push({
+      label: page.group,
       menu: {
         type: "simple",
         columns: [
           { groups: [{ items: inGroup.map(({ label, path }) => [label, path]) }] },
         ],
       },
-    },
-    ...ungrouped.map(({ label, path }) => ({ label, to: path })),
-  ];
+    });
+    return links;
+  }, []);
 }
 
 /* Shared by <a> and the dropdown <button> so both get the same underline. */
