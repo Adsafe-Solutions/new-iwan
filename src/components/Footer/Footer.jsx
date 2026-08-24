@@ -1,11 +1,14 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useBrand, useCopy } from "../../content/ContentProvider.jsx";
 import { fill } from "../../lib/fill.js";
 import { cx } from "../../lib/cx.js";
+import Turnstile from "../Turnstile/Turnstile.jsx";
 
 const FINE_LINK = "underline transition-opacity duration-200 hover:opacity-65";
 
 export default function Footer() {
+  const [turnstileToken, setTurnstileToken] = useState("");
   const BRAND = useBrand();
   const copy = useCopy().footer;
   const MARK_NAME = BRAND.name;
@@ -27,33 +30,38 @@ export default function Footer() {
 
           <div className="w-[min(560px,100%)]">
             <h4 className="mb-[0.7rem] text-[15px] font-bold">{copy.subscribeHeading}</h4>
-            <form
-              className={cx(
-                "flex items-center gap-[0.4rem] rounded-full border border-ink/45 bg-transparent",
-                "py-1 pl-5 pr-1 transition-colors duration-[250ms] focus-within:border-primary-800"
-              )}
-              onSubmit={(e) => e.preventDefault()}
-            >
-              <input
+            <form onSubmit={(e) => e.preventDefault()}>
+              <div
                 className={cx(
-                  "min-w-0 flex-1 border-0 bg-transparent py-[0.7rem] text-[15px] text-ink",
-                  "[font-family:inherit] placeholder:text-ink/60 focus:outline-none"
+                  "flex items-center gap-[0.4rem] rounded-full border border-ink/45 bg-transparent",
+                  "py-1 pl-5 pr-1 transition-colors duration-[250ms] focus-within:border-primary-800"
                 )}
-                type="email"
-                placeholder={copy.emailPlaceholder}
-                aria-label={copy.emailLabel}
-                required
-              />
-              <button
-                className={cx(
-                  "flex-none cursor-pointer rounded-full border-0 bg-primary-800 px-[1.6rem] py-3",
-                  "text-[15px] font-semibold text-white [font-family:inherit]",
-                  "transition-colors duration-[250ms] hover:bg-primary"
-                )}
-                type="submit"
               >
-                {copy.subscribe}
-              </button>
+                <input
+                  className={cx(
+                    "min-w-0 flex-1 border-0 bg-transparent py-[0.7rem] text-[15px] text-ink",
+                    "[font-family:inherit] placeholder:text-ink/60 focus:outline-none"
+                  )}
+                  type="email"
+                  placeholder={copy.emailPlaceholder}
+                  aria-label={copy.emailLabel}
+                  required
+                />
+                <button
+                  className={cx(
+                    "flex-none cursor-pointer rounded-full border-0 bg-primary-800 px-[1.6rem] py-3",
+                    "text-[15px] font-semibold text-white [font-family:inherit] disabled:cursor-not-allowed disabled:opacity-50",
+                    "transition-colors duration-[250ms] hover:bg-primary"
+                  )}
+                  type="submit"
+                  disabled={!turnstileToken}
+                >
+                  {copy.subscribe}
+                </button>
+              </div>
+              <div className="mt-3 max-w-[420px]">
+                <Turnstile action="newsletter_signup" onChange={setTurnstileToken} />
+              </div>
             </form>
             <p className="mt-[0.7rem] max-w-[62ch] text-[14px] leading-[21px]">
               {fill(copy.consent, { name: BRAND.name })}{" "}

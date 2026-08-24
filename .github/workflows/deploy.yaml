@@ -3,11 +3,9 @@
 #   push to develop  → the dev Worker  (wrangler.dev.toml)
 #   push of a v* tag → the prod Worker (wrangler.toml)
 #
-# There is no SOPS step, unlike the reference project: nothing this site builds
-# with is secret. Every VITE_* value is inlined into a public bundle, so
-# .env.development and .env.production are committed in the clear. If a real
-# secret ever appears it must NOT become a VITE_ key — it belongs in a
-# repository secret and in whatever runs server-side.
+# Environment files are SOPS-encrypted in Git and decrypted only inside the
+# deployment runner. TURNSTILE_SECRET_KEY must never be renamed to a VITE_ key
+# or otherwise included in the public browser bundle.
 name: Deploy to Cloudflare
 
 on:
@@ -24,20 +22,58 @@ on:
 
 jobs:
   deploy:
-    name: Deploy ${{ startsWith(github.ref, 'refs/tags/') && 'prod' || inputs.environment || 'dev' }}
+    name: Deploy Worker (${{ startsWith(github.ref, 'refs/tags/') && 'prod' || inputs.environment || 'dev' }})
     runs-on: ubuntu-latest
     env:
+      IS_PROD: ${{ startsWith(github.ref, 'refs/tags/') }}
       ENV_NAME: ${{ startsWith(github.ref, 'refs/tags/') && 'prod' || inputs.environment || 'dev' }}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
 
-      - run: npm ci
+      # -------- SOPS + GPG (shared) --------
+      - name: Setup SOPS
+        uses: mdgreenwald/mozilla-sops-action@v1
+        with:
+          version: latest
+
+      - name: Import deployment GPG key
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
+
+      - name: Checkout GPG key repository
+        uses: actions/checkout@v4
+        with:
+          path: gpg
+          repository: Adsafe-Solutions/gpg
+          ref: main
+          token: ${{ secrets.GIT_TOKEN }}
+
+      - name: Import shared GPG keys
+        shell: bash
+        run: gpg --import gpg/*.asc || test $? -eq 2
+
+      - name: Decrypt environment file
+        shell: bash
+        run: |
+          if [ "${ENV_NAME}" = "prod" ]; then
+            sops --decrypt --in-place .env.production
+          else
+            sops --decrypt --in-place .env.development
+          fi
+      # -------------------------------------
+
+      - name: Install dependencies
+        run: npm ci
 
       # the build is what bakes in .env.<mode>, so it has to happen per
       # environment — a single build cannot serve both
