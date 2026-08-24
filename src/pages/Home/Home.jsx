@@ -3,7 +3,12 @@ import Hero from "../../components/Hero/Hero.jsx";
 import HeroV2 from "../../components/HeroV2/HeroV2.jsx";
 import { SECTIONS } from "../../config/sections.js";
 import TrustedBy from "../../components/TrustedBy/TrustedBy.jsx";
-import { useCopy, useHero } from "../../content/ContentProvider.jsx";
+import {
+  useCopy,
+  useHero,
+  useNav,
+  useProgrammes,
+} from "../../content/ContentProvider.jsx";
 import Pillars from "../../components/Pillars/Pillars.jsx";
 import TakeAction from "../../components/TakeAction/TakeAction.jsx";
 import Events from "../../components/Events/Events.jsx";
@@ -24,12 +29,25 @@ import Instagram from "../../components/Instagram/Instagram.jsx";
                   It is also the only place the social accounts appeared. */
 export default function Home() {
   const { programmeMarks } = useHero();
-  const { trustedBy } = useCopy();
+  const { trustedBy, comingSoon } = useCopy();
+  const { pages } = useNav();
+  const { content: PROGRAMMES_CONTENT } = useProgrammes();
   useScrollAnimations();
+
+  /* a mark whose programme has no content in this country (still in the
+     nav, just nulled — see content/ca and App.jsx's ComingSoon routing)
+     shows "Coming soon" here instead of its short label, so this band
+     matches what clicking through the mark actually finds. */
+  const marks = programmeMarks.map((m) => {
+    const page = pages.find((p) => p.mark === m.id);
+    const running = !page || PROGRAMMES_CONTENT[page.path.replace("/", "")];
+    return running ? m : { ...m, label: comingSoon.badge };
+  });
+
   return (
     <main>
       {SECTIONS.homeHero === "v2" ? <HeroV2 /> : <Hero />}
-      <TrustedBy {...trustedBy} items={programmeMarks} />
+      <TrustedBy {...trustedBy} items={marks} />
       <Pillars />
       <TakeAction />
       <Events />
