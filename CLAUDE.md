@@ -46,15 +46,26 @@ what configure a build, and dev and prod therefore need _separate builds_.
 `countries.js` take their defaults from it, so a deployment can run a
 different hero or default country without a code change.
 
-Both env files are **committed**, because nothing in them is secret — a
-`VITE_` key is public by definition. The reference project (RBB) encrypts its
-env files with SOPS because it has runtime secrets; this site has none, and
-the Instagram token stays in GitHub Actions secrets where the browser never
-sees it. If that ever changes, the secret must not become a `VITE_` key.
+`.env.local`, `.env.development` and `.env.production` are committed only in
+their **SOPS-encrypted** form. Decrypt the one needed for local work, and
+re-encrypt it before staging. The native hook in `.githooks/pre-commit`
+rejects staged plaintext env files; `npm ci` installs that hook through the
+`prepare` script. `TURNSTILE_SITE_KEY` is public and explicitly injected by
+`vite.config.js`; `TURNSTILE_SECRET_KEY` must never become a `VITE_` key or be
+read by frontend code.
 
 `.github/workflows/deploy.yaml` deploys on a push to `develop` (dev) or a
-`v*` tag (prod), and needs `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`
-as repository secrets.
+`v*` tag (prod). It imports GPG, decrypts only the selected environment file,
+builds it, then deploys through the matching Wrangler config. Required Actions
+secrets are `GPG_PRIVATE_KEY`, `GPG_PRIVATE_KEY_PASSPHRASE`, `GIT_TOKEN`,
+`CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`. GitHub uses the same
+`secrets.*` context for repository and organization secrets; this private repo
+currently relies on repository-level copies because of the organization plan.
+
+Turnstile is rendered in the event modal, event-detail registration panel,
+newsletter and contact form. It gates the client controls, but this static app
+has no submission backend yet, so canonical server-side Siteverify remains
+pending until those handlers exist.
 
 Prettier 3.9.6 is pinned; run `npx prettier --write src` after editing and
 `npm run build` before calling anything done.

@@ -30,28 +30,36 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
 
       # -------- SOPS + GPG (shared) --------
       - name: Setup SOPS
-        uses: mdgreenwald/mozilla-sops-action@v1
-        with:
-          version: latest
+        shell: bash
+        env:
+          SOPS_VERSION: 3.13.3
+        run: |
+          file="sops-v${SOPS_VERSION}.linux.amd64"
+          base="https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}"
+          curl --fail --silent --show-error --location --output "$file" "$base/$file"
+          curl --fail --silent --show-error --location \
+            --output sops-checksums.txt "$base/sops-v${SOPS_VERSION}.checksums.txt"
+          grep "  $file$" sops-checksums.txt | sha256sum --check --strict
+          sudo install --mode 0755 "$file" /usr/local/bin/sops
 
       - name: Import deployment GPG key
-        uses: crazy-max/ghaction-import-gpg@v6
+        uses: crazy-max/ghaction-import-gpg@v7
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
 
       - name: Checkout GPG key repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: gpg
           repository: Adsafe-Solutions/gpg
@@ -81,7 +89,7 @@ jobs:
         run: npm run build:${{ env.ENV_NAME }}
 
       - name: Deploy
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
