@@ -103,6 +103,44 @@ export const COPY = {
     cta: "Contact us",
   },
 
+  /* /careers-and-volunteering. No jobs board exists yet — `openRolesBody`
+     says so plainly rather than faking an "Apply now" flow, the same
+     honesty the contact form's `form.note` already carries. */
+  careers: {
+    eyebrow: "Careers & volunteering",
+    heading: "Iwan runs on the people who",
+    mark: "show up for it.",
+    body: "Every class, workshop and gathering happens because someone gave their time and skills to it. If you want to be one of them, this is where to start.",
+    stepsHeading: "How it works",
+    stepsSubtitle:
+      "There's no application form and no waiting list — just a conversation.",
+    steps: [
+      {
+        title: "Reach out",
+        body: "Tell us a little about yourself and what you'd like to help with.",
+      },
+      {
+        title: "Have a conversation",
+        body: "We'll talk through where your time and skills could fit best.",
+      },
+      {
+        title: "Get matched",
+        body: "We'll connect you with the programme that suits you.",
+      },
+      {
+        title: "Start volunteering",
+        body: "Join the next class, workshop or event and get stuck in.",
+      },
+    ],
+    waysEyebrow: "Where you can help",
+    waysBody:
+      "Every programme runs on volunteers — pick the one that fits your time and skills, or talk to us if you're not sure.",
+    waysCta: "See the programme",
+    openRolesHeading: "Open roles",
+    openRolesBody:
+      "There's nothing listed here right now. Reach out below and tell us what you'd like to do, and we'll be in touch when something opens up.",
+  },
+
   /* the /blogs page and each post's own /blogs/<slug> page */
   blogsPage: {
     eyebrow: "Writing",
@@ -232,6 +270,16 @@ export const COPY = {
     work: "our work",
     or: "or",
     zakat: "give your Zakat",
+  },
+
+  /* shown in place of the full Programme template for a programme this
+     country doesn't run yet — see App.jsx's routing and content/ca/index.js */
+  comingSoon: {
+    badge: "Coming soon",
+    heading: "is coming soon.",
+    body: "{label} hasn't launched in this country yet — {intro}",
+    home: "See our other programmes",
+    contact: "Get in touch",
   },
 
   notFound: {

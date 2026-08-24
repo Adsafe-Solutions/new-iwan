@@ -6,6 +6,7 @@ import {
   IconAward,
   IconBulb,
   IconCalendarEvent,
+  IconClock,
   IconCompass,
   IconHeart,
   IconHeartHandshake,
@@ -27,6 +28,7 @@ import {
 const ICONS = {
   people: IconUsersGroup,
   calendar: IconCalendarEvent,
+  clock: IconClock,
   hands: IconHeartHandshake,
   growth: IconTrendingUp,
   compass: IconCompass,

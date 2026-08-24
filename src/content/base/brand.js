@@ -1,3 +1,6 @@
+import logo from "../../assests/logos/brand-main-logo.webp";
+import logoLight from "../../assests/logos/brand-main-logo-light.webp";
+
 /* Single source of truth for brand identity. Anything naming or picturing the
    organisation reads from here — components, page copy, meta tags. */
 export const BRAND = {
@@ -9,10 +12,11 @@ export const BRAND = {
 
   /* logo is the dark lockup for light backgrounds; logoLight is the reversed
      one for the hero header and footer. Brand.jsx falls back to a whitened
-     `logo` if logoLight is missing. */
-  logo: "/brand-logo.webp",
-  logoLight: "/brand-logo-light.webp",
-  footerLogo: "/brand-logo-light.webp",
+     `logo` if logoLight fails to load — it no longer does now that both
+     files exist, but the fallback stays as a safety net. */
+  logo,
+  logoLight,
+  footerLogo: logoLight,
 
   email: "info@iwan.community",
   domain: "iwan.community",
