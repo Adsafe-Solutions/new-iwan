@@ -52,9 +52,12 @@ env files with SOPS because it has runtime secrets; this site has none, and
 the Instagram token stays in GitHub Actions secrets where the browser never
 sees it. If that ever changes, the secret must not become a `VITE_` key.
 
-`.github/workflows/deploy.yaml` deploys on a push to `develop` (dev) or a
-`v*` tag (prod), and needs `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`
-as repository secrets.
+`.github/workflows/deploy.yaml` deploys on a push to `develop` (dev) or to
+`main` (prod), and needs `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`
+as repository secrets. ⚠ There is no tag or approval gate, so **a merge to
+main is a release** — harmless while prod serves `new.iwan.community`, but the
+day the route moves to `www` it means every push to main hits the live site.
+Add a GitHub environment with a required reviewer before that.
 
 Prettier 3.9.6 is pinned; run `npx prettier --write src` after editing and
 `npm run build` before calling anything done.
