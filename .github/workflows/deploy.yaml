@@ -1,24 +1,17 @@
 # Deploys the built site to Cloudflare Workers static assets.
 #
-#   push to develop → the dev Worker  (wrangler.dev.toml → dev.iwan.community)
-#   push to main    → the prod Worker (wrangler.toml     → new.iwan.community)
+#   push to develop  → the dev Worker  (wrangler.dev.toml)
+#   push of a v* tag → the prod Worker (wrangler.toml)
 #
-# ⚠ main deploys to production on every push. There is no tag or approval gate,
-# so a merge to main is a release. That is low-risk while prod points at
-# new.iwan.community; once the route moves to www.iwan.community it means every
-# push to main goes straight to the live site — worth adding a GitHub
-# environment with a required reviewer before that happens.
-#
-# There is no SOPS step, unlike the reference project: nothing this site builds
-# with is secret. Every VITE_* value is inlined into a public bundle, so
-# .env.development and .env.production are committed in the clear. If a real
-# secret ever appears it must NOT become a VITE_ key — it belongs in a
-# repository secret and in whatever runs server-side.
+# Environment files are SOPS-encrypted in Git and decrypted only inside the
+# deployment runner. TURNSTILE_SECRET_KEY must never be renamed to a VITE_ key
+# or otherwise included in the public browser bundle.
 name: Deploy to Cloudflare
 
 on:
   push:
-    branches: [main, develop]
+    branches: [develop]
+    tags: ["v*"]
   workflow_dispatch:
     inputs:
       environment:
@@ -29,20 +22,66 @@ on:
 
 jobs:
   deploy:
-    name: Deploy ${{ github.ref_name == 'main' && 'prod' || inputs.environment || 'dev' }}
+    name: Deploy Worker (${{ startsWith(github.ref, 'refs/tags/') && 'prod' || inputs.environment || 'dev' }})
     runs-on: ubuntu-latest
     env:
-      ENV_NAME: ${{ github.ref_name == 'main' && 'prod' || inputs.environment || 'dev' }}
+      IS_PROD: ${{ startsWith(github.ref, 'refs/tags/') }}
+      ENV_NAME: ${{ startsWith(github.ref, 'refs/tags/') && 'prod' || inputs.environment || 'dev' }}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
 
-      - run: npm ci
+      # -------- SOPS + GPG (shared) --------
+      - name: Setup SOPS
+        shell: bash
+        env:
+          SOPS_VERSION: 3.13.3
+        run: |
+          file="sops-v${SOPS_VERSION}.linux.amd64"
+          base="https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}"
+          curl --fail --silent --show-error --location --output "$file" "$base/$file"
+          curl --fail --silent --show-error --location \
+            --output sops-checksums.txt "$base/sops-v${SOPS_VERSION}.checksums.txt"
+          grep "  $file$" sops-checksums.txt | sha256sum --check --strict
+          sudo install --mode 0755 "$file" /usr/local/bin/sops
+
+      - name: Import deployment GPG key
+        uses: crazy-max/ghaction-import-gpg@v7
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PRIVATE_KEY_PASSPHRASE }}
+
+      - name: Checkout GPG key repository
+        uses: actions/checkout@v6
+        with:
+          path: gpg
+          repository: Adsafe-Solutions/gpg
+          ref: main
+          token: ${{ secrets.GIT_TOKEN }}
+
+      - name: Import shared GPG keys
+        shell: bash
+        run: gpg --import gpg/*.asc || test $? -eq 2
+
+      - name: Decrypt environment file
+        shell: bash
+        run: |
+          if [ "${ENV_NAME}" = "prod" ]; then
+            sops --decrypt --in-place .env.production
+          else
+            sops --decrypt --in-place .env.development
+          fi
+      # -------------------------------------
+
+      - name: Install dependencies
+        run: npm ci
 
       # the build is what bakes in .env.<mode>, so it has to happen per
       # environment — a single build cannot serve both
@@ -50,15 +89,10 @@ jobs:
         run: npm run build:${{ env.ENV_NAME }}
 
       - name: Deploy
-        uses: cloudflare/wrangler-action@v3
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          # ⚠ Pin to the version this repo is built against. Left alone the
-          # action installs its own default (3.90.0 as of writing) and ignores
-          # the devDependency, which is a different major line to the one the
-          # wrangler.toml files were written and tested for.
-          wranglerVersion: "4.125.0"
           command: >-
             deploy --config
             ${{ env.ENV_NAME == 'prod' && 'wrangler.toml' || 'wrangler.dev.toml' }}
