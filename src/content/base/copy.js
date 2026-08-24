@@ -80,6 +80,9 @@ export const COPY = {
     seeAll: "See all events",
   },
 
+  /* /podcast — the listing. Each card links through to /podcast/:id, where
+     podcastEpisode below takes over; the list itself no longer embeds a
+     player, so the page loads without pulling any episode's audio. */
   podcastPage: {
     eyebrow: "Listen",
     heading: "Conversations from",
@@ -92,6 +95,17 @@ export const COPY = {
     pause: "Pause episode",
     seek: "Seek within the episode",
     empty: "Nothing published yet. Check back soon.",
+    listen: "Listen to this episode",
+    more: "Listen to {title}",
+  },
+
+  /* /podcast/:id — one episode's own page. */
+  podcastEpisode: {
+    back: "All episodes",
+    aboutShow: "About the show",
+    nextHeading: "Next episode",
+    notFound: "We can’t find that episode",
+    notFoundBody: "It may have moved, or the link may be wrong.",
   },
 
   /* the closing "get in touch" band — About and every blog post carry it */

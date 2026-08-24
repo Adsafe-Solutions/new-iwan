@@ -2,13 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { IconPlayerPauseFilled, IconPlayerPlayFilled } from "@tabler/icons-react";
 import { useCopy } from "../../content/ContentProvider.jsx";
 import { fill } from "../../lib/fill.js";
+import { duration as clock } from "../../lib/podcast.js";
 import { cx } from "../../lib/cx.js";
-
-const clock = (s) => {
-  if (!Number.isFinite(s)) return "--:--";
-  const m = Math.floor(s / 60);
-  return `${m}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
-};
 
 /* The filled part of the track is painted with `currentColor` so the colour
    still comes from a class (text-accent) — only the percentage is inline, and
@@ -88,21 +83,25 @@ export default function AudioPlayer({
   return (
     <article
       className={cx(
-        "relative overflow-hidden rounded-2xl bg-primary-800 p-8 max-phone:p-6",
+        "relative overflow-hidden rounded-2xl border border-white/[0.06]",
+        "bg-gradient-to-br from-primary-800 to-ink shadow-pop",
+        "p-8 max-phone:p-6",
         className
       )}
     >
       <audio ref={el} src={src} preload="none" />
 
-      {/* the artwork again, huge and barely there, as the card's ground */}
-      {cover && (
-        <img
-          src={cover}
-          alt=""
-          aria-hidden="true"
-          className="pointer-events-none absolute -right-16 -top-20 w-[420px] max-w-none opacity-[0.06] max-nav:hidden"
-        />
-      )}
+      {/* ambient glow, not a second copy of the artwork — the wordmark
+          already appears once, in the tile below. Clipped by the card's own
+          overflow-hidden, so the blur never spills past the rounded edge. */}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-20 -top-24 h-[300px] w-[300px] rounded-full bg-teal/25 blur-3xl"
+      />
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute -bottom-28 -left-16 h-[260px] w-[260px] rounded-full bg-accent/10 blur-3xl"
+      />
 
       <div className="relative z-[1]">
         <div className="mb-8 flex items-center gap-6 max-phone:mb-6 max-phone:gap-4">
@@ -133,6 +132,8 @@ export default function AudioPlayer({
           </div>
         </div>
 
+        <div className="mb-6 h-px w-full bg-white/[0.08]" aria-hidden="true" />
+
         <div className="flex items-center gap-5 max-phone:gap-4">
           <button
             type="button"
@@ -140,8 +141,10 @@ export default function AudioPlayer({
             aria-label={playing ? copy.pause : copy.play}
             className={cx(
               "grid h-16 w-16 flex-none cursor-pointer place-items-center rounded-full",
-              "bg-accent text-ink transition-[transform,background-color] duration-200",
+              "bg-accent text-ink transition-[transform,background-color,box-shadow] duration-200",
+              "shadow-[0_10px_28px_-10px_rgb(var(--c-yellow)/0.75)]",
               "hover:-translate-y-0.5 hover:bg-accent-2",
+              "hover:shadow-[0_14px_32px_-10px_rgb(var(--c-yellow)/0.85)]",
               "max-phone:h-14 max-phone:w-14"
             )}
           >

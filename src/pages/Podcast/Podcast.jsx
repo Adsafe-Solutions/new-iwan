@@ -1,8 +1,7 @@
 import { useScrollAnimations } from "../../hooks/useGsap.js";
-import AudioPlayer from "../../components/AudioPlayer/AudioPlayer.jsx";
+import PodcastCard from "../../components/PodcastCard/PodcastCard.jsx";
 import ContactCta from "../../components/ContactCta/ContactCta.jsx";
 import { useCopy, usePodcast } from "../../content/ContentProvider.jsx";
-import { fill } from "../../lib/fill.js";
 import { cx } from "../../lib/cx.js";
 import { KICKER, MARK_B } from "../../lib/type.js";
 
@@ -31,34 +30,7 @@ export default function PodcastPage() {
         </div>
       </section>
 
-      <section className="py-12">
-        <div className={CONTAINER}>
-          {/* the show itself: cover, name, and what it is */}
-          <div className="reveal flex items-center gap-8 rounded-2xl border border-line bg-white p-7 max-phone:flex-col max-phone:items-start max-phone:gap-5">
-            {/* contain, not cover: the artwork is a wide logo, and a square
-                crop cuts the wordmark in half */}
-            {show.cover && (
-              <span className="grid h-[128px] w-[190px] flex-none place-items-center rounded-xl bg-mist px-5 max-phone:h-[104px] max-phone:w-[156px]">
-                <img
-                  src={show.cover}
-                  alt=""
-                  className="max-h-full w-full object-contain"
-                />
-              </span>
-            )}
-            <div className="min-w-0">
-              <h2 className="mb-2 text-[24px] font-black uppercase leading-[1.15] tracking-[-0.01em]">
-                {show.title}
-              </h2>
-              <p className="max-w-[58ch] text-[16px] leading-[26px] text-muted">
-                {show.description}
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="pb-16" id="episodes">
+      <section className="py-12" id="episodes">
         <div className={CONTAINER}>
           <h2 className="reveal mb-6 text-[13px] font-extrabold uppercase tracking-[0.14em] text-primary">
             {copy.episodesHeading}
@@ -69,17 +41,17 @@ export default function PodcastPage() {
               {copy.empty}
             </p>
           ) : (
-            <div className="flex flex-col gap-5" data-stagger>
+            <div
+              className="grid grid-cols-3 gap-5 max-nav:grid-cols-2 max-phone:grid-cols-1"
+              data-stagger
+            >
               {episodes.map((ep, i) => (
-                <AudioPlayer
+                <PodcastCard
                   key={ep.id}
                   className="reveal"
-                  src={ep.audio}
+                  episode={ep}
                   cover={ep.cover ?? show.cover}
-                  eyebrow={fill(copy.episode, { n: String(i + 1).padStart(2, "0") })}
-                  title={ep.title}
-                  author={ep.author}
-                  length={ep.length}
+                  index={i}
                 />
               ))}
             </div>

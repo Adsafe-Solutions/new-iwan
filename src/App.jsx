@@ -16,6 +16,7 @@ import BlogsPage from "./pages/Blogs/Blogs.jsx";
 import Careers from "./pages/Careers/Careers.jsx";
 import BlogPost from "./pages/BlogPost/BlogPost.jsx";
 import PodcastPage from "./pages/Podcast/Podcast.jsx";
+import PodcastEpisode from "./pages/PodcastEpisode/PodcastEpisode.jsx";
 import ContactPage from "./pages/Contact/Contact.jsx";
 import { SECTIONS } from "./config/sections.js";
 import { DEFAULT_COUNTRY, basenameFor, countryFromPath } from "./config/countries.js";
@@ -124,6 +125,9 @@ function Shell() {
         )}
         {pages.some((p) => p.path === "/blogs") && (
           <Route path="/blogs/:slug" element={<BlogPost />} />
+        )}
+        {pages.some((p) => p.path === "/podcast") && (
+          <Route path="/podcast/:slug" element={<PodcastEpisode />} />
         )}
         <Route path="*" element={<NotFound />} />
       </Routes>
