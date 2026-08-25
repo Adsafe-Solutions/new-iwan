@@ -61,10 +61,11 @@ jobs:
       - name: Checkout GPG key repository
         uses: actions/checkout@v6
         with:
-          path: gpg
           repository: Adsafe-Solutions/gpg
           ref: main
+          path: gpg
           token: ${{ secrets.GIT_TOKEN }}
+          persist-credentials: false
 
       - name: Import shared GPG keys
         shell: bash
