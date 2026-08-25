@@ -1,16 +1,26 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useBrand, useCopy } from "../../content/ContentProvider.jsx";
+import { useBrand, useCopy, useNav } from "../../content/ContentProvider.jsx";
 import { fill } from "../../lib/fill.js";
 import { cx } from "../../lib/cx.js";
+import Icon from "../Icon/Icon.jsx";
 import Turnstile from "../Turnstile/Turnstile.jsx";
 
 const FINE_LINK = "underline transition-opacity duration-200 hover:opacity-65";
+const SOCIAL_ICON = cx(
+  "grid h-10 w-10 place-items-center rounded-full bg-ink/10 text-ink",
+  "transition-colors duration-200 hover:bg-primary-800 hover:text-white"
+);
 
 export default function Footer() {
   const [turnstileToken, setTurnstileToken] = useState("");
   const BRAND = useBrand();
   const copy = useCopy().footer;
+  /* both read off content the country already resolves — a country with
+     fewer programmes or its own social accounts shows exactly that here
+     too, the same way TakeAction and the header nav do. */
+  const { programmesGroup, pages } = useNav();
+  const programmes = pages.filter((p) => p.group === programmesGroup);
   const MARK_NAME = BRAND.name;
   const MARK_TLD = BRAND.fullName.slice(BRAND.name.length);
 
@@ -20,15 +30,65 @@ export default function Footer() {
           The deep bottom padding keeps the legal row clear of the fixed
           theme-switcher FAB. */}
       <div className="px-8 pb-[4.5rem] pt-[3.5rem] max-phone:px-5 max-phone:pb-20 max-phone:pt-[2.6rem]">
-        <div className="flex flex-wrap items-start justify-between gap-12 max-phone:gap-8">
+        <div className="flex flex-wrap items-start gap-x-10 gap-y-12 max-phone:gap-8">
           <div>
             <p className="mb-2 font-inter text-[22px] font-extrabold tracking-[-0.01em]">
               {BRAND.fullName}
             </p>
-            <p className="max-w-[46ch] text-[14px] leading-[21px]">{copy.blurb}</p>
+            <p className="mb-5 max-w-[46ch] text-[14px] leading-[21px]">{copy.blurb}</p>
+
+            {BRAND.socials?.length > 0 && (
+              <div className="flex flex-wrap gap-3">
+                {BRAND.socials.map((s) => (
+                  <a
+                    key={s.label}
+                    href={s.href}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    aria-label={s.label}
+                    className={SOCIAL_ICON}
+                  >
+                    <Icon name={s.icon} className="h-[18px] w-[18px]" />
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
 
-          <div className="w-[min(560px,100%)]">
+          {programmes.length > 0 && (
+            <div>
+              <h4 className="mb-[0.9rem] text-[15px] font-bold">
+                {copy.programmesHeading}
+              </h4>
+              <ul className="flex flex-col gap-3">
+                {programmes.map((p) => (
+                  <li key={p.path}>
+                    <Link
+                      to={p.path}
+                      className="group inline-flex items-center gap-2.5 text-[14px] font-semibold"
+                    >
+                      {/* the programme's own colour, same as everywhere else
+                          it's named — a plain text list otherwise carries no
+                          brand identity at all */}
+                      <span
+                        className={cx(
+                          "h-2 w-2 flex-none rounded-full transition-transform duration-200",
+                          "group-hover:scale-125",
+                          p.tone
+                        )}
+                        aria-hidden="true"
+                      />
+                      <span className="transition-opacity duration-200 group-hover:opacity-65">
+                        {p.label}
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <div className="w-[min(560px,100%)] max-phone:ml-0 sm:ml-auto">
             <h4 className="mb-[0.7rem] text-[15px] font-bold">{copy.subscribeHeading}</h4>
             <form onSubmit={(e) => e.preventDefault()}>
               <div

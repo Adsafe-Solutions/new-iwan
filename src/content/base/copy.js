@@ -249,6 +249,8 @@ export const COPY = {
 
   footer: {
     blurb: "Be the first to hear about our impact and new volunteer opportunities.",
+    programmesHeading: "Programmes",
+    follow: "Follow along",
     subscribeHeading: "Subscribe to receive updates",
     emailPlaceholder: "Enter your email",
     emailLabel: "Email address",
