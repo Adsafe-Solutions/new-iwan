@@ -110,7 +110,7 @@ Required GitHub Actions secrets:
 
 - `GPG_PRIVATE_KEY`
 - `GPG_PRIVATE_KEY_PASSPHRASE`
-- `GIT_TOKEN`
+- `GIT_TOKEN` — token with read access to the private `Adsafe-Solutions/gpg` repository
 - `CLOUDFLARE_API_TOKEN`
 - `CLOUDFLARE_ACCOUNT_ID`
 
