@@ -25,6 +25,7 @@ import ScrollToTop from "./components/ScrollToTop/ScrollToTop.jsx";
 import ThemeSwitcher from "./components/ThemeSwitcher/ThemeSwitcher.jsx";
 import WhatsAppFab from "./components/WhatsAppFab/WhatsAppFab.jsx";
 import LocationPrompt from "./components/LocationPrompt/LocationPrompt.jsx";
+import PromoPopup from "./components/PromoPopup/PromoPopup.jsx";
 
 /* Nav entries that have a page of their own rather than the shared programme
    template or the stub. Keyed by path so a country that drops the entry drops
@@ -135,6 +136,7 @@ function Shell() {
       <ThemeSwitcher />
       <WhatsAppFab />
       <LocationPrompt />
+      <PromoPopup />
     </>
   );
 }

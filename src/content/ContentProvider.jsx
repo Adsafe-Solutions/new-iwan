@@ -82,5 +82,6 @@ export const useInstagram = () => useContent().instagram;
 export const useHero = () => useContent().hero;
 export const useFocus = () => useContent().focus;
 export const useAdvisors = () => useContent().advisors;
+export const usePromo = () => useContent().promo;
 
 export default ContentProvider;

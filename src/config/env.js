@@ -30,6 +30,10 @@ export const ENV = {
     env.VITE_TOPBAR === undefined || env.VITE_TOPBAR === ""
       ? undefined
       : bool(env.VITE_TOPBAR),
+  promoPopup:
+    env.VITE_PROMO_POPUP === undefined || env.VITE_PROMO_POPUP === ""
+      ? undefined
+      : bool(env.VITE_PROMO_POPUP),
 };
 
 export const IS_PROD = ENV.name === "prod";

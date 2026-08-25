@@ -19,6 +19,7 @@ import { ABOUT } from "./about.js";
 import { BLOGS } from "./blogs.js";
 import { PODCAST } from "./podcast.js";
 import { CONTACT } from "./contact.js";
+import { PROMO } from "./promo.js";
 
 /* The shape every country resolves to. A country folder overrides any subtree
    of this and inherits the rest; the CMS will be asked for the same shape, so
@@ -50,6 +51,7 @@ export const BASE_CONTENT = {
   },
   focus: { areas: FOCUS_AREAS, links: FOCUS_LINKS },
   advisors: ADVISORS,
+  promo: PROMO,
 };
 
 export default BASE_CONTENT;

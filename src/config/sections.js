@@ -24,6 +24,12 @@ export const SECTIONS = {
                       held back until you scroll.
      App.jsx reads this too, because v2 changes how the header behaves. */
   homeHero: ENV.homeHero ?? "v2",
+
+  /* The on-load promo/seasonal-update pop-up (content/base/promo.js). Off by
+     default — there is no live promotion to show yet, and content/base/promo.js
+     still holds placeholder copy. Flip this once that file carries a real
+     campaign. PromoPopup.jsx also skips it if promo.js is null. */
+  promoPopup: ENV.promoPopup ?? true,
 };
 
 export default SECTIONS;
