@@ -97,3 +97,5 @@ jobs:
           command: >-
             deploy --config
             ${{ env.ENV_NAME == 'prod' && 'wrangler.toml' || 'wrangler.dev.toml' }}
+            --secrets-file
+            ${{ env.ENV_NAME == 'prod' && '.env.production' || '.env.development' }}

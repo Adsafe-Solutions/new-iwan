@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useBrand, useCopy, useNav } from "../../content/ContentProvider.jsx";
+import { useBrand, useCopy, useCountry, useNav } from "../../content/ContentProvider.jsx";
 import { fill } from "../../lib/fill.js";
 import { cx } from "../../lib/cx.js";
 import Icon from "../Icon/Icon.jsx";
@@ -14,6 +14,11 @@ const SOCIAL_ICON = cx(
 
 export default function Footer() {
   const [turnstileToken, setTurnstileToken] = useState("");
+  const [turnstileKey, setTurnstileKey] = useState(0);
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState("idle");
+  const [message, setMessage] = useState("");
+  const [country] = useCountry();
   const BRAND = useBrand();
   const copy = useCopy().footer;
   /* both read off content the country already resolves — a country with
@@ -23,6 +28,37 @@ export default function Footer() {
   const programmes = pages.filter((p) => p.group === programmesGroup);
   const MARK_NAME = BRAND.name;
   const MARK_TLD = BRAND.fullName.slice(BRAND.name.length);
+
+  const handleSubscribe = async (event) => {
+    event.preventDefault();
+    if (!turnstileToken || status === "submitting") return;
+
+    setStatus("submitting");
+    setMessage("");
+    try {
+      const response = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          region: country.code.toUpperCase(),
+          turnstileToken,
+        }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Subscription failed.");
+
+      setEmail("");
+      setStatus("success");
+      setMessage(copy.subscribeSuccess);
+    } catch (error) {
+      setStatus("error");
+      setMessage(error.message || copy.subscribeError);
+    } finally {
+      setTurnstileToken("");
+      setTurnstileKey((key) => key + 1);
+    }
+  };
 
   return (
     <footer className="overflow-hidden bg-footer text-ink">
@@ -90,7 +126,7 @@ export default function Footer() {
 
           <div className="w-[min(560px,100%)] max-phone:ml-0 sm:ml-auto">
             <h4 className="mb-[0.7rem] text-[15px] font-bold">{copy.subscribeHeading}</h4>
-            <form onSubmit={(e) => e.preventDefault()}>
+            <form onSubmit={handleSubscribe}>
               <div
                 className={cx(
                   "flex items-center gap-[0.4rem] rounded-full border border-ink/45 bg-transparent",
@@ -106,6 +142,8 @@ export default function Footer() {
                   placeholder={copy.emailPlaceholder}
                   aria-label={copy.emailLabel}
                   required
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
                 />
                 <button
                   className={cx(
@@ -114,15 +152,30 @@ export default function Footer() {
                     "transition-colors duration-[250ms] hover:bg-primary"
                   )}
                   type="submit"
-                  disabled={!turnstileToken}
+                  disabled={!turnstileToken || status === "submitting"}
                 >
-                  {copy.subscribe}
+                  {status === "submitting" ? copy.subscribing : copy.subscribe}
                 </button>
               </div>
               <div className="mt-3 max-w-[420px]">
-                <Turnstile action="newsletter_signup" onChange={setTurnstileToken} />
+                <Turnstile
+                  key={turnstileKey}
+                  action="newsletter_signup"
+                  onChange={setTurnstileToken}
+                />
               </div>
             </form>
+            {message && (
+              <p
+                className={cx(
+                  "mt-2 text-[14px] font-semibold",
+                  status === "success" ? "text-green-800" : "text-red-700"
+                )}
+                role="status"
+              >
+                {message}
+              </p>
+            )}
             <p className="mt-[0.7rem] max-w-[62ch] text-[14px] leading-[21px]">
               {fill(copy.consent, { name: BRAND.name })}{" "}
               <Link to="/" className={FINE_LINK}>

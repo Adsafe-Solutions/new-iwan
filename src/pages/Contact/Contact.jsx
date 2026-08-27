@@ -3,8 +3,7 @@ import { IconMail, IconMapPin, IconPhone } from "@tabler/icons-react";
 import { useScrollAnimations } from "../../hooks/useGsap.js";
 import Button from "../../components/Button/Button.jsx";
 import Icon from "../../components/Icon/Icon.jsx";
-import { useBrand, useContact } from "../../content/ContentProvider.jsx";
-import { submitContact } from "../../lib/contact.js";
+import { useBrand, useContact, useCountry } from "../../content/ContentProvider.jsx";
 import { fill } from "../../lib/fill.js";
 import { cx } from "../../lib/cx.js";
 import { KICKER, MARK_B } from "../../lib/type.js";
@@ -53,6 +52,7 @@ function Detail({ icon: Glyph, label, value, href }) {
 export default function ContactPage() {
   const copy = useContact();
   const BRAND = useBrand();
+  const [country] = useCountry();
   useScrollAnimations();
 
   const [sent, setSent] = useState(false);
@@ -61,11 +61,37 @@ export default function ContactPage() {
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [turnstileToken, setTurnstileToken] = useState("");
+  const [turnstileKey, setTurnstileKey] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    await submitContact({ to: BRAND.email, name, email, subject, message });
-    setSent(true);
+    setSubmitting(true);
+    setError("");
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          subject,
+          message,
+          region: country.code.toUpperCase(),
+          turnstileToken,
+        }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || copy.form.submitError);
+      setSent(true);
+    } catch (submissionError) {
+      setError(submissionError.message || copy.form.submitError);
+    } finally {
+      setSubmitting(false);
+      setTurnstileToken("");
+      setTurnstileKey((key) => key + 1);
+    }
   };
 
   return (
@@ -233,12 +259,25 @@ export default function ContactPage() {
                   </label>
 
                   <div className="mb-5 max-w-[420px]">
-                    <Turnstile action="contact" onChange={setTurnstileToken} />
+                    <Turnstile
+                      key={turnstileKey}
+                      action="contact"
+                      onChange={setTurnstileToken}
+                    />
                   </div>
 
+                  {error && (
+                    <p
+                      className="mb-4 text-[14px] font-semibold text-red-700"
+                      role="alert"
+                    >
+                      {error}
+                    </p>
+                  )}
+
                   <div className="flex flex-wrap items-center gap-4">
-                    <Button type="submit" disabled={!turnstileToken}>
-                      {copy.form.submit}
+                    <Button type="submit" disabled={!turnstileToken || submitting}>
+                      {submitting ? copy.form.submitting : copy.form.submit}
                     </Button>
                     <span className="text-[13px] leading-[20px] text-muted">
                       {copy.form.note}

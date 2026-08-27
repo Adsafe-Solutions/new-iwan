@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Button from "../Button/Button.jsx";
-import { useCopy } from "../../content/ContentProvider.jsx";
+import { useCopy, useCountry } from "../../content/ContentProvider.jsx";
 import { fill } from "../../lib/fill.js";
 import { longDate } from "../../lib/events.js";
 import { cx } from "../../lib/cx.js";
@@ -17,14 +17,46 @@ const FIELD_LABEL =
 const CTA_ROW = "flex flex-wrap items-center gap-[0.9rem]";
 
 /* cta → form → done, shared by the homepage modal and an event's own page so
-   the two cannot drift. ⚠ Nothing is submitted anywhere: this is the visual
-   flow only, the same as the newsletter box in the footer. */
+   the two cannot drift. */
 export default function RegisterForm({ event, locale = "en-GB" }) {
   const copy = useCopy().eventModal;
+  const [country] = useCountry();
   const [stage, setStage] = useState("cta");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [turnstileToken, setTurnstileToken] = useState("");
+  const [turnstileKey, setTurnstileKey] = useState(0);
+  const [error, setError] = useState("");
+
+  const submit = async (submitEvent) => {
+    submitEvent.preventDefault();
+    setStage("submitting");
+    setError("");
+    try {
+      const response = await fetch("/api/events/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          region: country.code.toUpperCase(),
+          eventId: event.id,
+          eventTitle: event.title,
+          eventDate: event.date,
+          turnstileToken,
+        }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || copy.submitError);
+      setStage("done");
+    } catch (submissionError) {
+      setError(submissionError.message || copy.submitError);
+      setStage("form");
+    } finally {
+      setTurnstileToken("");
+      setTurnstileKey((key) => key + 1);
+    }
+  };
 
   if (stage === "cta") {
     return (
@@ -35,14 +67,9 @@ export default function RegisterForm({ event, locale = "en-GB" }) {
     );
   }
 
-  if (stage === "form") {
+  if (stage === "form" || stage === "submitting") {
     return (
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          setStage("done");
-        }}
-      >
+      <form onSubmit={submit}>
         <span className="mb-4 block text-[16px] font-bold">{copy.formHeading}</span>
         <div className="mb-[1.1rem] flex flex-wrap gap-[0.9rem]">
           <label className={FIELD_LABEL}>
@@ -68,11 +95,20 @@ export default function RegisterForm({ event, locale = "en-GB" }) {
           </label>
         </div>
         <div className="mb-[1.1rem] max-w-[420px]">
-          <Turnstile action="event_registration" onChange={setTurnstileToken} />
+          <Turnstile
+            key={turnstileKey}
+            action="event_registration"
+            onChange={setTurnstileToken}
+          />
         </div>
+        {error && (
+          <p className="mb-3 text-[14px] font-semibold text-red-700" role="alert">
+            {error}
+          </p>
+        )}
         <div className={CTA_ROW}>
-          <Button type="submit" disabled={!turnstileToken}>
-            {copy.submit}
+          <Button type="submit" disabled={!turnstileToken || stage === "submitting"}>
+            {stage === "submitting" ? copy.submitting : copy.submit}
           </Button>
           <button
             type="button"

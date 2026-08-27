@@ -6,7 +6,36 @@
    same "this page is coming soon" treatment every other unbuilt page gets,
    using each programme's own nav intro rather than India's Bangalore-specific
    copy. See ../ops.js for `null`-deletes-a-key. */
+import feed from "./instagram-feed.json";
+
+const instagramUrl = "https://www.instagram.com/iwan.community.canada?utm_source=qr";
+
 export default {
+  brand: {
+    socials: (socials) =>
+      socials.map((social) => {
+        if (social.icon === "instagram") return { ...social, href: instagramUrl };
+        if (social.icon === "facebook") {
+          return {
+            ...social,
+            href: "https://www.facebook.com/share/17JTta6ADU/?mibextid=wwXIfr",
+          };
+        }
+        return social;
+      }),
+  },
+  instagram: {
+    handle: "@iwan.community.canada",
+    url: instagramUrl,
+    posts: (feed.posts ?? []).map((post) => ({
+      img: post.img,
+      href: post.href,
+      label: post.caption
+        ? `Instagram post: ${post.caption}`
+        : "View this post on Instagram",
+    })),
+    isLive: (feed.posts ?? []).length > 0,
+  },
   programmes: { content: { "iwan-kids": null, "iwan-women": null } },
 };
 

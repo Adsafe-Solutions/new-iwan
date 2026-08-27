@@ -64,9 +64,9 @@ access to the private `Adsafe-Solutions/gpg` repository. GitHub uses the same
 currently relies on repository-level copies because of the organization plan.
 
 Turnstile is rendered in the event modal, event-detail registration panel,
-newsletter and contact form. It gates the client controls, but this static app
-has no submission backend yet, so canonical server-side Siteverify remains
-pending until those handlers exist.
+newsletter and contact form. Each posts to the Worker for action-specific
+Siteverify. Newsletter creates a regional Resend Contact; event and contact
+forms send regional Resend notification emails.
 
 Prettier 3.9.6 is pinned; run `npx prettier --write src` after editing and
 `npm run build` before calling anything done.
@@ -675,7 +675,7 @@ close button losing its position, an unintended scroll-to-section on page load.
 - The hero still uses three stock Webflow photos with generic charity copy. An
   earlier attempt to switch it to the four Iwan programmes (Men, Women, Youth,
   Kids) with local images was rolled back and `src/assests/` no longer exists.
-- Register buttons and the newsletter form are visual only — nothing submits.
+- Form delivery is live through Resend; CMS persistence is still pending.
 - `Upcoming events carousel design/` at the repo root is a reference design
   export, untracked, ships nothing. Safe to delete or gitignore.
 - Nav links for About Us children (Our Story, Leadership, …) all point at `/`.

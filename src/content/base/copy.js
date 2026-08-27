@@ -242,6 +242,8 @@ export const COPY = {
     emailLabel: "Email",
     emailPlaceholder: "you@email.com",
     submit: "Confirm my place",
+    submitting: "Confirming…",
+    submitError: "We could not register you right now. Please try again.",
     cancel: "Cancel",
     doneHeading: "You’re in{name}",
     doneBody: "We’ve noted your place at {title} on {date}.",
@@ -255,6 +257,9 @@ export const COPY = {
     emailPlaceholder: "Enter your email",
     emailLabel: "Email address",
     subscribe: "Subscribe",
+    subscribing: "Subscribing…",
+    subscribeSuccess: "You’re subscribed. Watch your inbox for updates.",
+    subscribeError: "We could not subscribe you right now. Please try again.",
     consent:
       "By subscribing you agree to receive updates from {name} from time to time and to our",
     privacy: "Privacy Policy",

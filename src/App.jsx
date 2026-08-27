@@ -36,6 +36,10 @@ const PAGES = {
   "/podcast": PodcastPage,
   "/about-us": About,
   "/careers-and-volunteering": Careers,
+  /* also a fixed route below, because the header CTA points at it whether or
+     not a country lists it in the nav. Listed here too so the nav entry
+     resolves to the real page rather than falling through to the stub. */
+  "/contact-us": ContactPage,
 };
 
 function Shell() {
