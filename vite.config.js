@@ -4,6 +4,12 @@ import react from "@vitejs/plugin-react";
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, ".", "");
 
+  if (!env.TURNSTILE_SITE_KEY || env.TURNSTILE_SITE_KEY.startsWith("ENC[")) {
+    throw new Error(
+      `TURNSTILE_SITE_KEY is missing or still encrypted for Vite mode "${mode}".`
+    );
+  }
+
   return {
     plugins: [react()],
     server: { port: 5173, open: false },

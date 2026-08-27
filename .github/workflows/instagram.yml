@@ -4,8 +4,8 @@ name: Refresh Instagram feed
 # result, so the site stays fully static and never calls Instagram at runtime.
 #
 # Repository secrets required (Settings → Secrets and variables → Actions):
-#   IG_USER_ID       the Instagram professional account id
-#   IG_ACCESS_TOKEN  a long-lived token — see the rotation job below
+#   IG_USER_ID_IN / IG_ACCESS_TOKEN_IN  India professional account credentials
+#   IG_USER_ID_CA / IG_ACCESS_TOKEN_CA  Canada professional account credentials
 #
 # Optional secret:
 #   GH_PAT           a fine-grained PAT with "Secrets: read and write" on this
@@ -24,29 +24,43 @@ permissions:
 jobs:
   feed:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - region: in
+            feed_file: src/content/base/instagram-feed.json
+          - region: ca
+            feed_file: src/content/ca/instagram-feed.json
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
 
-      - name: Fetch latest posts
+      - name: Fetch latest ${{ matrix.region }} posts
         env:
-          IG_USER_ID: ${{ secrets.IG_USER_ID }}
-          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
-        run: node scripts/fetch-instagram.mjs
+          IG_USER_ID: ${{ matrix.region == 'ca' && secrets.IG_USER_ID_CA || secrets.IG_USER_ID_IN }}
+          IG_ACCESS_TOKEN: ${{ matrix.region == 'ca' && secrets.IG_ACCESS_TOKEN_CA || secrets.IG_ACCESS_TOKEN_IN }}
+          IG_FEED_FILE: ${{ matrix.feed_file }}
+        run: |
+          if [ -z "$IG_USER_ID" ] || [ -z "$IG_ACCESS_TOKEN" ]; then
+            echo "::warning::Instagram credentials for ${{ matrix.region }} are not configured; keeping the existing feed."
+            exit 0
+          fi
+          node scripts/fetch-instagram.mjs
 
       - name: Commit if the feed changed
         run: |
-          if git diff --quiet -- src/content/base/instagram-feed.json; then
+          if git diff --quiet -- "${{ matrix.feed_file }}"; then
             echo "Feed unchanged — nothing to commit."
             exit 0
           fi
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/content/base/instagram-feed.json
-          git commit -m "chore: refresh Instagram feed"
+          git add "${{ matrix.feed_file }}"
+          git commit -m "chore: refresh ${{ matrix.region }} Instagram feed"
+          git pull --rebase
           git push
 
   rotate-token:
@@ -55,14 +69,22 @@ jobs:
     needs: feed
     if: github.event_name == 'schedule'
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        region: [IN, CA]
     steps:
       - name: Refresh the long-lived token
         env:
-          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          IG_ACCESS_TOKEN: ${{ matrix.region == 'CA' && secrets.IG_ACCESS_TOKEN_CA || secrets.IG_ACCESS_TOKEN_IN }}
+          SECRET_NAME: IG_ACCESS_TOKEN_${{ matrix.region }}
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: |
+          if [ -z "$IG_ACCESS_TOKEN" ]; then
+            echo "::warning::$SECRET_NAME is not configured; skipping rotation."
+            exit 0
+          fi
           if [ -z "$GH_TOKEN" ]; then
-            echo "::warning::GH_PAT is not set, so IG_ACCESS_TOKEN cannot be rotated automatically. It will expire ~60 days after it was issued — rotate it by hand before then."
+            echo "::warning::GH_PAT is not set, so $SECRET_NAME cannot be rotated automatically. Rotate it by hand before expiry."
             exit 0
           fi
           NEW=$(curl -sS -G "https://graph.instagram.com/refresh_access_token" \
@@ -71,5 +93,5 @@ jobs:
             | node -e "let d='';process.stdin.on('data',c=>d+=c).on('end',()=>{const j=JSON.parse(d);if(!j.access_token){console.error(d);process.exit(1)}process.stdout.write(j.access_token)})")
           # mask before it can reach a log line
           echo "::add-mask::$NEW"
-          gh secret set IG_ACCESS_TOKEN --body "$NEW" --repo "${{ github.repository }}"
+          gh secret set "$SECRET_NAME" --body "$NEW" --repo "${{ github.repository }}"
           echo "Token rotated."

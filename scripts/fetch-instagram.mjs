@@ -18,6 +18,8 @@
      IG_API_VERSION   default v21.0. Meta retires versions on a rolling
                       basis — check the current one if calls start 400ing.
      IG_LIMIT         how many posts to request (default 12).
+     IG_FEED_FILE     repository-relative output file (defaults to India's
+                      base feed).
 
    The Basic Display API this replaces was shut down in December 2024; any
    guide still referencing it is out of date.
@@ -26,10 +28,7 @@ import { writeFile, mkdir } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const OUT = resolve(
-  dirname(fileURLToPath(import.meta.url)),
-  "../src/content/base/instagram-feed.json"
-);
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
 const {
   IG_USER_ID,
@@ -37,7 +36,14 @@ const {
   IG_GRAPH_HOST = "graph.instagram.com",
   IG_API_VERSION = "v21.0",
   IG_LIMIT = "12",
+  IG_FEED_FILE = "src/content/base/instagram-feed.json",
 } = process.env;
+
+const OUT = resolve(ROOT, IG_FEED_FILE);
+if (!OUT.startsWith(`${ROOT}/`)) {
+  console.error("IG_FEED_FILE must stay inside the repository.");
+  process.exit(1);
+}
 
 if (!IG_USER_ID || !IG_ACCESS_TOKEN) {
   console.error("Missing IG_USER_ID or IG_ACCESS_TOKEN. Set both as repository secrets.");
@@ -91,4 +97,4 @@ await writeFile(
   `${JSON.stringify({ fetchedAt: new Date().toISOString(), posts }, null, 2)}\n`
 );
 
-console.log(`Wrote ${posts.length} posts to src/content/base/instagram-feed.json`);
+console.log(`Wrote ${posts.length} posts to ${IG_FEED_FILE}`);
