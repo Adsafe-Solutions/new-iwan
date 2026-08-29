@@ -102,7 +102,8 @@ EventDetail, Zakat, Placeholder, NotFound.
 story, the vision and mission statements and the six core values are the
 organisation's own account of itself, so `content/base/about.js` keeps them
 verbatim and only the section furniture is ours. Two things it deliberately
-does not restate: the programme cards come from `nav` (so Canada shows three),
+does not restate: the programme cards come from `nav` (so a country that drops
+one shows fewer),
 and the vision/mission four-part lists come from `pillars.js`, which already
 carries both — each pillar names the vision value it serves. The live page's
 `iwan_vision.webp` is a **mislabelled copy of `iwan_mission.webp`**, so neither
@@ -131,14 +132,12 @@ state. Add Canadian events to the same array with `country: "ca"`.
 
 **`/contact-us`** is a real page now, not a nav entry — the header CTA and
 `ContactCta` point at it, so `Contact.jsx` (the parked homepage band) is the
-only thing still reaching for `mailto:` as a CTA. ⚠ **The form does not post
-anywhere.** The live site runs Contact Form 7, whose REST route this site
-cannot call: `access-control-allow-origin` names another domain, and it also
-wants a page-specific `_wpcf7_unit_tag`, a session `_wpnonce` and an hCaptcha
-token. `lib/contact.js` is the seam — it opens a pre-filled email today, the
-page awaits it and shows the same confirmation either way, and the copy says
-plainly what happens. Swapping in a real request is a change to that one
-function; delete `form.note` when it is no longer true.
+only thing still reaching for `mailto:` as a CTA. **The form posts to the CMS
+API** — `POST /api/contact` via `lib/forms.js` — which stores the message on the
+sender's audience row. It used to open a pre-filled email instead, because the
+live site's Contact Form 7 endpoint refuses a cross-origin request;
+`lib/contact.js` held that and is gone. ⚠ Nobody is emailed when a message
+arrives, so the Audience tab in the CMS is where they are read.
 
 **`/podcast`** is one show and one episode, transcribed from the live page
 into `content/base/podcast.js`. `AudioPlayer` wraps a native `<audio>` — the
@@ -325,11 +324,14 @@ for nav pages, `id` for hero logos, `date` for events. Content is data, so
 neither `null` nor a function is ever a real value, and both sentinels are
 unambiguous. Base is never mutated.
 
-`content/ca/index.js` is the worked example: Canada runs three programmes, so
-it removes Women from `nav.pages` (which is also where routes and the homepage
-tiles come from) and from the hero rotation, nulls the programme entry, and
-adjusts the TrustedBy eyebrow — five lines, and a tile or an intro changed in
-base still reaches Canada.
+`content/ca/index.js` is the worked example, and ⚠ it does the OPPOSITE of what
+you might expect: Canada keeps all four programmes in `nav` — so the tile, the
+route and the homepage link all still exist — and instead nulls the
+`programmes.content` entry for Kids and Women. `Programme` then renders nothing,
+App.jsx falls through to the `ComingSoon` stub, and each gets its own nav intro
+rather than India's Bangalore-specific copy. Removing them from `nav.pages`
+would have made the pages vanish entirely, which is a different (and louder)
+decision than "not yet".
 
 **Components never import a content module.** They call a hook:
 
@@ -339,13 +341,119 @@ const { pages, programmesGroup } = useNav();
 ```
 
 `useContent` · `useCountry` · `useBrand` · `useCopy` · `useNav` · `usePillars` ·
-`useProgrammes` · `useEvents` · `useTestimonials` · `useStats` ·
+`useProgrammes` · `useEvents` · `useBlogs` · `usePodcast` · `usePromo` ·
+`useTestimonials` · `useStats` ·
 `useInstagram` · `useHero` · `useFocus` · `useAdvisors`, all from
 `content/ContentProvider.jsx`. That indirection is the whole point: moving to
-the CMS means changing `resolveContent` and nothing else, and a country toggle
+the CMS meant changing `resolveContent` and nothing else, and a country toggle
 re-renders the site for free. `useCountry()` returns `[country, setCountry]`,
-which is what `CountrySwitcher` calls. **The API source is not built yet**,
-only the seam it plugs into.
+which is what `CountrySwitcher` calls.
+
+## The CMS
+
+Events, blogs, podcast episodes and promos can come from a CMS instead of the
+static files. Two sibling repos: **`iwan-cms-api`** (Express + Mongoose on
+MongoDB Atlas, deployed on Render) and **`iwan-cms-admin`** (React + Tailwind on
+Vercel). Each has its own README.
+
+⚠ **`VITE_CMS_API_URL` is the switch, and unset is OFF** — which is the default.
+With no URL the site renders `content/base` exactly as it did before the CMS
+existed. Setting it is the cutover, clearing it is the rollback, and neither is
+a code change. `src/content/cms.js` is the whole client.
+
+The order is **base → country override → CMS**, and it matters: the country
+folder is a deliberate editorial decision made in code (Canada runs fewer
+programmes), and the CMS is live content on top of it. Reversing the two would
+let a CMS row reintroduce something a country has explicitly dropped.
+
+⚠ **The CMS is fetched before the first render** (`primeContent` in
+`content/index.js`, awaited in `main.jsx`), not fetched-then-swapped-in. That is
+a correctness choice, not a performance one: `useGsap` scans the DOM once per
+mount, so content arriving afterwards would be stranded at `opacity: 0` forever —
+the same `.reveal` trap documented below. It also keeps `resolveContent`
+**synchronous**, which every hook depends on.
+
+The fetch carries a 3s timeout and never rejects. A CMS that is down, slow or
+misconfigured falls back to the static content rather than blanking the site.
+⚠ On Render's free tier the service spins down after ~15 minutes idle and cold
+starts take far longer than 3s, so the first visitor after a quiet spell gets
+static content. That is the intended degradation, but it is also why the API
+wants a paid instance once the CMS is the source of truth.
+
+The CMS only owns `events`, `blogs`, `podcast` and `promo` (the `OWNED` list in
+`cms.js`). Everything else — brand, nav, copy, pillars, programmes — is still
+shipped with the code. A key the API omits keeps its static value; a key it
+sends as an empty list replaces it, because "this country has no events yet" is
+a real answer the site already renders properly.
+
+**The CMS is fetched in two shapes.** `/api/content` is a **bootstrap**: the
+first page of each list in CARD projection, plus the promo — bounded at six of
+each however much content exists, so the homepage never gets slower as editors
+write. Everything else is fetched by the route that needs it, through
+`hooks/useCms.js`:
+
+| route                                             | fetches                                                       |
+| ------------------------------------------------- | ------------------------------------------------------------- |
+| `/events`, `/blogs`, `/podcast`                   | `?page=` and `?programme=` — server-paged and server-filtered |
+| `/events/:slug`, `/blogs/:slug`, `/podcast/:slug` | the full record                                               |
+| the homepage event modal                          | the full event, on open                                       |
+
+⚠ **Lists carry card fields; only `/…/:slug` carries the heavy ones.** A post's
+`html` was 81% of the old single payload and an event's `details` + `agenda` are
+the same story. Putting a detail field back into a list serialiser is the one
+change that quietly undoes all of this.
+
+⚠ **Page and filter live in the URL**, not in component state — `/blogs?page=2`
+has to be an address the server can answer.
+
+⚠ **`useScrollAnimations(ready)` takes a second dependency**, and any page that
+fetches must pass it. GSAP scans once per pass; content arriving afterwards
+would otherwise sit at `opacity: 0` forever. It is the same mechanism the hook
+already used for route changes.
+
+⚠ **"Upcoming" is the VISITOR'S calendar day**, sent as `?from=`. A server in
+UTC deciding that tonight's event is already past — for someone reading that
+morning — is exactly the bug the site's date handling exists to avoid.
+
+⚠ **Every page still works with the CMS off**, filtering and paging the static
+list in the browser. That path is not dead code until the static content goes.
+
+**Every event carries its own registration form.** The questions are built per
+event in the CMS and arrive on `event.form`; `RegisterForm` renders whatever it
+is given and knows none of them. A fishing trip asks about licences and gear, a
+kids' morning about allergies — only the furniture (button, errors,
+confirmation) is hard-coded here.
+
+⚠ **An event cannot be PUBLISHED without a form** — the API refuses it. A draft
+can be saved without one, since half a form is a normal state halfway through
+writing an event.
+
+Submissions POST to `/api/events/:slug/register`, which is **the only route on
+the API the public can write to**. It validates against the event's CURRENT form
+— a key that is not in the form is dropped, a choice answer that is not one of
+the offered options is refused — and returns per-field errors that the form
+shows against each question. ⚠ Turnstile gates the button but is still not
+verified server-side; the rate limit is what actually protects the endpoint.
+
+⚠ With the CMS off there is no form and nowhere to post, so `RegisterForm` falls
+back to the old name-and-email flow that submits nowhere. That path goes when the
+static events do.
+
+**Blog posts from the CMS are HTML**, written in a rich-text editor and rendered
+by `BlogPost` with `dangerouslySetInnerHTML`. ⚠ That is safe _only_ because the
+API sanitises on write against an allowlist — see `iwan-cms-api/src/lib/html.js`.
+Never render HTML from anywhere else this way.
+
+`.prose-post` in `index.css` styles it, and it is the **third exception** to "no
+component stylesheets" (after `.reveal` and `.no-smooth`), for the same reason:
+the markup arrives as a string, so there is nowhere to hang a utility class.
+
+⚠ `BlogPost` still carries the old `[kind, text]` block renderer as a fallback,
+and it is **not dead code** — it is what runs when the CMS is switched off, since
+`content/base/blogs.js` only has pairs. It goes when the static blog content
+does. One `reveal` sits on the whole article rather than one per block: there is
+nothing to hang per-block classes on, and a long post fading in paragraph by
+paragraph as you read it is a distraction rather than an effect.
 
 ⚠ **`src/content/ca/index.js` only drops the Women programme.** Everything else
 is still India's — the Bangalore address, the +91 WhatsApp number, the "started
