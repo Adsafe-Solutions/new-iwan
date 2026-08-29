@@ -58,7 +58,8 @@ read by frontend code.
 `v*` tag (prod). It imports GPG, decrypts only the selected environment file,
 builds it, then deploys through the matching Wrangler config. Required Actions
 secrets are `GPG_PRIVATE_KEY`, `GPG_PRIVATE_KEY_PASSPHRASE`, `GIT_TOKEN`,
-`CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`. GitHub uses the same
+`CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`. `GIT_TOKEN` must have read
+access to the private `Adsafe-Solutions/gpg` repository. GitHub uses the same
 `secrets.*` context for repository and organization secrets; this private repo
 currently relies on repository-level copies because of the organization plan.
 
