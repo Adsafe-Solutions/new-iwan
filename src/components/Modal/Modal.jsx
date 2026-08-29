@@ -33,8 +33,23 @@ export default function Modal({
   const copy = useCopy().modal;
   const panelRef = useRef(null);
 
+  /* ⚠ `onClose` is held in a ref rather than named as a dependency below.
+
+     A caller almost always passes an inline arrow, so `onClose` is a new value
+     on every render — and depending on it makes the effect tear down and re-run
+     each time, which calls `panelRef.current.focus()` and pulls focus out of
+     whatever the visitor was typing. That matters here because this modal wraps
+     RegisterForm: EventModal now fetches the full event when it opens, and the
+     re-render when that lands would have yanked focus out of the name field
+     mid-word. The same bug bit the CMS admin's dialog, which is where it was
+     found. Mount-only, with the handler kept current through the ref. */
+  const onCloseRef = useRef(onClose);
   useEffect(() => {
-    const onKey = (e) => e.key === "Escape" && onClose();
+    onCloseRef.current = onClose;
+  });
+
+  useEffect(() => {
+    const onKey = (e) => e.key === "Escape" && onCloseRef.current();
     document.addEventListener("keydown", onKey);
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -47,7 +62,7 @@ export default function Modal({
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = prev;
     };
-  }, [onClose]);
+  }, []);
 
   return (
     <div

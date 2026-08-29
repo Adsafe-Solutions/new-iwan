@@ -18,11 +18,8 @@ import {
 import { fill } from "../../lib/fill.js";
 import { SECTIONS } from "../../config/sections.js";
 import { cx } from "../../lib/cx.js";
-import { H_BLOCK, KICKER, MARK_YB } from "../../lib/type.js";
+import { KICKER, MARK_YB } from "../../lib/type.js";
 
-/* Each programme's own colour, written out per slug. Tailwind scans this
-   file as plain text, so `text-${tone}` would never be generated — the
-   whole class has to be here. */
 const SKIN = {
   "iwan-youth": {
     solid: "bg-youth",

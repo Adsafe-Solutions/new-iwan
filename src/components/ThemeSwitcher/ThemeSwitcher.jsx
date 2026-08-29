@@ -39,8 +39,13 @@ export default function ThemeSwitcher() {
   }, [open]);
 
   return (
+    /* ⚠ `pointer-events-none` on the WRAPPER, with each control turning them
+       back on. The closed panel is invisible but still takes up its full height
+       inside this flex column, so the wrapper is a ~275px transparent box at
+       z-200 over the bottom-left corner — which is exactly where the footer's
+       Privacy and Terms links sit. They were unclickable because of it. */
     <div
-      className="fixed bottom-5 left-5 z-[200] flex flex-col items-start gap-3"
+      className="pointer-events-none fixed bottom-5 left-5 z-[200] flex flex-col items-start gap-3"
       ref={ref}
     >
       <div
@@ -81,6 +86,7 @@ export default function ThemeSwitcher() {
 
       <button
         className={cx(
+          "pointer-events-auto",
           "grid h-[52px] w-[52px] cursor-pointer place-items-center rounded-full border-none",
           "bg-primary text-white shadow-fab",
           "transition-[transform,background-color] duration-[250ms]",

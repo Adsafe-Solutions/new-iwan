@@ -1,11 +1,19 @@
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useScrollAnimations } from "../../hooks/useGsap.js";
 import BlogCard from "../../components/BlogCard/BlogCard.jsx";
 import EventFilters from "../../components/EventFilters/EventFilters.jsx";
 import Pagination from "../../components/Pagination/Pagination.jsx";
-import { useBlogs, useCopy, useNav } from "../../content/ContentProvider.jsx";
+import { useBlogs, useCopy, useNav, useTotals } from "../../content/ContentProvider.jsx";
 import { fill } from "../../lib/fill.js";
-import { ALL_PROGRAMMES, byNewest, matchesProgramme } from "../../lib/events.js";
+import {
+  ALL_PROGRAMMES,
+  NO_PROGRAMME,
+  byNewest,
+  matchesProgramme,
+} from "../../lib/events.js";
+import { useCms } from "../../hooks/useCms.js";
+import { CMS_ENABLED } from "../../content/cms.js";
 import { cx } from "../../lib/cx.js";
 import { KICKER, MARK_B } from "../../lib/type.js";
 
@@ -26,25 +34,74 @@ const NOTE = "rounded-lg border border-line bg-white p-8 text-[16px] text-muted"
 
 export default function BlogsPage() {
   const BLOGS = useBlogs();
+  const totals = useTotals();
   const copy = useCopy().blogsPage;
   const { pages: navPages } = useNav();
   const listRef = useRef(null);
-  useScrollAnimations();
 
-  const [programme, setProgramme] = useState(ALL_PROGRAMMES);
-  const [page, setPage] = useState(1);
+  /* ⚠ The page and the filter live in the URL, not in component state. With the
+     whole list in the bundle they could be local; with server paging they
+     cannot — /blogs?page=3 has to be a real address the server can answer, and
+     it makes a filtered list shareable and crawlable. */
+  const [params, setParams] = useSearchParams();
+  const page = Math.max(1, Number(params.get("page")) || 1);
+  const programme = params.get("programme") ?? ALL_PROGRAMMES;
 
-  const all = useMemo(() => [...BLOGS].sort(byNewest), [BLOGS]);
-  const shown = all.filter((p) => matchesProgramme(p, programme, navPages));
+  const isFirstView = page === 1 && programme === ALL_PROGRAMMES;
 
-  const total = Math.max(1, Math.ceil(shown.length / PER_PAGE));
+  /* What the site can answer WITHOUT a request: the bootstrap already carries
+     page one of the unfiltered list, and with the CMS switched off the static
+     files are the entire list, so everything is paged here in the browser. */
+  const local = useMemo(() => {
+    if (CMS_ENABLED) {
+      return isFirstView
+        ? { items: BLOGS, total: totals?.blogs ?? BLOGS.length, page: 1 }
+        : null;
+    }
+    const sorted = [...BLOGS].sort(byNewest);
+    const filtered = sorted.filter((p) => matchesProgramme(p, programme, navPages));
+    return {
+      items: filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE),
+      total: filtered.length,
+      page,
+    };
+  }, [BLOGS, totals, isFirstView, programme, page, navPages]);
+
+  const query =
+    `/api/blogs?page=${page}&limit=${PER_PAGE}` +
+    (programme === ALL_PROGRAMMES
+      ? ""
+      : `&programme=${encodeURIComponent(programme === NO_PROGRAMME ? "__none" : programme)}`);
+
+  /* `initial: local` is what stops the first view flashing a skeleton — page
+     one is already in hand from the bootstrap, and the identical response
+     simply replaces it a moment later. */
+  const { data, loading, ready } = useCms(query, {
+    enabled: CMS_ENABLED,
+    initial: local,
+  });
+
+  useScrollAnimations(ready);
+
+  const result = data ?? local;
+  const slice = result?.items ?? [];
+  const count = result?.total ?? 0;
+  const total = Math.max(1, Math.ceil(count / PER_PAGE));
   const safePage = Math.min(page, total);
-  const slice = shown.slice((safePage - 1) * PER_PAGE, safePage * PER_PAGE);
+
+  const setParam = (next) => {
+    const q = new URLSearchParams(params);
+    for (const [k, v] of Object.entries(next)) {
+      if (v === null || v === undefined || v === "") q.delete(k);
+      else q.set(k, String(v));
+    }
+    setParams(q);
+  };
 
   /* Paging keeps you on the page — bring the top of the list back into view so
      you are not left staring at the foot of the previous one. */
   const goTo = (n) => {
-    setPage(Math.min(Math.max(1, n), total));
+    setParam({ page: Math.min(Math.max(1, n), total) });
     listRef.current?.scrollIntoView({ block: "start" });
   };
 
@@ -67,31 +124,47 @@ export default function BlogsPage() {
       <section className="py-11" id="all-posts" ref={listRef}>
         <div className="mx-auto w-full max-w-container px-6">
           <div className="reveal mb-8 flex flex-wrap items-center justify-between gap-4">
+            {/* ⚠ Chips come from the NAV now, not from the items on screen.
+                They used to be derived from the loaded list, which was fine
+                when the list was all of it — with paging, page one deciding
+                which filters exist would hide a programme whose posts happen
+                to start on page two. */}
             <EventFilters
-              events={all}
+              fromNav
               communityLabel={copy.community}
               value={programme}
-              onChange={(v) => {
-                setProgramme(v);
-                setPage(1);
-              }}
+              onChange={(v) =>
+                setParam({ programme: v === ALL_PROGRAMMES ? null : v, page: null })
+              }
             />
             <p className="text-[14px] font-semibold text-muted">
-              {fill(copy.count, {
-                count: shown.length,
-                s: shown.length === 1 ? "" : "s",
-              })}
+              {fill(copy.count, { count, s: count === 1 ? "" : "s" })}
             </p>
           </div>
 
-          {all.length === 0 && <p className={NOTE}>{copy.none}</p>}
-          {all.length > 0 && shown.length === 0 && <p className={NOTE}>{copy.empty}</p>}
+          {!loading && count === 0 && (
+            <p className={NOTE}>
+              {programme === ALL_PROGRAMMES ? copy.none : copy.empty}
+            </p>
+          )}
 
           {/* keyed on filter + page so the cards replay their entrance */}
           <div
             className="grid grid-cols-3 gap-5 max-nav:grid-cols-2 max-phone:grid-cols-1 max-phone:gap-4"
             key={`${programme}-${safePage}`}
           >
+            {loading && slice.length === 0
+              ? /* ⚠ Not `.reveal` — that is animated by a GSAP pass which has
+                   already run, so a placeholder wearing it would sit invisible.
+                   Card-shaped, so the grid does not resize when they land. */
+                Array.from({ length: PER_PAGE }, (_, i) => (
+                  <span
+                    key={i}
+                    aria-hidden="true"
+                    className="h-[340px] animate-pulse rounded-2xl bg-mist"
+                  />
+                ))
+              : null}
             {slice.map((post, i) => (
               <BlogCard
                 key={post.id}

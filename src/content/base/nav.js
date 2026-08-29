@@ -1,13 +1,5 @@
-/* Pages that exist as nav entries + stubs only. Header builds its links from
-   this list and App builds the matching routes, so the two can't drift.
-   `group` folds an entry into that dropdown instead of the top-level bar.
+import { PHOTOS } from "./photos.js";
 
-   Grouped entries also carry `tone`, `soft`, `text`, `edge`, `mark` and `tile` — the
-   programme's own colour, that colour over white, it as type and it as a
-   border (all defined in tailwind.config.js), the id of its logo in hero.js, and the photo
-   behind it. They are written out in full because Tailwind scans this file as
-   text: a class assembled by interpolation is never generated — because the "take action" grid on the homepage and
-   an event's own page are built from this same list. */
 export const PROGRAMMES = "Programmes";
 export const ABOUT = "About Us";
 
@@ -20,7 +12,7 @@ export const NAV_PAGES = [
     text: "text-youth",
     edge: "border-youth/25",
     mark: "youth",
-    tile: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=900&auto=format&fit=crop",
+    tile: PHOTOS.youthCursorWorkshop,
     path: "/iwan-youth",
     intro:
       "Programmes built with and for young people — mentoring, leadership and the chance to lead relief work of their own.",
@@ -33,7 +25,7 @@ export const NAV_PAGES = [
     text: "text-kids",
     edge: "border-kids/25",
     mark: "kids",
-    tile: "https://images.unsplash.com/photo-1509099836639-18ba1795216d?q=80&w=900&auto=format&fit=crop",
+    tile: PHOTOS.kidsGlassPainting,
     path: "/iwan-kids",
     intro:
       "Learning, play and support for our youngest community members, and for the children our donors help keep in school.",

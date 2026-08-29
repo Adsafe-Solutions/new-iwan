@@ -12,8 +12,10 @@ import {
 } from "../../content/ContentProvider.jsx";
 import { fill } from "../../lib/fill.js";
 import { findEvent, longDate, programmeOf } from "../../lib/events.js";
-import { mapEmbed, mapLink } from "../../lib/map.js";
+import VenueMap from "../../components/VenueMap/VenueMap.jsx";
 import { cx } from "../../lib/cx.js";
+import { useCms } from "../../hooks/useCms.js";
+import { CMS_ENABLED } from "../../content/cms.js";
 
 const LABEL =
   "mb-[0.9rem] block text-[12px] font-extrabold uppercase tracking-[0.12em] text-muted";
@@ -34,9 +36,32 @@ export default function EventDetail() {
   const [country] = useCountry();
   const { pages } = useNav();
   const { logos } = useHero();
-  useScrollAnimations();
 
-  const event = findEvent(EVENTS, slug);
+  /* ⚠ `details` and `agenda` are NOT in the bootstrap — listings carry card
+     fields only, which is what keeps that first payload bounded however many
+     events exist. The full record is fetched here, by the one route that
+     renders it. With the CMS off there is nothing to fetch: the static files
+     hold the whole event. */
+  const { data, loading, ready } = useCms(`/api/events/${slug}`, {
+    enabled: CMS_ENABLED,
+  });
+
+  /* The card first, then the full record on top of it — an event on the
+     bootstrap's first page paints its title, date and venue immediately rather
+     than showing a blank page for a round trip. */
+  const event = data ?? findEvent(EVENTS, slug);
+
+  /* Hands GSAP a reason to rescan once the detail lands; without it everything
+     the response rendered stays at `opacity: 0`. */
+  useScrollAnimations(ready);
+
+  if (!event && loading) {
+    return (
+      <main className="grid min-h-[60vh] place-items-center">
+        <p className="text-[15px] text-muted">{copy.back}…</p>
+      </main>
+    );
+  }
 
   /* A country that does not run a programme still has its /events/<slug> URLs
      shared around, so a missing event is a normal state, not an error. */
@@ -60,8 +85,6 @@ export default function EventDetail() {
   /* the programme's own mark, or the community one for an event that is not
      tied to a single programme */
   const mark = logos.find((l) => l.id === (programme?.mark ?? "community")) ?? logos[0];
-  const embed = mapEmbed(event, BRAND.address);
-  const link = mapLink(event, BRAND.address);
 
   return (
     <main>
@@ -146,28 +169,12 @@ export default function EventDetail() {
 
             <div className="reveal">
               <span className={LABEL}>{copy.whereHeading}</span>
-              {embed && (
-                <iframe
-                  src={embed}
-                  title={fill(modalCopy.mapTitle, { venue: event.venue })}
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  className="mb-[0.9rem] h-[260px] w-full rounded-lg border border-line"
-                />
-              )}
-              <strong className="text-[16px] font-bold">{event.venue}</strong>
-              <p className="text-[15px] leading-[23px] text-muted">{event.address}</p>
-              {link && (
-                <a
-                  href={link}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="mt-2 inline-flex w-fit items-center gap-1 text-[14px] font-bold text-primary underline"
-                >
-                  {copy.directions}
-                  <IconArrowUpRight className="h-4 w-4" stroke={2} aria-hidden="true" />
-                </a>
-              )}
+              <VenueMap
+                event={event}
+                fallback={BRAND.address}
+                copy={{ mapTitle: modalCopy.mapTitle, directions: copy.directions }}
+                size="full"
+              />
             </div>
           </div>
 
@@ -201,7 +208,8 @@ export default function EventDetail() {
               <span className="mb-4 block text-[18px] font-extrabold leading-[1.2]">
                 {copy.registerHeading}
               </span>
-              <RegisterForm event={event} locale={country.locale} />
+              {/* The panel above already says "Save your place". */}
+              <RegisterForm event={event} locale={country.locale} heading={false} />
             </div>
           </aside>
         </div>

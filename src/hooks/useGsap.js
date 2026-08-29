@@ -28,7 +28,7 @@ const reduced =
  * re-runs and every element the new route added is left stranded at
  * `opacity: 0`. Re-running on pathname reverts the old context and rescans.
  */
-export function useScrollAnimations() {
+export function useScrollAnimations(ready) {
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -389,7 +389,16 @@ export function useScrollAnimations() {
       clearTimeout(t);
       ctx.revert();
     };
-  }, [pathname]);
+    /* ⚠ `ready` is a SECOND dependency, not a replacement for `pathname`, and
+       it exists for content that arrives after the route has mounted — a page
+       that fetches its own data (see hooks/useCms.js). Without it, everything
+       the response rendered stays at `opacity: 0` forever, because this pass
+       already ran against an empty page. Re-running reverts the old context and
+       rescans, exactly as it does on a route change.
+
+       A page with no fetch passes nothing, `ready` is undefined on every
+       render, and this behaves precisely as it did before. */
+  }, [pathname, ready]);
 }
 
 function fmt(n) {

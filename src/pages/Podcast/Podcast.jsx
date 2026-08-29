@@ -1,7 +1,13 @@
 import { useScrollAnimations } from "../../hooks/useGsap.js";
 import PodcastCard from "../../components/PodcastCard/PodcastCard.jsx";
 import ContactCta from "../../components/ContactCta/ContactCta.jsx";
-import { useCopy, usePodcast } from "../../content/ContentProvider.jsx";
+import { useCopy, usePodcast, useTotals } from "../../content/ContentProvider.jsx";
+import { useCms } from "../../hooks/useCms.js";
+import { CMS_ENABLED } from "../../content/cms.js";
+import { useSearchParams } from "react-router-dom";
+import Pagination from "../../components/Pagination/Pagination.jsx";
+
+const PER_PAGE = 12;
 import { cx } from "../../lib/cx.js";
 import { KICKER, MARK_B } from "../../lib/type.js";
 
@@ -9,10 +15,33 @@ const CONTAINER = "mx-auto w-full max-w-container px-6";
 
 export default function PodcastPage() {
   const show = usePodcast();
-  const copy = useCopy().podcastPage;
-  useScrollAnimations();
+  const totals = useTotals();
 
-  const episodes = show.episodes ?? [];
+  /* ⚠ The bootstrap carries only the first page of episodes. Reading it alone
+     silently truncated this list the moment a seventh episode existed. */
+  const [params, setParams] = useSearchParams();
+  const page = Math.max(1, Number(params.get("page")) || 1);
+
+  const local =
+    page === 1
+      ? {
+          items: show.episodes ?? [],
+          total: totals?.episodes ?? (show.episodes ?? []).length,
+        }
+      : null;
+
+  const { data, loading, ready } = useCms(`/api/podcast?page=${page}&limit=${PER_PAGE}`, {
+    enabled: CMS_ENABLED,
+    initial: local,
+  });
+
+  const result = data ?? local;
+  const count = result?.total ?? 0;
+  const totalPages = Math.max(1, Math.ceil(count / PER_PAGE));
+  const copy = useCopy().podcastPage;
+  useScrollAnimations(ready);
+
+  const episodes = result?.items ?? result?.episodes ?? [];
 
   return (
     <main>
@@ -36,7 +65,7 @@ export default function PodcastPage() {
             {copy.episodesHeading}
           </h2>
 
-          {episodes.length === 0 ? (
+          {loading && episodes.length === 0 ? null : episodes.length === 0 ? (
             <p className="rounded-lg border border-line bg-white p-8 text-[16px] text-muted">
               {copy.empty}
             </p>
@@ -50,12 +79,28 @@ export default function PodcastPage() {
                   key={ep.id}
                   className="reveal"
                   episode={ep}
-                  cover={ep.cover ?? show.cover}
+                  /* ⚠ The EPISODE's own cover only. Falling back to the show's
+                     here painted the same Podbean artwork on every card, and
+                     the card's own fallback — the programme mark — was never
+                     reached. The show art already has its band above. */
+                  cover={ep.cover}
                   index={i}
                 />
               ))}
             </div>
           )}
+
+          <Pagination
+            page={Math.min(page, totalPages)}
+            total={totalPages}
+            onChange={(n) => {
+              const q = new URLSearchParams(params);
+              if (n <= 1) q.delete("page");
+              else q.set("page", String(n));
+              setParams(q);
+            }}
+            className="mt-10 justify-center"
+          />
         </div>
       </section>
 

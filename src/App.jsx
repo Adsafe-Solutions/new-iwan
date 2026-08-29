@@ -6,6 +6,7 @@ import Footer from "./components/Footer/Footer.jsx";
 import Home from "./pages/Home/Home.jsx";
 import Zakat from "./pages/Zakat/Zakat.jsx";
 import Placeholder from "./pages/Placeholder/Placeholder.jsx";
+import Legal from "./pages/Legal/Legal.jsx";
 import ComingSoon from "./pages/ComingSoon/ComingSoon.jsx";
 import Programme from "./pages/Programme/Programme.jsx";
 import NotFound from "./pages/NotFound/NotFound.jsx";
@@ -18,6 +19,7 @@ import BlogPost from "./pages/BlogPost/BlogPost.jsx";
 import PodcastPage from "./pages/Podcast/Podcast.jsx";
 import PodcastEpisode from "./pages/PodcastEpisode/PodcastEpisode.jsx";
 import ContactPage from "./pages/Contact/Contact.jsx";
+import Apply from "./pages/Apply/Apply.jsx";
 import { SECTIONS } from "./config/sections.js";
 import { DEFAULT_COUNTRY, basenameFor, countryFromPath } from "./config/countries.js";
 import ContentProvider, { useNav, useProgrammes } from "./content/ContentProvider.jsx";
@@ -87,6 +89,14 @@ function Shell() {
         <Route path="/zakat" element={<Zakat />} />
         {/* not a nav entry — the header CTA is what points at it */}
         <Route path="/contact-us" element={<ContactPage />} />
+        {/* ⚠ Real pages, and the footer links point at them. They describe what
+            the site actually collects — see the note in content/base/legal.js,
+            including what still needs filling in before publishing. */}
+        <Route path="/privacy-policy" element={<Legal kind="privacy" />} />
+        <Route path="/terms" element={<Legal kind="terms" />} />
+        {/* One page, two kinds — see pages/Apply. */}
+        <Route path="/volunteer" element={<Apply kind="volunteer" />} />
+        <Route path="/careers" element={<Apply kind="career" />} />
         {/* the default country carries no prefix, so /in/… is a real URL
             people will try — send it to the unprefixed one rather than
             leaving a page that matches nothing */}

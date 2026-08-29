@@ -44,6 +44,89 @@
   .reveal.in {
     @apply translate-y-0 opacity-100;
   }
+
+  /* =======================================================
+     .prose-post — a blog post's body.
+
+     The third exception to "everything else is utilities in the
+     components themselves", and it earns its place for the same
+     reason .reveal does: the markup it styles is not written in
+     any component. It arrives from the CMS as a string of HTML
+     and is injected wholesale, so there is nowhere to hang a
+     utility class — the selectors have to exist up front.
+
+     ⚠ The HTML is sanitised by the API on WRITE (see
+     iwan-cms-api/src/lib/html.js), which is what makes rendering
+     it with dangerouslySetInnerHTML safe. The tag list below
+     mirrors that allowlist; anything outside it never arrives.
+     No h1 — the post's title is the page's h1.
+  ======================================================= */
+  .prose-post {
+    @apply text-[17px] leading-[29px] text-ink-2;
+  }
+
+  .prose-post > * + * {
+    @apply mt-5;
+  }
+
+  .prose-post h2 {
+    @apply mb-3 mt-9 text-[22px] font-black uppercase leading-[1.25] tracking-[-0.01em] text-ink;
+  }
+  .prose-post h3 {
+    @apply mb-2 mt-8 text-[19px] font-extrabold leading-[1.3] tracking-[-0.01em] text-ink;
+  }
+  .prose-post h4 {
+    @apply mb-2 mt-6 text-[17px] font-bold leading-[1.35] text-ink;
+  }
+
+  /* The first heading must not push the article away from the photo
+     above it — the section already has its own top padding. */
+  .prose-post > :first-child {
+    @apply mt-0;
+  }
+
+  .prose-post ul {
+    @apply list-disc pl-6 marker:text-primary;
+  }
+  .prose-post ol {
+    @apply list-decimal pl-6 marker:font-bold marker:text-primary;
+  }
+  .prose-post li + li {
+    @apply mt-2;
+  }
+  /* A nested list belongs to its parent item, not to the flow of blocks. */
+  .prose-post li > ul,
+  .prose-post li > ol {
+    @apply mt-2;
+  }
+
+  .prose-post blockquote {
+    @apply border-l-[3px] border-primary/40 pl-5 italic text-muted;
+  }
+
+  .prose-post a {
+    @apply font-semibold text-primary underline underline-offset-4 transition-colors duration-200 hover:text-primary-800;
+  }
+
+  .prose-post strong {
+    @apply font-bold text-ink;
+  }
+
+  .prose-post code {
+    @apply rounded bg-mist px-1.5 py-0.5 font-mono text-[15px];
+  }
+
+  .prose-post img {
+    @apply my-8 max-h-[520px] w-full rounded-2xl object-cover;
+  }
+
+  .prose-post figcaption {
+    @apply mt-2 text-center text-[14px] text-muted;
+  }
+
+  .prose-post hr {
+    @apply my-9 border-0 border-t border-line;
+  }
 }
 
 /* The hidden state must never live in a base rule: with animation off,

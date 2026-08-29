@@ -1,3 +1,5 @@
+import { PHOTOS, PROGRAMME_PHOTOS } from "./photos.js";
+
 /* =========================================================
    Programme page content — one entry per programme, keyed by the
    slug in navPages.js. `Programme.jsx` renders whatever is here and
@@ -23,9 +25,9 @@
    lines that restate what the programme already claims elsewhere, never a new
    fact. The same mechanic as the Zakat hero.
 
-   `hero` is the full-bleed hero photograph. Only Youth has a real one
-   (src/assests/iwan-youth-hero.png); the rest fall back to the stock
-   `tile` from navPages.js.
+   `hero` is the full-bleed hero photograph, and it is what the homepage
+   programmes grid shows too — the tile and the page it opens are the same
+   picture. All four are real photographs from iwan.community; see photos.js.
 
    `journey` is the numbered path through a programme — the shape of
    taking part, not a list of past events, so it is ours to author. It
@@ -54,15 +56,11 @@
    rename there breaks them here. Copy them into public/ to cut that tie. */
 const img = (name) => `https://cdn.iwan.community/${name}.webp`;
 
-import youthHero from "../../assests/iwan-youth-hero.png";
 import { BRAND } from "./brand.js";
-import womenHero from "../../assests/iwan-women-hero.png";
-import kidsHero from "../../assests/iwan-kids-hero.png";
-import menHero from "../../assests/iwan-men-hero.png";
 
 export const PROGRAMMES_CONTENT = {
   "iwan-youth": {
-    hero: youthHero,
+    hero: PROGRAMME_PHOTOS.youth,
     heroPhrases: [
       "Builds real skills",
       "Trains young leaders",
@@ -136,7 +134,7 @@ export const PROGRAMMES_CONTENT = {
     banner: {
       heading: "Come and see for yourself.",
       body: "The quickest way to know whether this is for you is to turn up to one session. Bring a friend if that makes it easier.",
-      img: "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=1200&auto=format&fit=crop",
+      img: PHOTOS.youthBuildingHabits,
     },
     journey: {
       heading: "Your Iwan Youth journey",
@@ -164,7 +162,7 @@ export const PROGRAMMES_CONTENT = {
   },
 
   "iwan-kids": {
-    hero: kidsHero,
+    hero: PROGRAMME_PHOTOS.kids,
     heroPhrases: [
       "Learning that sticks",
       "Curiosity out loud",
@@ -256,7 +254,7 @@ export const PROGRAMMES_CONTENT = {
     banner: {
       heading: "Bring them along.",
       body: "Children work out within one session whether something is for them. Come and let yours find out — parents are welcome to stay.",
-      img: "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=1200&auto=format&fit=crop",
+      img: PHOTOS.kidsCooking,
     },
     journey: {
       heading: "Your Iwan Kids journey",
@@ -283,7 +281,7 @@ export const PROGRAMMES_CONTENT = {
   },
 
   "iwan-women": {
-    hero: womenHero,
+    hero: PROGRAMME_PHOTOS.women,
     heroPhrases: [
       "Skills you keep",
       "A network that holds",
@@ -346,7 +344,7 @@ export const PROGRAMMES_CONTENT = {
   },
 
   "iwan-men": {
-    hero: menHero,
+    hero: PROGRAMME_PHOTOS.men,
     heroPhrases: [
       "Work worth doing",
       "People worth knowing",

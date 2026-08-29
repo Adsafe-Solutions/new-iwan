@@ -84,4 +84,11 @@ export const useFocus = () => useContent().focus;
 export const useAdvisors = () => useContent().advisors;
 export const usePromo = () => useContent().promo;
 
+/* How many of each type EXIST, as opposed to how many are in hand. The
+   bootstrap carries only the first page of each list, so a listing page needs
+   this to know whether to offer a page two.
+   ⚠ Null when the CMS is off — the static files are the whole list, so there is
+   no page two to offer and a pager would be a lie. */
+export const useTotals = () => useContent().totals ?? null;
+
 export default ContentProvider;

@@ -117,17 +117,16 @@ export const COPY = {
     cta: "Contact us",
   },
 
-  /* /careers-and-volunteering. No jobs board exists yet — `openRolesBody`
-     says so plainly rather than faking an "Apply now" flow, the same
-     honesty the contact form's `form.note` already carries. */
+  /* /careers-and-volunteering. There is still no jobs board; what there is now
+     is a way to put your name forward, which is what `applyHeading` below
+     points at. */
   careers: {
     eyebrow: "Careers & volunteering",
     heading: "Iwan runs on the people who",
     mark: "show up for it.",
     body: "Every class, workshop and gathering happens because someone gave their time and skills to it. If you want to be one of them, this is where to start.",
     stepsHeading: "How it works",
-    stepsSubtitle:
-      "There's no application form and no waiting list — just a conversation.",
+    stepsSubtitle: "There's no waiting list — send us your details and we'll talk.",
     steps: [
       {
         title: "Reach out",
@@ -152,7 +151,11 @@ export const COPY = {
     waysCta: "See the programme",
     openRolesHeading: "Open roles",
     openRolesBody:
-      "There's nothing listed here right now. Reach out below and tell us what you'd like to do, and we'll be in touch when something opens up.",
+      "There's nothing listed here right now. Send us your details anyway and we'll be in touch when something opens up.",
+    applyVolunteer: "Volunteer with us",
+    applyVolunteerBody: "Tell us what you'd enjoy helping with and when you're free.",
+    applyCareer: "Work with us",
+    applyCareerBody: "Tell us what you do and what you're looking for next.",
   },
 
   /* the /blogs page and each post's own /blogs/<slug> page */
@@ -237,6 +240,7 @@ export const COPY = {
     register: "Register",
     free: "Free to attend · everyone welcome",
     formHeading: "Save your place",
+    subscribeLabel: "Keep me posted about Iwan events and news",
     nameLabel: "Your name",
     namePlaceholder: "First and last",
     emailLabel: "Email",
@@ -245,9 +249,26 @@ export const COPY = {
     cancel: "Cancel",
     doneHeading: "You’re in{name}",
     doneBody: "We’ve noted your place at {title} on {date}.",
+
+    /* The registration form is built per event in the CMS, so the QUESTIONS
+       are content and live there. What stays here is the furniture around
+       them — the words the form itself says, whatever it asks. */
+    required: "required",
+    firstName: "First Name",
+    lastName: "Last Name",
+    choosePlaceholder: "Choose one",
+    sending: "Sending…",
+    /* ⚠ Deliberately vague about the cause. The person filling this in cannot
+       act on "the database refused it", and the specifics are in the field
+       errors underneath when there are any. */
+    failed: "That did not go through. Please check the form and try again.",
+    offline: "We could not reach the server. Please try again in a moment.",
+    full: "This event is full.",
+    fixBelow: "Please check the highlighted answers.",
   },
 
   footer: {
+    subscribeDone: "Thank you — you are on the list.",
     blurb: "Be the first to hear about our impact and new volunteer opportunities.",
     programmesHeading: "Programmes",
     follow: "Follow along",

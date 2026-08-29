@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useBrand, useCopy, useNav } from "../../content/ContentProvider.jsx";
+import { useBrand, useCopy, useNav, useCountry } from "../../content/ContentProvider.jsx";
 import { fill } from "../../lib/fill.js";
 import { cx } from "../../lib/cx.js";
+import { subscribe } from "../../lib/forms.js";
 import Icon from "../Icon/Icon.jsx";
-import Turnstile from "../Turnstile/Turnstile.jsx";
+import Turnstile, { TURNSTILE_ENABLED } from "../Turnstile/Turnstile.jsx";
 
 const FINE_LINK = "underline transition-opacity duration-200 hover:opacity-65";
 const SOCIAL_ICON = cx(
@@ -14,8 +15,27 @@ const SOCIAL_ICON = cx(
 
 export default function Footer() {
   const [turnstileToken, setTurnstileToken] = useState("");
+  const [email, setEmail] = useState("");
+  /* "idle" | "sending" | "done" | "failed" — one value rather than three
+     booleans that can disagree with each other. */
+  const [state, setState] = useState("idle");
+  const [failed, setFailed] = useState("");
+
+  const onSubscribe = async (e) => {
+    e.preventDefault();
+    setState("sending");
+    try {
+      await subscribe(email, { country: country.code });
+      setEmail("");
+      setState("done");
+    } catch (err) {
+      setFailed(err.message);
+      setState("failed");
+    }
+  };
   const BRAND = useBrand();
   const copy = useCopy().footer;
+  const [country] = useCountry();
   /* both read off content the country already resolves — a country with
      fewer programmes or its own social accounts shows exactly that here
      too, the same way TakeAction and the header nav do. */
@@ -90,7 +110,7 @@ export default function Footer() {
 
           <div className="w-[min(560px,100%)] max-phone:ml-0 sm:ml-auto">
             <h4 className="mb-[0.7rem] text-[15px] font-bold">{copy.subscribeHeading}</h4>
-            <form onSubmit={(e) => e.preventDefault()}>
+            <form onSubmit={onSubscribe}>
               <div
                 className={cx(
                   "flex items-center gap-[0.4rem] rounded-full border border-ink/45 bg-transparent",
@@ -105,6 +125,8 @@ export default function Footer() {
                   type="email"
                   placeholder={copy.emailPlaceholder}
                   aria-label={copy.emailLabel}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
                 <button
@@ -114,18 +136,34 @@ export default function Footer() {
                     "transition-colors duration-[250ms] hover:bg-primary"
                   )}
                   type="submit"
-                  disabled={!turnstileToken}
+                  /* ⚠ Only waits for a token when Turnstile is actually
+                     configured — the same guard RegisterForm carries. Without
+                     a sitekey the widget issues no token, and gating on one
+                     that can never arrive left this button dead forever. */
+                  disabled={(TURNSTILE_ENABLED && !turnstileToken) || state === "sending"}
                 >
                   {copy.subscribe}
                 </button>
               </div>
-              <div className="mt-3 max-w-[420px]">
-                <Turnstile action="newsletter_signup" onChange={setTurnstileToken} />
-              </div>
+              {TURNSTILE_ENABLED && (
+                <div className="mt-3 max-w-[420px]">
+                  <Turnstile action="newsletter_signup" onChange={setTurnstileToken} />
+                </div>
+              )}
             </form>
+            {state === "done" && (
+              <p role="status" className="mt-[0.7rem] text-[14px] font-semibold">
+                {copy.subscribeDone}
+              </p>
+            )}
+            {state === "failed" && (
+              <p role="alert" className="mt-[0.7rem] text-[14px] font-semibold text-red">
+                {failed}
+              </p>
+            )}
             <p className="mt-[0.7rem] max-w-[62ch] text-[14px] leading-[21px]">
               {fill(copy.consent, { name: BRAND.name })}{" "}
-              <Link to="/" className={FINE_LINK}>
+              <Link to="/privacy-policy" className={FINE_LINK}>
                 {copy.privacy}
               </Link>
             </p>
@@ -154,10 +192,10 @@ export default function Footer() {
 
         <div className="flex flex-wrap items-center justify-between gap-6 border-t border-ink/20 pt-[1.4rem]">
           <div className="flex gap-8 text-[14px] max-phone:gap-[1.2rem]">
-            <Link to="/" className={FINE_LINK}>
+            <Link to="/privacy-policy" className={FINE_LINK}>
               {copy.privacy}
             </Link>
-            <Link to="/" className={FINE_LINK}>
+            <Link to="/terms" className={FINE_LINK}>
               {copy.terms}
             </Link>
           </div>

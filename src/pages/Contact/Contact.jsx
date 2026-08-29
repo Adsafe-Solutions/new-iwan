@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IconMail, IconMapPin, IconPhone } from "@tabler/icons-react";
 import { useScrollAnimations } from "../../hooks/useGsap.js";
 import Button from "../../components/Button/Button.jsx";
+import PhoneField from "../../components/PhoneField/PhoneField.jsx";
 import Icon from "../../components/Icon/Icon.jsx";
-import { useBrand, useContact } from "../../content/ContentProvider.jsx";
-import { submitContact } from "../../lib/contact.js";
+import { useBrand, useContact, useCountry } from "../../content/ContentProvider.jsx";
+import { sendContact } from "../../lib/forms.js";
 import { fill } from "../../lib/fill.js";
 import { cx } from "../../lib/cx.js";
 import { KICKER, MARK_B } from "../../lib/type.js";
@@ -53,6 +54,7 @@ function Detail({ icon: Glyph, label, value, href }) {
 export default function ContactPage() {
   const copy = useContact();
   const BRAND = useBrand();
+  const [country] = useCountry();
   useScrollAnimations();
 
   const [sent, setSent] = useState(false);
@@ -60,12 +62,39 @@ export default function ContactPage() {
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
+  const [mobile, setMobile] = useState("");
+  /* Ticked by default — someone writing in is opting into hearing back, and
+     the box is right there to say otherwise. */
+  const [subscribe, setSubscribe] = useState(true);
   const [turnstileToken, setTurnstileToken] = useState("");
+  const [sending, setSending] = useState(false);
+  const [failed, setFailed] = useState(null);
+  const doneRef = useRef(null);
+
+  /* ⚠ The confirmation replaces a form well down the page, so without this it
+     lands off-screen and the submit reads as having done nothing. Focus moves
+     with it, or a screen reader stays where the form used to be. */
+  useEffect(() => {
+    if (!sent) return;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    doneRef.current?.focus();
+  }, [sent]);
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    await submitContact({ to: BRAND.email, name, email, subject, message });
-    setSent(true);
+    setSending(true);
+    setFailed(null);
+    try {
+      await sendContact(
+        { name, email, subject, message, mobile, subscribe },
+        { country: country.code }
+      );
+      setSent(true);
+    } catch (err) {
+      setFailed(err.message || copy.form.failed);
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -156,9 +185,12 @@ export default function ContactPage() {
 
               {sent ? (
                 <div
+                  ref={doneRef}
+                  tabIndex={-1}
+                  role="status"
                   className={cx(
                     "flex items-start gap-4 rounded bg-green/[0.12] px-[1.3rem] py-[1.2rem]",
-                    "animate-modalPanel"
+                    "animate-modalPanel outline-none"
                   )}
                 >
                   <span
@@ -180,70 +212,105 @@ export default function ContactPage() {
                 </div>
               ) : (
                 <form onSubmit={onSubmit}>
-                  <div className="mb-4 grid grid-cols-2 gap-4 max-phone:grid-cols-1">
-                    <label className={LABEL}>
-                      {copy.form.nameLabel}
-                      <input
-                        className={FIELD}
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        placeholder={copy.form.namePlaceholder}
-                        autoComplete="name"
-                        required
-                      />
-                    </label>
-                    <label className={LABEL}>
-                      {copy.form.emailLabel}
-                      <input
-                        className={FIELD}
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder={copy.form.emailPlaceholder}
-                        autoComplete="email"
-                        required
-                      />
-                    </label>
-                  </div>
+                  {/* Freezes every control while the request is out, so a
+                      second Enter cannot send a duplicate. */}
+                  <fieldset disabled={sending} className="contents">
+                    <div className="mb-4 grid grid-cols-2 gap-4 max-phone:grid-cols-1">
+                      <label className={LABEL}>
+                        {copy.form.nameLabel}
+                        <input
+                          className={FIELD}
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          placeholder={copy.form.namePlaceholder}
+                          autoComplete="name"
+                          required
+                        />
+                      </label>
+                      <label className={LABEL}>
+                        {copy.form.emailLabel}
+                        <input
+                          className={FIELD}
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder={copy.form.emailPlaceholder}
+                          autoComplete="email"
+                          required
+                        />
+                      </label>
+                    </div>
 
-                  <label className={cx(LABEL, "mb-4")}>
-                    {copy.form.subjectLabel}
-                    <input
-                      className={FIELD}
-                      value={subject}
-                      onChange={(e) => setSubject(e.target.value)}
-                      placeholder={copy.form.subjectPlaceholder}
-                      required
-                    />
-                  </label>
-
-                  <label className={cx(LABEL, "mb-5")}>
-                    <span>
-                      {copy.form.messageLabel}{" "}
-                      <span className="font-semibold normal-case opacity-70">
-                        ({copy.form.messageOptional})
+                    <label className={cx(LABEL, "mb-4")}>
+                      <span>
+                        {copy.form.mobileLabel}{" "}
+                        <span className="font-semibold normal-case opacity-70">
+                          ({copy.form.mobileOptional})
+                        </span>
                       </span>
-                    </span>
-                    <textarea
-                      className={cx(FIELD, "min-h-[132px] resize-y")}
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      placeholder={copy.form.messagePlaceholder}
-                    />
-                  </label>
+                      <PhoneField
+                        fieldClassName={FIELD}
+                        value={mobile}
+                        onChange={setMobile}
+                        placeholder={copy.form.mobilePlaceholder}
+                      />
+                    </label>
 
-                  <div className="mb-5 max-w-[420px]">
-                    <Turnstile action="contact" onChange={setTurnstileToken} />
-                  </div>
+                    <label className={cx(LABEL, "mb-4")}>
+                      {copy.form.subjectLabel}
+                      <input
+                        className={FIELD}
+                        value={subject}
+                        onChange={(e) => setSubject(e.target.value)}
+                        placeholder={copy.form.subjectPlaceholder}
+                        required
+                      />
+                    </label>
 
-                  <div className="flex flex-wrap items-center gap-4">
-                    <Button type="submit" disabled={!turnstileToken}>
-                      {copy.form.submit}
-                    </Button>
-                    <span className="text-[13px] leading-[20px] text-muted">
-                      {copy.form.note}
-                    </span>
-                  </div>
+                    <label className={cx(LABEL, "mb-5")}>
+                      <span>
+                        {copy.form.messageLabel}{" "}
+                        <span className="font-semibold normal-case opacity-70">
+                          ({copy.form.messageOptional})
+                        </span>
+                      </span>
+                      <textarea
+                        className={cx(FIELD, "min-h-[132px] resize-y")}
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        placeholder={copy.form.messagePlaceholder}
+                      />
+                    </label>
+
+                    <label className="mb-5 flex cursor-pointer items-start gap-2.5 text-[14px] leading-[21px] text-ink-2">
+                      <input
+                        type="checkbox"
+                        checked={subscribe}
+                        onChange={(e) => setSubscribe(e.target.checked)}
+                        className="mt-[3px] h-4 w-4 flex-none cursor-pointer accent-primary"
+                      />
+                      {copy.form.subscribeLabel}
+                    </label>
+
+                    <div className="mb-5 max-w-[420px]">
+                      <Turnstile action="contact" onChange={setTurnstileToken} />
+                    </div>
+
+                    {failed && (
+                      <p role="alert" className="mb-4 text-[14px] font-semibold text-red">
+                        {failed}
+                      </p>
+                    )}
+
+                    <div className="flex flex-wrap items-center gap-4">
+                      <Button type="submit" disabled={!turnstileToken || sending}>
+                        {sending ? copy.form.sending : copy.form.submit}
+                      </Button>
+                      <span className="text-[13px] leading-[20px] text-muted">
+                        {copy.form.note}
+                      </span>
+                    </div>
+                  </fieldset>
                 </form>
               )}
             </div>

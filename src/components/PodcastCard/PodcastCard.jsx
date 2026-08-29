@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
-import { IconArrowRight, IconPlayerPlayFilled } from "@tabler/icons-react";
-import { useCopy } from "../../content/ContentProvider.jsx";
+import { IconArrowRight } from "@tabler/icons-react";
+import { useCopy, useHero, useNav } from "../../content/ContentProvider.jsx";
+import { programmeOf } from "../../lib/events.js";
 import { fill } from "../../lib/fill.js";
 import { duration } from "../../lib/podcast.js";
 import { cx } from "../../lib/cx.js";
@@ -18,26 +19,48 @@ const CARD = cx(
    has been picked, on its own page. */
 export default function PodcastCard({ episode, cover, index, className }) {
   const copy = useCopy().podcastPage;
+  const { logos } = useHero();
+  const { pages } = useNav();
   const to = `/podcast/${episode.id}`;
+
+  /* Same fallback BlogCard uses for a post with no photo: the episode's own
+     programme mark, or the community one where it belongs to none, in its dark
+     cut for a light ground. ⚠ That file has NO transparency, so it needs a
+     white ground rather than the tint a real cover sits on — see BlogCard. */
+  const programme = programmeOf(episode, pages);
+  const mark = logos.find((l) => l.id === (programme?.mark ?? "community"));
 
   return (
     <article className={cx(CARD, className)}>
-      {/* contain on a tinted ground, not cover: the artwork is a wide logo,
-          and a square crop cuts the wordmark in half — same as the show
-          band above this grid and the player itself. */}
-      <span className="relative grid aspect-[16/9] place-items-center overflow-hidden bg-mist px-10">
+      <span
+        className={cx(
+          "relative block aspect-[16/9] overflow-hidden",
+          programme ? programme.soft : "bg-white"
+        )}
+      >
         {cover ? (
+          /* Fills the tile, like BlogCard. A real photograph contained inside
+             a tinted box reads as a thumbnail floating in padding — which is
+             what this looked like before. Only the LOGO fallback below is
+             contained, because a wordmark cropped to 16/9 loses half itself. */
           <img
             src={cover}
             alt=""
             loading="lazy"
-            className="max-h-[70%] w-full object-contain transition-transform duration-[600ms] group-hover:scale-[1.04]"
+            className="h-full w-full object-cover transition-transform duration-[600ms] group-hover:scale-[1.04]"
           />
         ) : (
-          <IconPlayerPlayFilled
-            className="h-10 w-10 text-primary/30"
-            aria-hidden="true"
-          />
+          mark && (
+            <span className="grid h-full w-full place-items-center px-8">
+              <img
+                src={mark.dark ?? mark.src}
+                alt=""
+                loading="lazy"
+                style={{ "--s": mark.scale ?? 1 }}
+                className="w-[calc(132px*var(--s))] max-w-full opacity-90"
+              />
+            </span>
+          )
         )}
       </span>
 
