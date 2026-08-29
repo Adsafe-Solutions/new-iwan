@@ -69,12 +69,18 @@ export const PROGRAMMES_CONTENT = {
       "Runs on mentorship",
       "Starts by turning up",
     ],
-    lede: "A programme for young people who want more than somewhere to pass the time — mentoring, real skills, and the room to lead something of their own.",
+    /* "explore what they're capable of" and "confident, compassionate,
+       capable" are Iwan's own words for this programme, from the live
+       iwan-youth page. */
+    lede: "Where young people explore what they're capable of — skill-building workshops, leadership training, discussions that go somewhere, and community service. The aim is simple: confident, compassionate, capable.",
+    /* "confident, compassionate, capable" and "dozens of young leaders" are
+       Iwan's own words from the live iwan-youth page. No timeframe is claimed
+       for the figure, because the live page does not give one. */
     about: {
-      heading: "Growing up with purpose, together",
-      body: "Iwan Youth is built on a simple belief: young people rise to what is asked of them. So we ask — sessions run from Web 3.0 and entrepreneurship to fitness, Islamic history and community service, often led by people only a couple of years older than the room.",
-      accent: "purpose",
-      stat: { value: "Dozens", label: "of young leaders trained this year" },
+      heading: "Young people rise to what is asked",
+      body: "So we ask. Sessions run from Web 3.0 and entrepreneurship to fitness, Islamic history and community service, alongside mentorship and work with educational organisations — with the aim Iwan has always stated for this programme: confident, compassionate, capable.",
+      accent: "asked",
+      stat: { value: "Dozens", label: "of young leaders trained" },
     },
     glance: [
       {
@@ -95,7 +101,7 @@ export const PROGRAMMES_CONTENT = {
       {
         icon: "growth",
         title: "What it's led to",
-        body: "Dozens of young leaders trained this year, now running projects of their own.",
+        body: "Dozens of young leaders trained, and participants running community service projects of their own.",
       },
     ],
     /* the mission pillars this programme leans hardest on */

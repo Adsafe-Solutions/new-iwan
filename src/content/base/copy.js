@@ -44,20 +44,37 @@ export const COPY = {
     scroll: "Scroll",
   },
 
+  /* The heading says who runs Iwan; the eyebrow describes the mark grid it sits
+     above, so the two are not saying the same thing twice.
+
+     ⚠ The highlighted line never wraps (MARK_B is whitespace-nowrap), so keep
+     a `mark` to about 14 characters or it overflows a 360px screen. The whole
+     block renders uppercase — read it in caps before changing it. */
+  /* "A hub where people come together" is Iwan's own line, from the live site's
+     homepage — kept because it is the organisation describing itself. */
   trustedBy: {
-    eyebrow: "One community, four programmes",
-    headingLines: ["We're a", { mark: "community-led" }, "Muslim organisation."],
+    eyebrow: "Four ways in",
+    headingLines: [
+      "A hub where people",
+      { mark: "come together" },
+      "and keep coming back.",
+    ],
   },
 
+  /* The four values named in the body are Iwan's own, from the vision
+     statement on the live site — God-Consciousness, Good Manners, Generosity,
+     Prosperity — and each card below names the one it serves. The sessions are
+     real ones, so the abstract commitments land on something a visitor can
+     picture. */
   pillars: {
-    heading: "Believe. Act. Serve. —",
-    mark: "thrive",
-    body: "Four commitments we hold each other to. They are the reason the classes, the workshops and the volunteering all belong to the same organisation.",
+    heading: "What holds it all",
+    mark: "together",
+    body: "Four commitments, and the four values they serve: God-consciousness, good manners, generosity and prosperity. They are why a Taekwondo class, a gardening morning and a first-aid workshop all belong to the same organisation.",
   },
 
   takeAction: {
-    heading: "The programmes",
-    mark: "we run",
+    heading: "Find the one",
+    mark: "that's yours",
   },
 
   events: {
