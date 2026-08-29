@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
 import { useScrollAnimations } from "../../hooks/useGsap.js";
 import ContactCta from "../../components/ContactCta/ContactCta.jsx";
-import { useBrand } from "../../content/ContentProvider.jsx";
+import { useBrand, useCountry } from "../../content/ContentProvider.jsx";
 import { LEGAL, LEGAL_DETAILS } from "../../content/base/legal.js";
+import { plainDate } from "../../lib/events.js";
 import { cx } from "../../lib/cx.js";
 import { KICKER } from "../../lib/type.js";
 
@@ -12,6 +13,7 @@ const BODY = "text-[17px] leading-[28px] text-ink-2";
 export default function Legal({ kind }) {
   const copy = LEGAL[kind];
   const BRAND = useBrand();
+  const [country] = useCountry();
   useScrollAnimations();
 
   return (
@@ -22,8 +24,10 @@ export default function Legal({ kind }) {
             {copy.title}
           </h1>
           <p className={cx("reveal max-w-[68ch]", BODY)}>{copy.intro}</p>
+          {/* Formatted for the active country, so it reads "29 August 2026" in
+              India and "August 29, 2026" in Canada. */}
           <p className="reveal mt-4 text-[14px] text-muted">
-            Last updated: {LEGAL_DETAILS.lastUpdated}
+            Last updated: {plainDate(copy.updated, country.locale)}
           </p>
         </div>
       </section>

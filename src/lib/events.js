@@ -41,6 +41,15 @@ export const longDate = (iso, locale = "en-GB") =>
     year: "numeric",
   });
 
+/* The same date without the weekday — for a "last updated" line, where which
+   day of the week it was is noise. */
+export const plainDate = (iso, locale = "en-GB") =>
+  parse(iso).toLocaleDateString(locale, {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
 export const dayNumber = (iso) => parse(iso).getDate();
 export const shortMonth = (iso) => MONTHS[parse(iso).getMonth()].slice(0, 3);
 

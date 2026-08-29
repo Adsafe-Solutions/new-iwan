@@ -1,13 +1,13 @@
 export const LEGAL_DETAILS = {
   contactEmail: "[privacy@iwan.community]",
   postalAddress: "[Iwan's registered postal address]",
-  lastUpdated: "[date this was reviewed]",
   governingLaw: "[India]",
 };
 
 export const LEGAL = {
   privacy: {
     title: "Privacy policy",
+    updated: "2026-08-29",
     intro:
       "This explains what we collect when you use this site, why we hold it, and how to get it removed. It covers iwan.community and the forms on it.",
     sections: [
@@ -61,6 +61,7 @@ export const LEGAL = {
 
   terms: {
     title: "Terms of service",
+    updated: "2026-08-29",
     intro:
       "The terms you accept by using this site and by signing up to what we run. They are short on purpose — we are a community organisation, not a shop.",
     sections: [
