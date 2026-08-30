@@ -84,7 +84,7 @@ export default function Programme({ page }) {
   const copy = useCopy().programme;
   const PILLARS = usePillars();
   const { logos } = useHero();
-  const { content: PROGRAMMES_CONTENT, contact: PROGRAMME_CONTACT } = useProgrammes();
+  const { content: PROGRAMMES_CONTENT } = useProgrammes();
   useScrollAnimations();
 
   const slug = page.path.replace("/", "");
@@ -451,8 +451,8 @@ export default function Programme({ page }) {
         body={fill(copy.contactBody, { name: BRAND.name })}
         steps={[
           [copy.contactSteps.email, BRAND.email],
-          [copy.contactSteps.phone, PROGRAMME_CONTACT.phone],
-          [copy.contactSteps.visit, PROGRAMME_CONTACT.address],
+          [copy.contactSteps.phone, BRAND.phone],
+          [copy.contactSteps.visit, BRAND.address],
         ]}
         stepTone={skin.solid}
         size="sm"

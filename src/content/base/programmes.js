@@ -295,7 +295,7 @@ export const PROGRAMMES_CONTENT = {
       "Built with women",
       "Independence, together",
     ],
-    lede: "Skills, livelihoods and a network that holds built with women, not designed for them.",
+    lede: "Skills, livelihoods and a network that holds, built with women rather than designed for them.",
     about: {
       heading: "Independence, built alongside other people",
       body: "Iwan Women is about capability and company in equal measure: practical skills and routes to income, alongside a group of women who know what you are working on and ask how it is going.",
@@ -305,7 +305,7 @@ export const PROGRAMMES_CONTENT = {
       {
         icon: "people",
         title: "Who it's for",
-        body: "Women at any stage building a livelihood, returning to work, or after a room of their own.",
+        body: "Women at any stage: building a livelihood, returning to work, or after a room of their own.",
       },
       {
         icon: "calendar",
@@ -321,9 +321,69 @@ export const PROGRAMMES_CONTENT = {
     pillars: ["act", "serve", "consult"],
     strands: [],
     sessions: [],
+
+    /* ⚠ THIS IS NOT A SESSIONS LIST, and it must not become one. Same rule,
+       and same reason, as the `work` block on Iwan Men: the live site
+       publishes no Iwan Women page, so there is nothing to transcribe and
+       nothing dated to claim. These are the KINDS of thing the programme
+       takes on, written as what you would be doing rather than as a log of
+       what has already run, which puts them on the same footing as
+       `journey`.
+
+       Every item restates something this page already claims. Skills,
+       livelihood support and gatherings are the `glance` tiles verbatim;
+       teaching and asking come straight off `journey`'s "Say what you need"
+       and "Pass it on"; and checking in is the "network that holds between
+       sessions" the same tile promises.
+
+       When real sessions exist, add a `sessions` array as usual. This
+       section stands alongside one rather than in place of it. */
+    work: {
+      heading: "What taking part",
+      mark: "looks like",
+      body: "There is no roster to join and no timetable to sign up to. These are the kinds of thing that come up, and any one of them is a reasonable place to start.",
+      items: [
+        {
+          icon: "tool",
+          title: "Skills sessions",
+          body: "Practical things taught by whoever in the room already does them well. You leave able to do something you could not do that morning.",
+          /* `programme: true` makes Programme.jsx append this programme's own
+             nav path as the filter, the same way the hero CTA builds its
+             /events link. ⚠ NO blog post carries `programme: "/iwan-women"`
+             today, so this lands on the empty state until one does. */
+          link: { to: "/blogs", programme: true, label: "Read the write-ups" },
+        },
+        {
+          icon: "growth",
+          title: "Building a livelihood",
+          body: "Work on the thing you are trying to earn from, whether that is a first order, a price you are unsure about or a business you have run for years.",
+        },
+        {
+          icon: "people",
+          title: "Gatherings",
+          body: "Not every session has to produce something. Some of them exist so that the women who come know each other before they need to.",
+        },
+        {
+          icon: "book",
+          title: "Teaching what you know",
+          body: "Whatever you are good at, somebody here wants to learn it. Running a session is the ordinary next step, not a promotion.",
+        },
+        {
+          icon: "bulb",
+          title: "Saying what should run",
+          body: "What happens is decided by the women who turn up. If the thing you need is not on, say so and it becomes the thing we find someone for.",
+        },
+        {
+          icon: "heart",
+          title: "Keeping in touch",
+          body: "The part that is not a session at all. Knowing what someone is working on, and asking how it went the next time you see them.",
+        },
+      ],
+    },
+
     banner: {
-      heading: "There is a seat for you.",
-      body: "Nothing is expected of you on a first visit beyond turning up. Come, see who is there, and decide afterwards.",
+      heading: "You are not a guest here.",
+      body: "This was built with women rather than for them, so there is nothing to be invited to. Turn up once and you are one of the women who come.",
       img: "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=1200&auto=format&fit=crop",
     },
     journey: {
@@ -486,12 +546,8 @@ export const PROGRAMMES_CONTENT = {
   },
 };
 
-/* ⚠ Transcribed from the live Youth page — verify before launch.
-   The address lives on BRAND so the event modal's map and this panel can
-   never disagree about where Iwan actually is. */
-export const PROGRAMME_CONTACT = {
-  phone: "+91 63600 049969",
-  address: BRAND.address,
-};
+/* The programme pages' "talk to us" panel reads brand.phone and brand.address
+   directly — it used to keep its own copy of both, which meant a country had to
+   override the same two values twice to change the number on one page. */
 
 export default PROGRAMMES_CONTENT;

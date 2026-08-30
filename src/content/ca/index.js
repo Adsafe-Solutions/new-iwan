@@ -7,13 +7,24 @@
    using each programme's own nav intro rather than India's Bangalore-specific
    copy. See ../ops.js for `null`-deletes-a-key. */
 export default {
+  /* Canada's own number and address. All three are overridden together: the
+     digits feed wa.me and tel:, `phone` is what is printed, and every surface
+     that shows either — the contact page, the programme "talk to us" panel,
+     the WhatsApp button, the event modal's map fallback — reads them off
+     brand, so this block is the whole change. */
+  brand: {
+    whatsapp: "12896254455",
+    phone: "+1 (289) 625-4455",
+    address: "1418-1423 Mississauga Vly Blvd, Mississauga, ON L5A 4A5",
+  },
+
   programmes: {
     content: { "iwan-kids": null, "iwan-women": null, "iwan-youth": null },
   },
 };
 
-/* ⚠ Everything else is still inherited from India — the Bangalore address, the
-   +91 WhatsApp number, the "started in Bangalore in 2020" story.
+/* ⚠ Everything else is still inherited from India — the "started in Bangalore
+   in 2020" story included.
 
    Events are the exception: they live in one list in base/events.js and carry
    their own `country`, so Canada shows only the ones tagged for it rather than
@@ -22,10 +33,7 @@ export default {
    Nothing above has been invented; these are the keys that need real Canadian
    values before this country is shown publicly:
 
-     brand.address        · the map fallback in the event modal reads this
-     brand.whatsapp       · digits only, country code first
      brand.email          · if it differs
-     programmes.contact   · phone + address on Men's programme page
      programmes.content   · Men's copy, if Canada's differs; Kids, Women and
                              Youth stay "coming soon" until there is real content
      testimonials         · ⚠ real quotes from real people — never invent these

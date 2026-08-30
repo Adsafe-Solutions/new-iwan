@@ -1,7 +1,7 @@
 import { BRAND } from "./brand.js";
 import { PROGRAMMES, NAV_PAGES } from "./nav.js";
 import { PILLARS } from "./pillars.js";
-import { PROGRAMMES_CONTENT, PROGRAMME_CONTACT } from "./programmes.js";
+import { PROGRAMMES_CONTENT } from "./programmes.js";
 import { EVENTS } from "./events.js";
 import { TESTIMONIALS } from "./testimonials.js";
 import { STATS } from "./stats.js";
@@ -32,7 +32,7 @@ export const BASE_CONTENT = {
   nav: { programmesGroup: PROGRAMMES, pages: NAV_PAGES },
   pillars: PILLARS,
   ways: WAYS,
-  programmes: { content: PROGRAMMES_CONTENT, contact: PROGRAMME_CONTACT },
+  programmes: { content: PROGRAMMES_CONTENT },
   events: EVENTS,
   blogs: BLOGS,
   podcast: PODCAST,

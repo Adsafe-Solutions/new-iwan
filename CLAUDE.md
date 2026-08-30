@@ -253,7 +253,7 @@ downstream reads:
 
 ```js
 { brand, copy, nav: { programmesGroup, pages }, pillars,
-  programmes: { content, contact }, events, testimonials, stats,
+  programmes: { content }, events, testimonials, stats,
   instagram: { handle, url, posts, isLive },
   hero: { image, logos, slides, programmeMarks }, focus: { areas, links },
   advisors }
@@ -455,10 +455,19 @@ does. One `reveal` sits on the whole article rather than one per block: there is
 nothing to hang per-block classes on, and a long post fading in paragraph by
 paragraph as you read it is a distraction rather than an effect.
 
-⚠ **`src/content/ca/index.js` only drops the Women programme.** Everything else
-is still India's — the Bangalore address, the +91 WhatsApp number, the "started
-in Bangalore in 2020" story, India's events. The file lists the keys that need
-real values. Nothing there has been invented; do not invent it.
+⚠ **`src/content/ca/index.js` carries Canada's own phone and address and
+otherwise only drops programmes.** The rest is still India's — the "started in
+Bangalore in 2020" story included. The file lists the keys that still need real
+values. Nothing there has been invented; do not invent it.
+
+**Phone and address live on `brand` and nowhere else.** `brand.whatsapp` is the
+digits (`wa.me` and `tel:` both want those), `brand.phone` is the same number
+written out, and `brand.address` is the one address. The contact page, the
+programme pages' "talk to us" panel, `WhatsAppFab` and the event modal's map
+fallback all read them, so a country changes its details in one block — see
+`content/ca/index.js`. `programmes.contact` used to hold a second copy of the
+phone and address for the programme pages; it is gone, and putting it back
+means a country has to override the same two values twice.
 
 `lib/map.js` is a plain module rather than a component, so it takes the
 fallback address as an argument instead; `EventModal` passes

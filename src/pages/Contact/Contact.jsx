@@ -139,7 +139,7 @@ export default function ContactPage() {
                   <Detail
                     icon={IconPhone}
                     label={copy.phoneLabel}
-                    value={dial(BRAND.whatsapp)}
+                    value={BRAND.phone || dial(BRAND.whatsapp)}
                     href={`tel:${dial(BRAND.whatsapp)}`}
                   />
                 )}
