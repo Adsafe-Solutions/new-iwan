@@ -113,7 +113,7 @@ export const COPY = {
     eyebrow: "Get in touch",
     heading: "We'd love to hear",
     mark: "from you",
-    body: "We're here to assist you with any questions, support, or partnership inquiries — reach out to us today.",
+    body: "A question, an idea, or you just want to know when the next session is — write to us and someone will answer.",
     cta: "Contact us",
   },
 
@@ -232,6 +232,42 @@ export const COPY = {
     cta: "View us on Instagram",
   },
 
+  /* The homepage accordion, closing the page on the questions people
+     arrive with. Nothing here states a fee, a schedule or a headcount —
+     only what the rest of the site already says. */
+  faq: {
+    eyebrow: "✦ Before you come",
+    heading: "Frequently asked",
+    mark: "questions",
+    body: "The things people ask before their first session. Anything else, just write to us.",
+    items: [
+      [
+        "Who is Iwan for?",
+        "Anyone who wants to be part of it. Iwan runs four programmes — Kids, Youth, Women and Men — and between them they cover most ages and stages. You do not need to be invited, introduced or already know somebody there.",
+      ],
+      [
+        "Do I have to be a member to come to something?",
+        "No. Sessions and events are open, and most people start by turning up to one thing that caught their eye rather than by signing up to anything.",
+      ],
+      [
+        "How do I join a session or an event?",
+        "Everything coming up is on the events page, and each one has its own registration form with whatever that particular session needs to know. Register there and you are on the list.",
+      ],
+      [
+        "What actually happens at a session?",
+        "It depends on the programme — classes, workshops, mentoring and volunteering, from Taekwondo and gardening to first aid, Web 3.0 and entrepreneurship. The blogs and the Instagram wall are the honest picture of what a session looks like.",
+      ],
+      [
+        "Can I volunteer or help run things?",
+        "Yes, and that is how a lot of Iwan gets done. The careers and volunteering page lists what is open; if nothing fits, tell us what you would like to do.",
+      ],
+      [
+        "How do I get in touch?",
+        "Use the contact page and the message reaches us directly. WhatsApp works too, and we are on Instagram, X, YouTube and Facebook.",
+      ],
+    ],
+  },
+
   eventModal: {
     runsHeading: "How the day runs",
     whereLabel: "Where",
@@ -269,7 +305,7 @@ export const COPY = {
 
   footer: {
     subscribeDone: "Thank you — you are on the list.",
-    blurb: "Be the first to hear about our impact and new volunteer opportunities.",
+    blurb: "What's on, what we've been up to, and where you can lend a hand.",
     programmesHeading: "Programmes",
     follow: "Follow along",
     subscribeHeading: "Subscribe to receive updates",

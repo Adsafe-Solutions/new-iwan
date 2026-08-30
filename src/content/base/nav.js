@@ -28,7 +28,7 @@ export const NAV_PAGES = [
     tile: PHOTOS.kidsGlassPainting,
     path: "/iwan-kids",
     intro:
-      "Learning, play and support for our youngest community members, and for the children our donors help keep in school.",
+      "Learning and play for the community's youngest members — cooking, first aid, gardening, martial arts and whatever is on next.",
   },
   {
     label: "Iwan Women",
@@ -41,7 +41,7 @@ export const NAV_PAGES = [
     tile: "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=900&auto=format&fit=crop",
     path: "/iwan-women",
     intro:
-      "Skills, livelihoods and support networks that help women build independence — for themselves and their families.",
+      "Skills, livelihoods and a network that holds — built with women, not designed for them.",
   },
   {
     label: "Iwan Men",
@@ -54,24 +54,22 @@ export const NAV_PAGES = [
     tile: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=900&auto=format&fit=crop",
     path: "/iwan-men",
     intro:
-      "Volunteering, mentorship and community work for the men giving their time and skills to those in need.",
+      "Volunteering, mentorship and the community work that gets done when men turn up for it.",
   },
   {
     label: "Blogs",
     path: "/blogs",
-    intro: "Field notes, donor stories and updates from the people doing the work.",
+    intro: "Write-ups, reflections and summaries from the sessions and workshops we run.",
   },
   {
     label: "Events",
     path: "/events",
-    intro:
-      "Fundraisers, community gatherings and volunteer days — everything happening next.",
+    intro: "Classes, gatherings and volunteer days — everything happening next.",
   },
   {
     label: "Podcast",
     path: "/podcast",
-    intro:
-      "Conversations with the volunteers, scholars and families behind our programmes.",
+    intro: "Shared stories, insights and conversations from the people who turn up.",
   },
   {
     label: "About Us",

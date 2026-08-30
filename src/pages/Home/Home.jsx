@@ -14,6 +14,7 @@ import TakeAction from "../../components/TakeAction/TakeAction.jsx";
 import Events from "../../components/Events/Events.jsx";
 import Testimonials from "../../components/Testimonials/Testimonials.jsx";
 import Instagram from "../../components/Instagram/Instagram.jsx";
+import Faq from "../../components/Faq/Faq.jsx";
 
 /* Who Iwan is → what it stands for → what it runs → what's on →
    what members say → what it looks like.
@@ -51,8 +52,9 @@ export default function Home() {
       <Pillars />
       <TakeAction />
       <Events />
-      <Testimonials />
       <Instagram />
+      <Faq />
+      <Testimonials />
     </main>
   );
 }

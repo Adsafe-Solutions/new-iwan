@@ -8,7 +8,7 @@ export const BRAND = {
   fullName: "iwan.community",
 
   heading: "Iwan",
-  subheading: "Bringing hope, support and brighter futures to those in need.",
+  subheading: "A Muslim community in Bangalore. Believe, act, serve — thrive.",
 
   /* logo is the dark lockup for light backgrounds; logoLight is the reversed
      one for the hero header and footer. Brand.jsx falls back to a whitened
