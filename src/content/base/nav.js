@@ -72,11 +72,11 @@ export const NAV_PAGES = [
     intro: "Shared stories, insights and conversations from the people who turn up.",
   },
   {
-    label: "About Us",
+    label: "Our Story & Values",
     group: ABOUT,
     path: "/about-us",
     intro:
-      "How Iwan started in Bangalore in 2020, who runs it, and what it is trying to be.",
+      "How Iwan started in Bangalore in 2020, the values that govern the work, and the people behind it.",
   },
   {
     label: "Careers & Volunteering",

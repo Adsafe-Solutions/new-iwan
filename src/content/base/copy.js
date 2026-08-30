@@ -334,7 +334,8 @@ export const COPY = {
   },
 
   programme: {
-    cta: "Get involved",
+    /* the hero CTA opens /events already filtered to this programme */
+    cta: "Explore {programme} Events",
     sessionsCta: "What's on",
     sessionsHeading: "What's",
     sessionsMark: "on",

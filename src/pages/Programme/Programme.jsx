@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { useScrollAnimations } from "../../hooks/useGsap.js";
 import Button from "../../components/Button/Button.jsx";
 import Icon from "../../components/Icon/Icon.jsx";
@@ -12,6 +13,7 @@ import StepsFeature from "../../components/StepsFeature/StepsFeature.jsx";
 import {
   useBrand,
   useCopy,
+  useHero,
   usePillars,
   useProgrammes,
 } from "../../content/ContentProvider.jsx";
@@ -76,12 +78,16 @@ export default function Programme({ page }) {
   const BRAND = useBrand();
   const copy = useCopy().programme;
   const PILLARS = usePillars();
+  const { logos } = useHero();
   const { content: PROGRAMMES_CONTENT, contact: PROGRAMME_CONTACT } = useProgrammes();
   useScrollAnimations();
 
   const slug = page.path.replace("/", "");
   const c = PROGRAMMES_CONTENT[slug] ?? {};
   const skin = SKIN[slug] ?? SKIN["iwan-youth"];
+  /* the programme's own mark stands in for its name in the hero — `src` is
+     the version drawn for a photograph. A page with no mark keeps the label. */
+  const mark = logos.find((l) => l.id === page.mark);
 
   const strands = c.strands ?? [];
   const sessions = c.sessions ?? [];
@@ -105,14 +111,22 @@ export default function Programme({ page }) {
         anchor="bottom-left"
         img={c.hero ?? page.tile}
         imgAlt={`${page.label} session`}
-        title={page.label}
-        eyebrow={
-          /* accent rather than the programme colour — the darker programme
-             tones lose too much contrast against the scrim */
-          <p className="mb-4 flex items-center gap-3 font-satoshi text-[18px] font-medium text-accent">
-            <span className={cx("h-2.5 w-2.5 rounded-full", skin.solid)} />
-            {BRAND.name} Programme
-          </p>
+        title={
+          mark ? (
+            <img
+              src={mark.src}
+              alt={page.label}
+              /* scale corrects the uneven padding in the exports — see
+                 hero.js. Width, not transform, so nothing fights the h1. */
+              style={{ "--s": mark.scale ?? 1 }}
+              className={cx(
+                "block w-[calc(min(340px,44vw)*var(--s))] max-w-[92vw]",
+                "max-phone:w-[calc(62vw*var(--s))]"
+              )}
+            />
+          ) : (
+            page.label
+          )
         }
       >
         {/* the lede and the CTAs come through as children rather than as
@@ -120,8 +134,8 @@ export default function Programme({ page }) {
         {(c.heroPhrases ?? []).length > 0 && (
           <p
             className={cx(
-              "mb-5 font-satoshi text-[clamp(1.3rem,2.4vw,30px)] font-bold leading-[1.2]",
-              "text-accent max-phone:text-[20px]"
+              "mb-5 font-satoshi text-[clamp(1.75rem,3.4vw,44px)] font-bold leading-[1.15]",
+              "text-accent max-phone:text-[26px]"
             )}
           >
             <Typewriter
@@ -136,8 +150,11 @@ export default function Programme({ page }) {
         </p>
 
         <div className="flex flex-wrap gap-3">
-          <a
-            href={`mailto:${BRAND.email}`}
+          {/* straight to /events with this programme's chip already on —
+              `programme` is the nav PATH, which is what the filter compares
+              against (see matchesProgramme in lib/events.js) */}
+          <Link
+            to={`/events?programme=${encodeURIComponent(page.path)}`}
             className={cx(
               "inline-block rounded-lg bg-white px-9 py-4",
               "font-satoshi text-[18px] font-medium leading-none text-primary-800",
@@ -145,8 +162,8 @@ export default function Programme({ page }) {
               "hover:-translate-y-0.5 hover:bg-accent"
             )}
           >
-            {copy.cta}
-          </a>
+            {fill(copy.cta, { programme: page.label })}
+          </Link>
           {sessions.length > 0 && (
             <a
               href="#sessions"
