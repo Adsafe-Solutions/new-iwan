@@ -10,6 +10,7 @@ import {
   useProgrammes,
 } from "../../content/ContentProvider.jsx";
 import Pillars from "../../components/Pillars/Pillars.jsx";
+import ProgrammeDeck from "../../components/ProgrammeDeck/ProgrammeDeck.jsx";
 import TakeAction from "../../components/TakeAction/TakeAction.jsx";
 import Events from "../../components/Events/Events.jsx";
 import Testimonials from "../../components/Testimonials/Testimonials.jsx";
@@ -50,6 +51,7 @@ export default function Home() {
       {SECTIONS.homeHero === "v2" ? <HeroV2 /> : <Hero />}
       <TrustedBy {...trustedBy} items={marks} />
       <Pillars />
+      <ProgrammeDeck />
       <TakeAction />
       <Events />
       <Instagram />

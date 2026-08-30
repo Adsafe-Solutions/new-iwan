@@ -60,6 +60,13 @@ export const COPY = {
     mark: "we run",
   },
 
+  programmeDeck: {
+    heading: "There’s a room here",
+    mark: "for you",
+    body: "Every programme is its own community — the same values, a different room. Start with the one that sounds like you.",
+    cta: "Explore {label}",
+  },
+
   events: {
     heading: "Upcoming",
     mark: "events",
