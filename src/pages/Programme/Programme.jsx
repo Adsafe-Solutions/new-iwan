@@ -384,7 +384,16 @@ export default function Programme({ page }) {
                       cards keeps one baseline however long the bodies run */}
                   {w.link && (
                     <Link
-                      to={w.link.to}
+                      /* `programme: true` carries this programme's filter
+                         through to the destination, so arriving from here
+                         lands on its own posts rather than all of them. The
+                         nav PATH is what the filter compares against, same as
+                         the hero's /events CTA above. */
+                      to={
+                        w.link.programme
+                          ? `${w.link.to}?programme=${encodeURIComponent(page.path)}`
+                          : w.link.to
+                      }
                       className={cx(
                         "mt-auto inline-flex items-center gap-1 pt-4",
                         "text-[14px] font-bold leading-none",
