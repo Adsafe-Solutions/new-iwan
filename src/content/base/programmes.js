@@ -413,10 +413,12 @@ export const PROGRAMMES_CONTENT = {
              to Iwan Men. The three transcribed circles in blogs.js are
              `programme: null`, which is to say community-wide, and filing
              them under one programme would be the misattribution this file
-             warns about. What is verifiable is the photograph:
-             PROGRAMME_PHOTOS.men is the same URL as the Badr post of 01 March
-             2026, whose own first line reads "Summary of Seerah session". */
-          body: "Not all of it is work. The seerah circle and the other sessions Iwan runs are open to you, and the photograph at the top of this page is one of those evenings.",
+             warns about.
+             ⚠ The sentence no longer points at the hero. It used to, because
+             PROGRAMME_PHOTOS.men was the Badr post of 01 March 2026 — whose
+             own first line reads "Summary of Seerah session". That hero is
+             now a CDN picture of something else, so the claim went with it. */
+          body: "Not all of it is work. The seerah circle and the other sessions Iwan runs are open to you, and you are welcome at them.",
           /* `programme: true` makes Programme.jsx append this programme's own
              nav path as the filter, the same way the hero CTA builds its
              /events link. ⚠ NO blog post carries `programme: "/iwan-men"`
@@ -454,9 +456,9 @@ export const PROGRAMMES_CONTENT = {
     banner: {
       heading: "Turn up. That is the whole ask.",
       body: "No application, no committee. Come to the next project, bring whatever you are good at, and get stuck in.",
-      /* ⚠ Stock, standing in for Iwan's own. It used to be the byte-identical
-         URL Iwan Women carries, so the two pages showed the same picture. */
-      img: "https://images.unsplash.com/photo-1593113630400-ea4288922497?q=80&w=1200&auto=format&fit=crop",
+      /* Iwan's own, off the CDN — it replaced the stock photograph that used
+         to carry the byte-identical URL Iwan Women has. */
+      img: img("iwan-youth-0"),
     },
     journey: {
       heading: "Your Iwan Men journey",
