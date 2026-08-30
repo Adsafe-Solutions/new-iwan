@@ -55,8 +55,8 @@ export default function Home() {
       <WaysToConnect />
       <Events />
       <Instagram />
-      <Faq />
       <Testimonials />
+      <Faq />
     </main>
   );
 }
