@@ -336,13 +336,14 @@ export default function Programme({ page }) {
         </section>
       )}
 
-      {/* ===== WHAT THE WORK LOOKS LIKE =====
+      {/* ===== WHAT TURNING UP LOOKS LIKE =====
           The honest stand-in for `sessions` on a programme that has none to
-          list. It describes the KINDS of work rather than dated events, so
-          it fills the gap without claiming anything ran — see the note on
-          the Iwan Men entry in programmes.js. Nothing here mounts late, so
-          `.reveal` is safe; the sessions grid needs a keyframe only because
-          its filter mounts cards after useGsap has scanned. */}
+          list. It describes the KINDS of thing a member turns up for, both
+          attending and contributing, rather than dated events — so it fills
+          the gap without claiming anything ran. See the note on the Iwan Men
+          entry in programmes.js. Nothing here mounts late, so `.reveal` is
+          safe; the sessions grid needs a keyframe only because its filter
+          mounts cards after useGsap has scanned. */}
       {work && (
         <section className="py-16" id="work">
           <div className={CONTAINER}>
@@ -379,6 +380,23 @@ export default function Programme({ page }) {
                   </span>
                   <h3 className="mb-2 text-[19px] font-bold leading-[1.3]">{w.title}</h3>
                   <p className="text-[15px] leading-[24px] text-muted">{w.body}</p>
+                  {/* optional, and pinned to the foot of the card so a row of
+                      cards keeps one baseline however long the bodies run */}
+                  {w.link && (
+                    <Link
+                      to={w.link.to}
+                      className={cx(
+                        "mt-auto inline-flex items-center gap-1 pt-4",
+                        "text-[14px] font-bold leading-none",
+                        "underline decoration-transparent underline-offset-4",
+                        "transition-colors duration-200 hover:decoration-current",
+                        skin.text
+                      )}
+                    >
+                      {w.link.label}
+                      <span aria-hidden="true">→</span>
+                    </Link>
+                  )}
                 </article>
               ))}
             </div>

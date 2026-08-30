@@ -409,7 +409,7 @@ export const PROGRAMMES_CONTENT = {
         {
           icon: "hands",
           title: "Service projects",
-          body: "Clearing, painting, repairs and the practical jobs a neighbourhood needs doing. Tools and instructions come with it, so no trade is required to be useful.",
+          body: "Projects the neighbourhood actually needs, led by the men qualified to do them properly. You bring your profession and your judgement to it, not a spare pair of hands.",
         },
         {
           icon: "people",
