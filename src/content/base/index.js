@@ -20,6 +20,7 @@ import { BLOGS } from "./blogs.js";
 import { PODCAST } from "./podcast.js";
 import { CONTACT } from "./contact.js";
 import { PROMO } from "./promo.js";
+import { WAYS } from "./ways.js";
 
 /* The shape every country resolves to. A country folder overrides any subtree
    of this and inherits the rest; the CMS will be asked for the same shape, so
@@ -30,6 +31,7 @@ export const BASE_CONTENT = {
   about: ABOUT,
   nav: { programmesGroup: PROGRAMMES, pages: NAV_PAGES },
   pillars: PILLARS,
+  ways: WAYS,
   programmes: { content: PROGRAMMES_CONTENT, contact: PROGRAMME_CONTACT },
   events: EVENTS,
   blogs: BLOGS,

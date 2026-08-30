@@ -13,12 +13,12 @@ export const LEGAL = {
     sections: [
       {
         heading: "What we collect, and when",
-        body: "We only hold what you type into a form. Nothing is gathered in the background — there is no advertising network, no analytics profile and no third-party tracker on this site.",
+        body: "We only hold what you type into a form. Nothing is gathered in the background there is no advertising network, no analytics profile and no third-party tracker on this site.",
         list: [
-          "Newsletter — your email address.",
-          "Contact form — your name, email address, subject, message and, if you give it, your mobile number.",
-          "Event registration — the answers to that event's own questions, which typically include your name and email, plus anything the organiser asks such as dietary requirements.",
-          "Volunteer and career forms — the answers to the questions shown on those pages, which include your name, email and mobile number.",
+          "Newsletter your email address.",
+          "Contact form your name, email address, subject, message and, if you give it, your mobile number.",
+          "Event registration the answers to that event's own questions, which typically include your name and email, plus anything the organiser asks such as dietary requirements.",
+          "Volunteer and career forms the answers to the questions shown on those pages, which include your name, email and mobile number.",
           "Whether you ticked the box asking to hear from us, and which country's version of the site you used.",
         ],
       },
@@ -28,7 +28,7 @@ export const LEGAL = {
       },
       {
         heading: "Why we hold it",
-        body: "To reply to you, to organise the sessions you signed up for, and — only if you asked — to tell you about what is coming up. We do not sell it, rent it, or share it for anyone else's marketing.",
+        body: "To reply to you, to organise the sessions you signed up for, and only if you asked to tell you about what is coming up. We do not sell it, rent it, or share it for anyone else's marketing.",
       },
       {
         heading: "Who else sees it",
@@ -46,7 +46,7 @@ export const LEGAL = {
       },
       {
         heading: "Your choices",
-        body: "You can ask us to show you what we hold, correct it, stop emailing you, or delete it entirely. There is no form for this — email us and a person will do it.",
+        body: "You can ask us to show you what we hold, correct it, stop emailing you, or delete it entirely. There is no form for this email us and a person will do it.",
       },
       {
         heading: "Children",
@@ -63,7 +63,7 @@ export const LEGAL = {
     title: "Terms of service",
     updated: "2026-08-29",
     intro:
-      "The terms you accept by using this site and by signing up to what we run. They are short on purpose — we are a community organisation, not a shop.",
+      "The terms you accept by using this site and by signing up to what we run. They are short on purpose we are a community organisation, not a shop.",
     sections: [
       {
         heading: "Who we are",

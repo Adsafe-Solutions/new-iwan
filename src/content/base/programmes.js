@@ -67,10 +67,10 @@ export const PROGRAMMES_CONTENT = {
       "Runs on mentorship",
       "Starts by turning up",
     ],
-    lede: "A programme for young people who want more than somewhere to pass the time — mentoring, real skills, and the room to lead something of their own.",
+    lede: "A programme for young people who want more than somewhere to pass the time mentoring, real skills, and the room to lead something of their own.",
     about: {
       heading: "Growing up with purpose, together",
-      body: "Iwan Youth is built on a simple belief: young people rise to what is asked of them. So we ask — sessions run from Web 3.0 and entrepreneurship to fitness, Islamic history and community service, often led by people only a couple of years older than the room.",
+      body: "Iwan Youth is built on a simple belief: young people rise to what is asked of them. So we ask sessions run from Web 3.0 and entrepreneurship to fitness, Islamic history and community service, often led by people only a couple of years older than the room.",
       accent: "purpose",
       stat: { value: "Dozens", label: "of young leaders trained this year" },
     },
@@ -78,7 +78,7 @@ export const PROGRAMMES_CONTENT = {
       {
         icon: "people",
         title: "Who it's for",
-        body: "Young people finding their footing — students, school-leavers and early-career.",
+        body: "Young people finding their footing students, school-leavers and early-career.",
       },
       {
         icon: "calendar",
@@ -127,7 +127,7 @@ export const PROGRAMMES_CONTENT = {
       {
         title: "Fitness for a Better You",
         strand: "Fitness",
-        body: "Weightlifting technique — building strength safely, without guesswork.",
+        body: "Weightlifting technique building strength safely, without guesswork.",
         img: img("iwan-youth-fitness-1"),
       },
     ],
@@ -169,10 +169,10 @@ export const PROGRAMMES_CONTENT = {
       "Taekwondo to gardening",
       "Habits that outlast the session",
     ],
-    lede: "Somewhere for the youngest members of the community to be curious out loud — and to pick up the habits that outlast the session.",
+    lede: "Somewhere for the youngest members of the community to be curious out loud and to pick up the habits that outlast the session.",
     about: {
       heading: "Learning that doesn't feel like school",
-      body: "Iwan Kids is where children get to try things — cooking with millets one week, world history the next, first aid the week after. The subjects change; what stays constant is that nobody is talked down to.",
+      body: "Iwan Kids is where children get to try things cooking with millets one week, world history the next, first aid the week after. The subjects change; what stays constant is that nobody is talked down to.",
       accent: "school",
     },
     glance: [
@@ -184,7 +184,7 @@ export const PROGRAMMES_CONTENT = {
       {
         icon: "calendar",
         title: "What happens",
-        body: "Hands-on sessions that teach something real — cooking, history, first aid, martial arts.",
+        body: "Hands-on sessions that teach something real cooking, history, first aid, martial arts.",
       },
       {
         icon: "hands",
@@ -211,7 +211,7 @@ export const PROGRAMMES_CONTENT = {
         /* ⚠ The live page repeats the Youth "Early Islam" copy under this
            title, which is plainly a paste error there. Described from the
            title instead of copying the mistake across. */
-        body: "Belt by belt — technique, control and the discipline that comes with both.",
+        body: "Belt by belt technique, control and the discipline that comes with both.",
         img: img("iwan-kids-1"),
       },
       {
@@ -241,7 +241,7 @@ export const PROGRAMMES_CONTENT = {
       {
         title: "Exploring Nature: An Adventure Trip to Lalbagh",
         strand: "Culture and Community",
-        body: "A day out at Lalbagh — flora, fauna and how an ecosystem holds together.",
+        body: "A day out at Lalbagh flora, fauna and how an ecosystem holds together.",
         img: img("iwan-kids-cc-1"),
       },
       {
@@ -253,7 +253,7 @@ export const PROGRAMMES_CONTENT = {
     ],
     banner: {
       heading: "Bring them along.",
-      body: "Children work out within one session whether something is for them. Come and let yours find out — parents are welcome to stay.",
+      body: "Children work out within one session whether something is for them. Come and let yours find out parents are welcome to stay.",
       img: PHOTOS.kidsCooking,
     },
     journey: {
@@ -270,7 +270,7 @@ export const PROGRAMMES_CONTENT = {
         },
         {
           title: "Build skills",
-          body: "Cooking, history, first aid, martial arts — a bit at a time.",
+          body: "Cooking, history, first aid, martial arts a bit at a time.",
         },
         {
           title: "Grow into Iwan Youth",
@@ -288,7 +288,7 @@ export const PROGRAMMES_CONTENT = {
       "Built with women",
       "Independence, together",
     ],
-    lede: "Skills, livelihoods and a network that holds — built with women, not designed for them.",
+    lede: "Skills, livelihoods and a network that holds built with women, not designed for them.",
     about: {
       heading: "Independence, built alongside other people",
       body: "Iwan Women is about capability and company in equal measure: practical skills and routes to income, alongside a group of women who know what you are working on and ask how it is going.",
@@ -298,7 +298,7 @@ export const PROGRAMMES_CONTENT = {
       {
         icon: "people",
         title: "Who it's for",
-        body: "Women at any stage — building a livelihood, returning to work, or after a room of their own.",
+        body: "Women at any stage building a livelihood, returning to work, or after a room of their own.",
       },
       {
         icon: "calendar",
@@ -354,7 +354,7 @@ export const PROGRAMMES_CONTENT = {
     lede: "Volunteering, mentorship and the community work that gets done when men turn up for it.",
     about: {
       heading: "Show up, and keep showing up",
-      body: "Iwan Men is the least ceremonial of the programmes — time and skills given to the work that needs doing, from service projects to mentoring the younger members and the practical end of everything else Iwan runs.",
+      body: "Iwan Men is the least ceremonial of the programmes time and skills given to the work that needs doing, from service projects to mentoring the younger members and the practical end of everything else Iwan runs.",
       accent: "showing up",
     },
     glance: [

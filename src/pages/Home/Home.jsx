@@ -11,7 +11,7 @@ import {
 } from "../../content/ContentProvider.jsx";
 import Pillars from "../../components/Pillars/Pillars.jsx";
 import ProgrammeDeck from "../../components/ProgrammeDeck/ProgrammeDeck.jsx";
-import TakeAction from "../../components/TakeAction/TakeAction.jsx";
+import WaysToConnect from "../../components/WaysToConnect/WaysToConnect.jsx";
 import Events from "../../components/Events/Events.jsx";
 import Testimonials from "../../components/Testimonials/Testimonials.jsx";
 import Instagram from "../../components/Instagram/Instagram.jsx";
@@ -52,7 +52,7 @@ export default function Home() {
       <TrustedBy {...trustedBy} items={marks} />
       <Pillars />
       <ProgrammeDeck />
-      <TakeAction />
+      <WaysToConnect />
       <Events />
       <Instagram />
       <Faq />

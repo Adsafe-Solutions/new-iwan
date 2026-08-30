@@ -15,7 +15,7 @@ export const NAV_PAGES = [
     tile: PHOTOS.youthCursorWorkshop,
     path: "/iwan-youth",
     intro:
-      "Programmes built with and for young people — mentoring, leadership and the chance to lead relief work of their own.",
+      "Programmes built with and for young people mentoring, leadership and the chance to lead relief work of their own.",
   },
   {
     label: "Iwan Kids",
@@ -28,7 +28,7 @@ export const NAV_PAGES = [
     tile: PHOTOS.kidsGlassPainting,
     path: "/iwan-kids",
     intro:
-      "Learning and play for the community's youngest members — cooking, first aid, gardening, martial arts and whatever is on next.",
+      "Learning and play for the community's youngest members cooking, first aid, gardening, martial arts and whatever is on next.",
   },
   {
     label: "Iwan Women",
@@ -41,7 +41,7 @@ export const NAV_PAGES = [
     tile: "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=900&auto=format&fit=crop",
     path: "/iwan-women",
     intro:
-      "Skills, livelihoods and a network that holds — built with women, not designed for them.",
+      "Skills, livelihoods and a network that holds built with women, not designed for them.",
   },
   {
     label: "Iwan Men",
@@ -64,7 +64,7 @@ export const NAV_PAGES = [
   {
     label: "Events",
     path: "/events",
-    intro: "Classes, gatherings and volunteer days — everything happening next.",
+    intro: "Classes, gatherings and volunteer days everything happening next.",
   },
   {
     label: "Podcast",
@@ -83,6 +83,6 @@ export const NAV_PAGES = [
     group: ABOUT,
     path: "/careers-and-volunteering",
     intro:
-      "Open roles and volunteering opportunities — ways to give your time and skills to Iwan's programmes.",
+      "Open roles and volunteering opportunities ways to give your time and skills to Iwan's programmes.",
   },
 ];

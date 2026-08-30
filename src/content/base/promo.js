@@ -17,7 +17,7 @@ export const PROMO = {
   eyebrow: "What's on",
   heading: "New sessions are",
   mark: "open for registration.",
-  body: "A fresh round of classes, workshops and gatherings just went live — save your place before they fill up.",
+  body: "A fresh round of classes, workshops and gatherings just went live save your place before they fill up.",
   cta: { label: "See what's on", to: "/events" },
   dismiss: "Maybe later",
 };

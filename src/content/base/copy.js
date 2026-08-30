@@ -32,8 +32,8 @@ export const COPY = {
   },
 
   hero: {
-    kicker: "Believe · Act · Serve — Thrive",
-    body: "Iwan is a community hub in Bangalore — classes, workshops, mentoring and volunteering, built around faith, good character and the kind of friendship that outlasts the session. Everyone is welcome.",
+    kicker: "Believe · Act · Serve Thrive",
+    body: "Iwan is a community hub in Bangalore classes, workshops, mentoring and volunteering, built around faith, good character and the kind of friendship that outlasts the session. Everyone is welcome.",
     cta: "Get Involved",
     prevSlide: "Previous slide",
     nextSlide: "Next slide",
@@ -46,7 +46,7 @@ export const COPY = {
 
   trustedBy: {
     eyebrow: "One community, four programmes",
-    headingLines: ["We're a", { mark: "community-led" }, "Muslim organisation."],
+    headingLines: ["Reviving Muslim Identity,", { mark: "one step at a time" }],
   },
 
   pillars: {
@@ -60,10 +60,17 @@ export const COPY = {
     mark: "we run",
   },
 
+  /* the eight tracks themselves are in ways.js — they name real activities */
+  waysToConnect: {
+    heading: "Ways to",
+    mark: "connect",
+    body: "Whatever is on this week belongs to one of these. Some are a room you sit in, some are a project you take on pick the one that sounds like you.",
+  },
+
   programmeDeck: {
     heading: "There’s a room here",
     mark: "for you",
-    body: "Every programme is its own community — the same values, a different room. Start with the one that sounds like you.",
+    body: "Every programme is its own community the same values, a different room. Start with the one that sounds like you.",
     cta: "Explore {label}",
   },
 
@@ -78,7 +85,7 @@ export const COPY = {
     prevMonth: "Previous month",
     nextMonth: "Next month",
     dayLabel: "{count} event{s} on {date}",
-    hint: "Highlighted days have events — select one to filter.",
+    hint: "Highlighted days have events select one to filter.",
     clearFilter: "Clear filter",
     /* the chip on an event that is not tied to one programme */
     community: "Open to all",
@@ -120,7 +127,7 @@ export const COPY = {
     eyebrow: "Get in touch",
     heading: "We'd love to hear",
     mark: "from you",
-    body: "A question, an idea, or you just want to know when the next session is — write to us and someone will answer.",
+    body: "A question, an idea, or you just want to know when the next session is write to us and someone will answer.",
     cta: "Contact us",
   },
 
@@ -133,7 +140,7 @@ export const COPY = {
     mark: "show up for it.",
     body: "Every class, workshop and gathering happens because someone gave their time and skills to it. If you want to be one of them, this is where to start.",
     stepsHeading: "How it works",
-    stepsSubtitle: "There's no waiting list — send us your details and we'll talk.",
+    stepsSubtitle: "There's no waiting list send us your details and we'll talk.",
     steps: [
       {
         title: "Reach out",
@@ -154,7 +161,7 @@ export const COPY = {
     ],
     waysEyebrow: "Where you can help",
     waysBody:
-      "Every programme runs on volunteers — pick the one that fits your time and skills, or talk to us if you're not sure.",
+      "Every programme runs on volunteers pick the one that fits your time and skills, or talk to us if you're not sure.",
     waysCta: "See the programme",
     openRolesHeading: "Open roles",
     openRolesBody:
@@ -225,7 +232,7 @@ export const COPY = {
   testimonials: {
     heading: "In their",
     mark: "own words",
-    body: "Members on the sessions they have been to — gardening, Taekwondo, first aid, entrepreneurship, and whatever is on next.",
+    body: "Members on the sessions they have been to gardening, Taekwondo, first aid, entrepreneurship, and whatever is on next.",
     carousel: "Member testimonials",
     prev: "Previous testimonial",
     next: "Next testimonial",
@@ -250,7 +257,7 @@ export const COPY = {
     items: [
       [
         "Who is Iwan for?",
-        "Anyone who wants to be part of it. Iwan runs four programmes — Kids, Youth, Women and Men — and between them they cover most ages and stages. You do not need to be invited, introduced or already know somebody there.",
+        "Anyone who wants to be part of it. Iwan runs four programmes Kids, Youth, Women and Men and between them they cover most ages and stages. You do not need to be invited, introduced or already know somebody there.",
       ],
       [
         "Do I have to be a member to come to something?",
@@ -262,7 +269,7 @@ export const COPY = {
       ],
       [
         "What actually happens at a session?",
-        "It depends on the programme — classes, workshops, mentoring and volunteering, from Taekwondo and gardening to first aid, Web 3.0 and entrepreneurship. The blogs and the Instagram wall are the honest picture of what a session looks like.",
+        "It depends on the programme classes, workshops, mentoring and volunteering, from Taekwondo and gardening to first aid, Web 3.0 and entrepreneurship. The blogs and the Instagram wall are the honest picture of what a session looks like.",
       ],
       [
         "Can I volunteer or help run things?",
@@ -311,7 +318,7 @@ export const COPY = {
   },
 
   footer: {
-    subscribeDone: "Thank you — you are on the list.",
+    subscribeDone: "Thank you you are on the list.",
     blurb: "What's on, what we've been up to, and where you can lend a hand.",
     programmesHeading: "Programmes",
     follow: "Follow along",
@@ -357,7 +364,7 @@ export const COPY = {
   comingSoon: {
     badge: "Coming soon",
     heading: "is coming soon.",
-    body: "{label} hasn't launched in this country yet — {intro}",
+    body: "{label} hasn't launched in this country yet {intro}",
     home: "See our other programmes",
     contact: "Get in touch",
   },

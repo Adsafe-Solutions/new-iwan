@@ -86,6 +86,14 @@ export const palette = {
   whatsapp: "#25d366",
   whatsappDark: "#1da851",
 
+  /* the "ways to connect" marks, sampled from the three logo exports the
+     designer has delivered so far, so a card's rule and its arch agree.
+     The other five tracks borrow one of these until their own mark lands —
+     see content/base/ways.js. */
+  wayRead: "#0495bb",
+  wayCreate: "#fee01b",
+  wayCafe: "#ff0000",
+
   /* fixed accents (focus areas, donate button) */
   red: "#e11d2a",
   redDark: "#c2161f",
@@ -230,6 +238,11 @@ export default {
         ),
         whatsapp: { DEFAULT: palette.whatsapp, dark: palette.whatsappDark },
         red: { DEFAULT: palette.red, dark: palette.redDark },
+        way: {
+          read: palette.wayRead,
+          create: palette.wayCreate,
+          cafe: palette.wayCafe,
+        },
         pink: palette.pink,
         green: palette.green,
         amber: palette.amber,
