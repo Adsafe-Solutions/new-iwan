@@ -33,6 +33,13 @@ import { PHOTOS, PROGRAMME_PHOTOS } from "./photos.js";
    taking part, not a list of past events, so it is ours to author. It
    replaced an `involve` list that said much the same thing.
 
+   `work` is the same kind of thing one step down: the KINDS of work a
+   programme takes on, for a programme that has no `sessions` to list.
+   It is a description of what you would be doing, never a claim that a
+   particular thing already ran — see the longer note on Iwan Men, which
+   is the only entry carrying one. The two can coexist: `work` says what
+   the programme is for, `sessions` says what it has actually done.
+
    `about.accent` and `about.stat` are used only by the v2 treatment
    (AboutSplit) — the accent word is set in italic inside the heading, and
    the stat is the headline number. v1 ignores both, so either treatment
@@ -374,13 +381,65 @@ export const PROGRAMMES_CONTENT = {
         body: "Work worth doing, people worth knowing, and a straightforward way in.",
       },
     ],
-    pillars: ["act", "serve"],
+    pillars: ["act", "serve", "consult"],
     strands: [],
     sessions: [],
+
+    /* ⚠ THIS IS NOT A SESSIONS LIST, and it must not become one.
+       The live site publishes no Iwan Men page, so there is nothing to
+       transcribe and nothing dated to claim. These are the KINDS of work
+       the programme takes on, written as what you would be doing rather
+       than as a log of what has already run, which puts them on the same
+       footing as `journey`: the shape of taking part is ours to author, a
+       listing of events that never happened is not.
+
+       Every item restates something the page already claims. Service,
+       mentoring and event support are the `glance` tile verbatim; trades
+       come from "a trade, or simply the willingness to be useful"; and
+       proposing your own is the same promise Iwan Women's journey makes
+       about what runs being decided by whoever turns up.
+
+       When real sessions exist, add a `sessions` array as usual. This
+       section stands alongside one rather than in place of it. */
+    work: {
+      heading: "What the work",
+      mark: "looks like",
+      body: "There is no roster to join and no timetable to sign up to. These are the kinds of thing that come up, and any one of them is a reasonable place to start.",
+      items: [
+        {
+          icon: "hands",
+          title: "Service projects",
+          body: "Clearing, painting, repairs and the practical jobs a neighbourhood needs doing. Tools and instructions come with it, so no trade is required to be useful.",
+        },
+        {
+          icon: "people",
+          title: "Mentoring",
+          body: "A couple of hours a month alongside Iwan Youth. Not teaching a syllabus, just being a few years further along the same road and willing to say so.",
+        },
+        {
+          icon: "calendar",
+          title: "Event support",
+          body: "Setting up, carrying, driving, cooking and clearing away afterwards. Most of what makes a session work happens either side of it.",
+        },
+        {
+          icon: "tool",
+          title: "Whatever you already do",
+          body: "Carpentry, wiring, accounts, a licence, a van, a good eye for design. Every project needs a different one, and one of them will be yours.",
+        },
+        {
+          icon: "bulb",
+          title: "Something of your own",
+          body: "Nothing here is fixed. If you can see something worth doing, say so and find the people for it. That is how most of this starts.",
+        },
+      ],
+    },
+
     banner: {
       heading: "Turn up. That is the whole ask.",
       body: "No application, no committee. Come to the next project, bring whatever you are good at, and get stuck in.",
-      img: "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=1200&auto=format&fit=crop",
+      /* ⚠ Stock, standing in for Iwan's own. It used to be the byte-identical
+         URL Iwan Women carries, so the two pages showed the same picture. */
+      img: "https://images.unsplash.com/photo-1593113630400-ea4288922497?q=80&w=1200&auto=format&fit=crop",
     },
     journey: {
       heading: "Your Iwan Men journey",

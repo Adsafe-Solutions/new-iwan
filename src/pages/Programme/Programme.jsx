@@ -96,6 +96,7 @@ export default function Programme({ page }) {
 
   const strands = c.strands ?? [];
   const sessions = c.sessions ?? [];
+  const work = c.work ?? null;
   const [strand, setStrand] = useState(ALL);
 
   const shown = useMemo(
@@ -169,9 +170,12 @@ export default function Programme({ page }) {
           >
             {fill(copy.cta, { programme: shortLabel(page.label, BRAND.name) })}
           </Link>
-          {sessions.length > 0 && (
+          {/* one second CTA, pointing at whichever of the two sections
+              this programme actually has. Sessions win where both exist:
+              what a programme has already run beats what it is for. */}
+          {(sessions.length > 0 || work) && (
             <a
-              href="#sessions"
+              href={sessions.length > 0 ? "#sessions" : "#work"}
               className={cx(
                 "inline-block rounded-lg border-2 border-white/60 px-9 py-4",
                 "font-satoshi text-[18px] font-medium leading-none text-white",
@@ -179,7 +183,7 @@ export default function Programme({ page }) {
                 "hover:-translate-y-0.5 hover:bg-white hover:text-primary-800"
               )}
             >
-              {copy.sessionsCta}
+              {sessions.length > 0 ? copy.sessionsCta : copy.workCta}
             </a>
           )}
         </div>
@@ -325,6 +329,56 @@ export default function Programme({ page }) {
                     </h3>
                     <p className="text-[15px] leading-[24px] text-muted">{s.body}</p>
                   </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ===== WHAT THE WORK LOOKS LIKE =====
+          The honest stand-in for `sessions` on a programme that has none to
+          list. It describes the KINDS of work rather than dated events, so
+          it fills the gap without claiming anything ran — see the note on
+          the Iwan Men entry in programmes.js. Nothing here mounts late, so
+          `.reveal` is safe; the sessions grid needs a keyframe only because
+          its filter mounts cards after useGsap has scanned. */}
+      {work && (
+        <section className="py-16" id="work">
+          <div className={CONTAINER}>
+            <h2 className={cx(KICKER, "reveal")}>
+              {work.heading} <span className={MARK_YB}>{work.mark}</span>
+            </h2>
+            {work.body && (
+              <p className="reveal mb-8 max-w-[62ch] text-[17px] leading-[28px] text-muted">
+                {work.body}
+              </p>
+            )}
+
+            <div
+              className="grid grid-cols-3 gap-4 max-nav:grid-cols-2 max-phone:grid-cols-1"
+              data-stagger
+            >
+              {work.items.map((w) => (
+                <article
+                  className={cx(
+                    "reveal flex flex-col rounded-2xl border border-line bg-white p-7",
+                    "transition-[transform,box-shadow] duration-[250ms]",
+                    "hover:-translate-y-1 hover:shadow-card"
+                  )}
+                  key={w.title}
+                >
+                  <span
+                    className={cx(
+                      "mb-5 grid h-12 w-12 place-items-center rounded-full",
+                      skin.soft,
+                      skin.text
+                    )}
+                  >
+                    <Icon name={w.icon} className="h-6 w-6" />
+                  </span>
+                  <h3 className="mb-2 text-[19px] font-bold leading-[1.3]">{w.title}</h3>
+                  <p className="text-[15px] leading-[24px] text-muted">{w.body}</p>
                 </article>
               ))}
             </div>

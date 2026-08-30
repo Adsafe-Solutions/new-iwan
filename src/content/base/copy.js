@@ -337,6 +337,8 @@ export const COPY = {
     /* the hero CTA opens /events already filtered to this programme */
     cta: "Explore {programme} Events",
     sessionsCta: "What's on",
+    /* the hero's second CTA on a programme with `work` but no `sessions` */
+    workCta: "What you'd be doing",
     sessionsHeading: "What's",
     sessionsMark: "on",
     allStrands: "All",
