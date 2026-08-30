@@ -407,9 +407,21 @@ export const PROGRAMMES_CONTENT = {
       body: "There is no roster to join and no timetable to sign up to. These are the kinds of thing that come up, and any one of them is a reasonable place to start.",
       items: [
         {
-          icon: "hands",
-          title: "Service projects",
-          body: "Projects the neighbourhood actually needs, led by the men qualified to do them properly. You bring your profession and your judgement to it, not a spare pair of hands.",
+          icon: "book",
+          title: "Sitting and learning",
+          /* ⚠ Says the sessions are open, NOT that the seerah circle belongs
+             to Iwan Men. The three transcribed circles in blogs.js are
+             `programme: null`, which is to say community-wide, and filing
+             them under one programme would be the misattribution this file
+             warns about. What is verifiable is the photograph:
+             PROGRAMME_PHOTOS.men is the same URL as the Badr post of 01 March
+             2026, whose own first line reads "Summary of Seerah session". */
+          body: "Not all of it is work. The seerah circle and the other sessions Iwan runs are open to you, and the photograph at the top of this page is one of those evenings.",
+          /* `programme: true` makes Programme.jsx append this programme's own
+             nav path as the filter, the same way the hero CTA builds its
+             /events link. ⚠ NO blog post carries `programme: "/iwan-men"`
+             today, so this lands on the empty state until one does. */
+          link: { to: "/blogs", programme: true, label: "Read the write-ups" },
         },
         {
           icon: "people",
@@ -432,21 +444,9 @@ export const PROGRAMMES_CONTENT = {
           body: "Nothing here is fixed. If you can see something worth doing, say so and find the people for it. That is how most of this starts.",
         },
         {
-          icon: "book",
-          title: "Sitting and learning",
-          /* ⚠ Says the sessions are open, NOT that the seerah circle belongs
-             to Iwan Men. The three transcribed circles in blogs.js are
-             `programme: null`, which is to say community-wide, and filing
-             them under one programme would be the misattribution this file
-             warns about. What is verifiable is the photograph:
-             PROGRAMME_PHOTOS.men is the same URL as the Badr post of 01 March
-             2026, whose own first line reads "Summary of Seerah session". */
-          body: "Not all of it is work. The seerah circle and the other sessions Iwan runs are open to you, and the photograph at the top of this page is one of those evenings.",
-          /* `programme: true` makes Programme.jsx append this programme's own
-             nav path as the filter, the same way the hero CTA builds its
-             /events link. ⚠ NO blog post carries `programme: "/iwan-men"`
-             today, so this lands on the empty state until one does. */
-          link: { to: "/blogs", programme: true, label: "Read the write-ups" },
+          icon: "hands",
+          title: "Service projects",
+          body: "Projects the neighbourhood actually needs, led by the men qualified to do them properly. You bring your profession and your judgement to it, not a spare pair of hands.",
         },
       ],
     },
