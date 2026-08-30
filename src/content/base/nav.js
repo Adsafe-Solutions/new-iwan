@@ -5,6 +5,32 @@ export const ABOUT = "About Us";
 
 export const NAV_PAGES = [
   {
+    label: "Iwan Men",
+    group: PROGRAMMES,
+    tone: "bg-men",
+    soft: "bg-men-soft",
+    text: "text-men",
+    edge: "border-men/25",
+    mark: "men",
+    tile: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=900&auto=format&fit=crop",
+    path: "/iwan-men",
+    intro:
+      "Volunteering, mentorship and the community work that gets done when men turn up for it.",
+  },
+  {
+    label: "Iwan Women",
+    group: PROGRAMMES,
+    tone: "bg-women",
+    soft: "bg-women-soft",
+    text: "text-women",
+    edge: "border-women/25",
+    mark: "women",
+    tile: "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=900&auto=format&fit=crop",
+    path: "/iwan-women",
+    intro:
+      "Skills, livelihoods and a network that holds built with women, not designed for them.",
+  },
+  {
     label: "Iwan Youth",
     group: PROGRAMMES,
     tone: "bg-youth",
@@ -29,32 +55,6 @@ export const NAV_PAGES = [
     path: "/iwan-kids",
     intro:
       "Learning and play for the community's youngest members cooking, first aid, gardening, martial arts and whatever is on next.",
-  },
-  {
-    label: "Iwan Women",
-    group: PROGRAMMES,
-    tone: "bg-women",
-    soft: "bg-women-soft",
-    text: "text-women",
-    edge: "border-women/25",
-    mark: "women",
-    tile: "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=900&auto=format&fit=crop",
-    path: "/iwan-women",
-    intro:
-      "Skills, livelihoods and a network that holds built with women, not designed for them.",
-  },
-  {
-    label: "Iwan Men",
-    group: PROGRAMMES,
-    tone: "bg-men",
-    soft: "bg-men-soft",
-    text: "text-men",
-    edge: "border-men/25",
-    mark: "men",
-    tile: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=900&auto=format&fit=crop",
-    path: "/iwan-men",
-    intro:
-      "Volunteering, mentorship and the community work that gets done when men turn up for it.",
   },
   {
     label: "Blogs",

@@ -257,7 +257,7 @@ export const COPY = {
     items: [
       [
         "Who is Iwan for?",
-        "Anyone who wants to be part of it. Iwan runs four programmes Kids, Youth, Women and Men and between them they cover most ages and stages. You do not need to be invited, introduced or already know somebody there.",
+        "Anyone who wants to be part of it. Iwan runs four programmes Men, Women, Youth and Kids and between them they cover most ages and stages. You do not need to be invited, introduced or already know somebody there.",
       ],
       [
         "Do I have to be a member to come to something?",

@@ -19,10 +19,10 @@ export const HERO_LOGOS = [
     alt: "iwan.community",
     scale: 1,
   },
-  { id: "youth", src: youth, alt: "Iwan Youth", scale: 1 },
-  { id: "kids", src: kids, alt: "Iwan Kids", scale: 1 },
   { id: "men", src: men, alt: "Iwan Men", scale: 1.51 },
   { id: "women", src: women, alt: "Iwan Women", scale: 1.23 },
+  { id: "youth", src: youth, alt: "Iwan Youth", scale: 1 },
+  { id: "kids", src: kids, alt: "Iwan Kids", scale: 1 },
 ];
 
 /* the four programme marks, without the community one */
