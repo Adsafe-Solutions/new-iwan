@@ -9,20 +9,36 @@ import { KICKER, MARK_YB } from "../../lib/type.js";
    links anywhere yet. A card that went somewhere it has no page for would
    be a dangling link, which is the mistake /iwan-women already taught us.
 
-   ⚠ The arch is cropped out of the logo rather than the whole mark being
-   shown: five of the eight tracks borrow a delivered logo until their own
-   is drawn (see ways.js), and the wordmark baked into those exports would
-   have a card headed "play @ iwan" displaying artwork reading "read @iwan".
-   The arch alone is the top 161px of every 600-wide export, identical in
-   all three, so the marks line up across the grid. Showing the whole logo
-   again is a change to GLYPH and nothing else. */
+   Each card is a mark on a plate over a white body, the same treatment
+   ProgrammeDeck gives a programme: the logo is what names a track, so it
+   gets the room a stock picture used to take. The plate is tinted from the
+   track's own colour because `bg-way-create` is #fee01b and a yellow mark
+   does not read on white.
+
+   ⚠ Five of the eight tracks have no mark of their own yet and borrow a
+   delivered one (see ways.js — the play/lead/learn/reflect/serve files in
+   assests/logos are byte-identical copies of other marks, so they are not
+   wired up). Those cards show the ARCH ONLY: the wordmark baked into the
+   export would have a card headed "play @ iwan" displaying artwork reading
+   "read @iwan". The arch is the top 161px of every 600-wide export and is
+   the same box in all three, so the marks line up across the grid. The
+   plate is a fixed height either way, so a borrowed card and a real one are
+   the same size. Showing the whole logo again is a change to ARCH and
+   nothing else. */
 
 /* the arch, without the wordmark underneath it */
-const GLYPH = "aspect-[600/161]";
+const ARCH = "block w-[128px] overflow-hidden aspect-[600/161]";
+/* a real mark, wordmark and all — capped so the tallest export (600×291)
+   still sits inside the plate with air around it */
+const FULL = "block w-[128px]";
 
 const CARD = cx(
-  "reveal group relative flex h-full flex-col overflow-hidden rounded border border-line bg-white p-6 pt-7",
+  "reveal group relative flex h-full flex-col overflow-hidden rounded border border-line bg-white",
   "transition-transform duration-[350ms] hover:-translate-y-2 hover:shadow-card"
+);
+const PLATE = cx(
+  "flex h-[124px] flex-none items-center justify-center overflow-hidden",
+  "transition-transform duration-[350ms] group-hover:scale-[1.06]"
 );
 const CHIP =
   "inline-flex items-center rounded-full border border-line px-3 py-1 text-[11px] font-bold uppercase tracking-[0.08em] text-muted";
@@ -50,37 +66,32 @@ export default function WaysToConnect() {
             <article className={CARD} key={w.id}>
               {/* the track's colour, full width, so the grid reads as a set
                   of eight rather than eight unrelated boxes */}
-              <span
-                aria-hidden="true"
-                className={cx("absolute inset-x-0 top-0 h-[4px]", w.tone)}
-              />
+              <span aria-hidden="true" className={cx("h-[4px] flex-none", w.tone)} />
 
-              <span
-                aria-hidden="true"
-                className={cx(
-                  GLYPH,
-                  "mb-5 block w-[104px] flex-none overflow-hidden",
-                  "transition-transform duration-[350ms] group-hover:scale-[1.06] origin-left"
-                )}
-              >
-                <img alt="" className="w-full" src={w.logo} />
+              <span aria-hidden="true" className={cx(PLATE, w.soft)}>
+                <span className={w.borrowed ? ARCH : FULL}>
+                  <img alt="" className="w-full" src={w.logo} />
+                </span>
               </span>
 
-              <h3 className="text-[26px] font-black lowercase leading-none tracking-[-0.01em] text-ink">
-                {w.name} <span className="text-[17px] font-bold text-muted">@ iwan</span>
-              </h3>
+              <div className="flex flex-1 flex-col p-6">
+                <h3 className="text-[26px] font-black lowercase leading-none tracking-[-0.01em] text-ink">
+                  {w.name}{" "}
+                  <span className="text-[17px] font-bold text-muted">@ iwan</span>
+                </h3>
 
-              <p className="mb-5 mt-3 text-[15px] leading-[23px] text-muted">
-                {w.activity}
-              </p>
+                <p className="mb-5 mt-3 text-[15px] leading-[23px] text-muted">
+                  {w.activity}
+                </p>
 
-              <ul className="mt-auto flex flex-wrap gap-2">
-                {w.examples.map((e) => (
-                  <li className={CHIP} key={e}>
-                    {e}
-                  </li>
-                ))}
-              </ul>
+                <ul className="mt-auto flex flex-wrap gap-2">
+                  {w.examples.map((e) => (
+                    <li className={CHIP} key={e}>
+                      {e}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </article>
           ))}
         </div>

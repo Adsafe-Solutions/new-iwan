@@ -18,14 +18,19 @@ import { KICKER, MARK_YB } from "../../lib/type.js";
 
    The cards are the programmes themselves, read off the same nav list the
    header and TakeAction are built from, so a country running three of them
-   deals three cards. Photo, colour and lede all come from the programme's own
-   entry: the card and the page it opens are the same picture.
+   deals three cards. Colour and lede come from the programme's own entry.
+
+   ⚠ The plate is the programme's LOGO on a soft ground, not a photograph.
+   The marks are what the band above and the header already show, so the deck
+   names each programme the same way rather than with a stock picture that
+   says nothing about it. A programme with no mark of its own falls back to
+   the community logo — its `dark` variant, since that is the one drawn for a
+   light ground.
 
    A programme that is in the nav but has no `programmes.content` in this
-   country (see content/ca and App.jsx's ComingSoon routing) has no photo or
-   lede to show, so its card falls back to the programme's own logo on a soft
-   ground and says so — the same signal TakeAction and the TrustedBy band
-   already give. */
+   country (see content/ca and App.jsx's ComingSoon routing) has no lede to
+   show, so its card says so under the mark — the same signal TakeAction and
+   the TrustedBy band already give. */
 
 /* The deck transform lives on the wrapper and the hover lift on the card:
    GSAP writes an inline transform, which would override `hover:-translate-y-2`
@@ -34,20 +39,25 @@ const CARD = cx(
   "group flex h-full flex-col overflow-hidden rounded shadow-card",
   "transition-transform duration-[350ms] hover:-translate-y-2"
 );
-const PHOTO =
-  "absolute inset-0 bg-cover bg-center transition-transform duration-[600ms] group-hover:scale-[1.08]";
-const SOON = "absolute inset-0 flex flex-col items-center justify-center gap-3";
+const PLATE = "absolute inset-0 flex flex-col items-center justify-center gap-3";
+const MARK =
+  "w-[calc(110px*var(--s))] max-w-[70%] transition-transform duration-[600ms] group-hover:scale-[1.06]";
 
 export default function ProgrammeDeck() {
   const { programmesGroup, pages } = useNav();
-  const { programmeMarks } = useHero();
+  const { logos, programmeMarks } = useHero();
   const { content: PROGRAMME_CONTENT } = useProgrammes();
   const copy = useCopy().programmeDeck;
   const comingSoon = useCopy().comingSoon;
 
   const CARDS = pages.filter((p) => p.group === programmesGroup);
   const contentFor = (p) => PROGRAMME_CONTENT[p.path.replace("/", "")];
-  const markFor = (p) => programmeMarks.find((l) => l.id === p.mark);
+  const community = logos.find((l) => l.id === "community");
+  /* the community mark stands in for a programme with none of its own, and it
+     is drawn light — `dark` is the copy meant for a pale ground. */
+  const markFor = (p) =>
+    programmeMarks.find((l) => l.id === p.mark) ??
+    (community && { ...community, src: community.dark ?? community.src });
 
   return (
     <section className="bg-mist py-[4.5rem]" id="programme-deck" data-deck>
@@ -73,21 +83,16 @@ export default function ProgrammeDeck() {
               <div className="relative" key={p.path} data-deck-card>
                 <Link className={cx(CARD, p.tone, "text-white")} to={p.path}>
                   <div className="relative aspect-[4/3] overflow-hidden">
-                    {content ? (
-                      <div
-                        className={PHOTO}
-                        style={{ backgroundImage: `url(${content.hero ?? p.tile})` }}
-                      />
-                    ) : (
-                      <div className={cx(SOON, p.soft)}>
-                        {mark && (
-                          <img
-                            src={mark.src}
-                            alt=""
-                            style={{ "--s": mark.scale ?? 1 }}
-                            className="w-[calc(110px*var(--s))] max-w-[70%]"
-                          />
-                        )}
+                    <div className={cx(PLATE, p.soft)}>
+                      {mark && (
+                        <img
+                          src={mark.src}
+                          alt=""
+                          style={{ "--s": mark.scale ?? 1 }}
+                          className={MARK}
+                        />
+                      )}
+                      {!content && (
                         <span
                           className={cx(
                             "text-[12px] font-extrabold uppercase tracking-[0.14em]",
@@ -96,8 +101,8 @@ export default function ProgrammeDeck() {
                         >
                           {comingSoon.badge}
                         </span>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
 
                   <div className="flex flex-1 flex-col p-6">

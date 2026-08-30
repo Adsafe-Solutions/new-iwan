@@ -64,6 +64,11 @@ const CARD_DELAYS = [
   "[animation-delay:0.3s]",
 ];
 
+/* "Iwan Men" → "Men". The CTA already sits on that programme's own page,
+   so repeating the org name in the button is noise. */
+const shortLabel = (label, brand) =>
+  label.startsWith(`${brand} `) ? label.slice(brand.length + 1) : label;
+
 const CONTAINER = "mx-auto w-full max-w-container px-6";
 /* the sentinel the filter compares against; `copy.allStrands` is what
    the chip actually reads */
@@ -162,7 +167,7 @@ export default function Programme({ page }) {
               "hover:-translate-y-0.5 hover:bg-accent"
             )}
           >
-            {fill(copy.cta, { programme: page.label })}
+            {fill(copy.cta, { programme: shortLabel(page.label, BRAND.name) })}
           </Link>
           {sessions.length > 0 && (
             <a

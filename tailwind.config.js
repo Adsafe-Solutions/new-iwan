@@ -93,6 +93,11 @@ export const palette = {
   wayRead: "#0495bb",
   wayCreate: "#fee01b",
   wayCafe: "#ff0000",
+  /* the plate each mark sits on, tinted the same way the programme softs
+     above are — the mark has to read on it, and #fee01b does not on white */
+  wayReadSoft: "#e8f5f9",
+  wayCreateSoft: "#fffcea",
+  wayCafeSoft: "#ffe8e8",
 
   /* fixed accents (focus areas, donate button) */
   red: "#e11d2a",
@@ -239,9 +244,9 @@ export default {
         whatsapp: { DEFAULT: palette.whatsapp, dark: palette.whatsappDark },
         red: { DEFAULT: palette.red, dark: palette.redDark },
         way: {
-          read: palette.wayRead,
-          create: palette.wayCreate,
-          cafe: palette.wayCafe,
+          read: { DEFAULT: palette.wayRead, soft: palette.wayReadSoft },
+          create: { DEFAULT: palette.wayCreate, soft: palette.wayCreateSoft },
+          cafe: { DEFAULT: palette.wayCafe, soft: palette.wayCafeSoft },
         },
         pink: palette.pink,
         green: palette.green,
