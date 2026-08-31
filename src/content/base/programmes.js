@@ -33,6 +33,13 @@ import { PHOTOS, PROGRAMME_PHOTOS } from "./photos.js";
    taking part, not a list of past events, so it is ours to author. It
    replaced an `involve` list that said much the same thing.
 
+   `work` is the same kind of thing one step down: the KINDS of work a
+   programme takes on, for a programme that has no `sessions` to list.
+   It is a description of what you would be doing, never a claim that a
+   particular thing already ran — see the longer note on Iwan Men, which
+   is the only entry carrying one. The two can coexist: `work` says what
+   the programme is for, `sessions` says what it has actually done.
+
    `about.accent` and `about.stat` are used only by the v2 treatment
    (AboutSplit) — the accent word is set in italic inside the heading, and
    the stat is the headline number. v1 ignores both, so either treatment
@@ -67,10 +74,10 @@ export const PROGRAMMES_CONTENT = {
       "Runs on mentorship",
       "Starts by turning up",
     ],
-    lede: "A programme for young people who want more than somewhere to pass the time — mentoring, real skills, and the room to lead something of their own.",
+    lede: "A programme for young people who want more than somewhere to pass the time mentoring, real skills, and the room to lead something of their own.",
     about: {
       heading: "Growing up with purpose, together",
-      body: "Iwan Youth is built on a simple belief: young people rise to what is asked of them. So we ask — sessions run from Web 3.0 and entrepreneurship to fitness, Islamic history and community service, often led by people only a couple of years older than the room.",
+      body: "Iwan Youth is built on a simple belief: young people rise to what is asked of them. So we ask sessions run from Web 3.0 and entrepreneurship to fitness, Islamic history and community service, often led by people only a couple of years older than the room.",
       accent: "purpose",
       stat: { value: "Dozens", label: "of young leaders trained this year" },
     },
@@ -78,7 +85,7 @@ export const PROGRAMMES_CONTENT = {
       {
         icon: "people",
         title: "Who it's for",
-        body: "Young people finding their footing — students, school-leavers and early-career.",
+        body: "Young people finding their footing students, school-leavers and early-career.",
       },
       {
         icon: "calendar",
@@ -127,10 +134,59 @@ export const PROGRAMMES_CONTENT = {
       {
         title: "Fitness for a Better You",
         strand: "Fitness",
-        body: "Weightlifting technique — building strength safely, without guesswork.",
+        body: "Weightlifting technique building strength safely, without guesswork.",
         img: img("iwan-youth-fitness-1"),
       },
     ],
+    /* ⚠ THIS IS NOT A SECOND SESSIONS LIST. `sessions` above is the real,
+       transcribed record of what this programme has run; this is the shape of
+       taking part, on the same footing as `journey`. The two are deliberately
+       different registers, which is why the headings differ too. Nothing here
+       names a dated thing, and nothing here may.
+
+       Every item restates something this entry already claims.
+       The strands, mentoring and community service are `glance` and `strands`
+       verbatim; leading a session is `journey`'s last step; and the write-ups
+       card is true of the six /iwan-youth posts in blogs.js. */
+    work: {
+      heading: "What taking part",
+      mark: "looks like",
+      body: "The sessions above are only part of it. This is the shape of a year here, and any one of these is a reasonable place to start.",
+      items: [
+        {
+          icon: "bulb",
+          title: "Learning something new",
+          body: "Tech Hub one month, Islamic history the next, fitness after that. You do not have to know which strand is yours before you turn up.",
+        },
+        {
+          icon: "people",
+          title: "Being mentored",
+          body: "Pairing up with someone a few years further along the same road. Close enough to remember what it was like, far enough along to be useful.",
+        },
+        {
+          icon: "spark",
+          title: "Leading a session",
+          body: "Running one yourself, on something you already know. Most of what is listed above was led by someone who started out in the room.",
+        },
+        {
+          icon: "hands",
+          title: "Community service",
+          body: "The volunteering side, alongside the rest of Iwan. Skills are worth more once they are pointed at something outside yourself.",
+        },
+        {
+          icon: "growth",
+          title: "Training and sport",
+          body: "Strength, nutrition and the habit of looking after yourself. It sits alongside everything else here rather than apart from it.",
+        },
+        {
+          icon: "book",
+          title: "Reading the write-ups",
+          body: "Sessions get written up afterwards, so you can catch one you missed or go back over the parts worth keeping.",
+          link: { to: "/blogs", programme: true, label: "Read the write-ups" },
+        },
+      ],
+    },
+
     banner: {
       heading: "Come and see for yourself.",
       body: "The quickest way to know whether this is for you is to turn up to one session. Bring a friend if that makes it easier.",
@@ -169,10 +225,10 @@ export const PROGRAMMES_CONTENT = {
       "Taekwondo to gardening",
       "Habits that outlast the session",
     ],
-    lede: "Somewhere for the youngest members of the community to be curious out loud — and to pick up the habits that outlast the session.",
+    lede: "Somewhere for the youngest members of the community to be curious out loud and to pick up the habits that outlast the session.",
     about: {
       heading: "Learning that doesn't feel like school",
-      body: "Iwan Kids is where children get to try things — cooking with millets one week, world history the next, first aid the week after. The subjects change; what stays constant is that nobody is talked down to.",
+      body: "Iwan Kids is where children get to try things cooking with millets one week, world history the next, first aid the week after. The subjects change; what stays constant is that nobody is talked down to.",
       accent: "school",
     },
     glance: [
@@ -184,7 +240,7 @@ export const PROGRAMMES_CONTENT = {
       {
         icon: "calendar",
         title: "What happens",
-        body: "Hands-on sessions that teach something real — cooking, history, first aid, martial arts.",
+        body: "Hands-on sessions that teach something real cooking, history, first aid, martial arts.",
       },
       {
         icon: "hands",
@@ -211,7 +267,7 @@ export const PROGRAMMES_CONTENT = {
         /* ⚠ The live page repeats the Youth "Early Islam" copy under this
            title, which is plainly a paste error there. Described from the
            title instead of copying the mistake across. */
-        body: "Belt by belt — technique, control and the discipline that comes with both.",
+        body: "Belt by belt technique, control and the discipline that comes with both.",
         img: img("iwan-kids-1"),
       },
       {
@@ -241,7 +297,7 @@ export const PROGRAMMES_CONTENT = {
       {
         title: "Exploring Nature: An Adventure Trip to Lalbagh",
         strand: "Culture and Community",
-        body: "A day out at Lalbagh — flora, fauna and how an ecosystem holds together.",
+        body: "A day out at Lalbagh flora, fauna and how an ecosystem holds together.",
         img: img("iwan-kids-cc-1"),
       },
       {
@@ -251,9 +307,59 @@ export const PROGRAMMES_CONTENT = {
         img: img("iwan-kids-cl-2"),
       },
     ],
+    /* ⚠ THIS IS NOT A SECOND SESSIONS LIST. `sessions` above is the real,
+       transcribed record of what this programme has run; this is the shape of
+       taking part, on the same footing as `journey`. The two are deliberately
+       different registers, which is why the headings differ too. Nothing here
+       names a dated thing, and nothing here may.
+
+       Every item restates something this entry already claims.
+       The strands, the trips and the parents-welcome line come from `strands`,
+       `sessions` and `banner`; the write-ups card is true of the four
+       /iwan-kids posts in blogs.js. ⚠ Written for the PARENT reading it, who
+       is the one deciding whether to come. */
+    work: {
+      heading: "What a morning",
+      mark: "looks like",
+      body: "The subjects change every few weeks. What stays the same is the shape of a session, and what your child gets out of one.",
+      items: [
+        {
+          icon: "spark",
+          title: "Trying things out",
+          body: "Cooking one week, world history the next, first aid after that. Nobody is expected to be good at it beforehand, which is rather the point.",
+        },
+        {
+          icon: "target",
+          title: "Taekwondo",
+          body: "The one thing here that is graded, belt by belt. The discipline and the control are what it is for, more than the kicking.",
+        },
+        {
+          icon: "bulb",
+          title: "Making and experimenting",
+          body: "Painting, stitching, prisms and growing vegetables. A fair amount of it looks like play, which is how the learning gets in.",
+        },
+        {
+          icon: "globe",
+          title: "Getting outside",
+          body: "Trips out to gardens, science centres and anywhere else worth seeing. A morning out counts as a session rather than a treat.",
+        },
+        {
+          icon: "people",
+          title: "Staying with them",
+          body: "You are welcome to stay rather than drop off, and plenty of parents do. Nobody treats it as getting in the way.",
+        },
+        {
+          icon: "book",
+          title: "Reading the write-ups",
+          body: "Sessions get written up afterwards, so you can see what your child did and carry the good bits on at home.",
+          link: { to: "/blogs", programme: true, label: "Read the write-ups" },
+        },
+      ],
+    },
+
     banner: {
       heading: "Bring them along.",
-      body: "Children work out within one session whether something is for them. Come and let yours find out — parents are welcome to stay.",
+      body: "Children work out within one session whether something is for them. Come and let yours find out parents are welcome to stay.",
       img: PHOTOS.kidsCooking,
     },
     journey: {
@@ -270,7 +376,7 @@ export const PROGRAMMES_CONTENT = {
         },
         {
           title: "Build skills",
-          body: "Cooking, history, first aid, martial arts — a bit at a time.",
+          body: "Cooking, history, first aid, martial arts a bit at a time.",
         },
         {
           title: "Grow into Iwan Youth",
@@ -288,7 +394,7 @@ export const PROGRAMMES_CONTENT = {
       "Built with women",
       "Independence, together",
     ],
-    lede: "Skills, livelihoods and a network that holds — built with women, not designed for them.",
+    lede: "Skills, livelihoods and a network that holds, built with women rather than designed for them.",
     about: {
       heading: "Independence, built alongside other people",
       body: "Iwan Women is about capability and company in equal measure: practical skills and routes to income, alongside a group of women who know what you are working on and ask how it is going.",
@@ -298,7 +404,7 @@ export const PROGRAMMES_CONTENT = {
       {
         icon: "people",
         title: "Who it's for",
-        body: "Women at any stage — building a livelihood, returning to work, or after a room of their own.",
+        body: "Women at any stage: building a livelihood, returning to work, or after a room of their own.",
       },
       {
         icon: "calendar",
@@ -314,9 +420,69 @@ export const PROGRAMMES_CONTENT = {
     pillars: ["act", "serve", "consult"],
     strands: [],
     sessions: [],
+
+    /* ⚠ THIS IS NOT A SESSIONS LIST, and it must not become one. Same rule,
+       and same reason, as the `work` block on Iwan Men: the live site
+       publishes no Iwan Women page, so there is nothing to transcribe and
+       nothing dated to claim. These are the KINDS of thing the programme
+       takes on, written as what you would be doing rather than as a log of
+       what has already run, which puts them on the same footing as
+       `journey`.
+
+       Every item restates something this page already claims. Skills,
+       livelihood support and gatherings are the `glance` tiles verbatim;
+       teaching and asking come straight off `journey`'s "Say what you need"
+       and "Pass it on"; and checking in is the "network that holds between
+       sessions" the same tile promises.
+
+       When real sessions exist, add a `sessions` array as usual. This
+       section stands alongside one rather than in place of it. */
+    work: {
+      heading: "What taking part",
+      mark: "looks like",
+      body: "There is no roster to join and no timetable to sign up to. These are the kinds of thing that come up, and any one of them is a reasonable place to start.",
+      items: [
+        {
+          icon: "tool",
+          title: "Skills sessions",
+          body: "Practical things taught by whoever in the room already does them well. You leave able to do something you could not do that morning.",
+          /* `programme: true` makes Programme.jsx append this programme's own
+             nav path as the filter, the same way the hero CTA builds its
+             /events link. ⚠ NO blog post carries `programme: "/iwan-women"`
+             today, so this lands on the empty state until one does. */
+          link: { to: "/blogs", programme: true, label: "Read the write-ups" },
+        },
+        {
+          icon: "growth",
+          title: "Building a livelihood",
+          body: "Work on the thing you are trying to earn from, whether that is a first order, a price you are unsure about or a business you have run for years.",
+        },
+        {
+          icon: "people",
+          title: "Gatherings",
+          body: "Not every session has to produce something. Some of them exist so that the women who come know each other before they need to.",
+        },
+        {
+          icon: "book",
+          title: "Teaching what you know",
+          body: "Whatever you are good at, somebody here wants to learn it. Running a session is the ordinary next step, not a promotion.",
+        },
+        {
+          icon: "bulb",
+          title: "Saying what should run",
+          body: "What happens is decided by the women who turn up. If the thing you need is not on, say so and it becomes the thing we find someone for.",
+        },
+        {
+          icon: "heart",
+          title: "Keeping in touch",
+          body: "The part that is not a session at all. Knowing what someone is working on, and asking how it went the next time you see them.",
+        },
+      ],
+    },
+
     banner: {
-      heading: "There is a seat for you.",
-      body: "Nothing is expected of you on a first visit beyond turning up. Come, see who is there, and decide afterwards.",
+      heading: "You are not a guest here.",
+      body: "This was built with women rather than for them, so there is nothing to be invited to. Turn up once and you are one of the women who come.",
       img: "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=1200&auto=format&fit=crop",
     },
     journey: {
@@ -354,7 +520,7 @@ export const PROGRAMMES_CONTENT = {
     lede: "Volunteering, mentorship and the community work that gets done when men turn up for it.",
     about: {
       heading: "Show up, and keep showing up",
-      body: "Iwan Men is the least ceremonial of the programmes — time and skills given to the work that needs doing, from service projects to mentoring the younger members and the practical end of everything else Iwan runs.",
+      body: "Iwan Men is the least ceremonial of the programmes time and skills given to the work that needs doing, from service projects to mentoring the younger members and the practical end of everything else Iwan runs.",
       accent: "showing up",
     },
     glance: [
@@ -374,13 +540,84 @@ export const PROGRAMMES_CONTENT = {
         body: "Work worth doing, people worth knowing, and a straightforward way in.",
       },
     ],
-    pillars: ["act", "serve"],
+    pillars: ["act", "serve", "consult"],
     strands: [],
     sessions: [],
+
+    /* ⚠ THIS IS NOT A SESSIONS LIST, and it must not become one.
+       The live site publishes no Iwan Men page, so there is nothing to
+       transcribe and nothing dated to claim. These are the KINDS of work
+       the programme takes on, written as what you would be doing rather
+       than as a log of what has already run, which puts them on the same
+       footing as `journey`: the shape of taking part is ours to author, a
+       listing of events that never happened is not.
+
+       Every item restates something the page already claims. Service,
+       mentoring and event support are the `glance` tile verbatim; trades
+       come from "a trade, or simply the willingness to be useful"; and
+       proposing your own is the same promise Iwan Women's journey makes
+       about what runs being decided by whoever turns up.
+
+       When real sessions exist, add a `sessions` array as usual. This
+       section stands alongside one rather than in place of it. */
+    work: {
+      heading: "What the work",
+      mark: "looks like",
+      body: "There is no roster to join and no timetable to sign up to. These are the kinds of thing that come up, and any one of them is a reasonable place to start.",
+      items: [
+        {
+          icon: "book",
+          title: "Sitting and learning",
+          /* ⚠ Says the sessions are open, NOT that the seerah circle belongs
+             to Iwan Men. The three transcribed circles in blogs.js are
+             `programme: null`, which is to say community-wide, and filing
+             them under one programme would be the misattribution this file
+             warns about.
+             ⚠ The sentence no longer points at the hero. It used to, because
+             PROGRAMME_PHOTOS.men was the Badr post of 01 March 2026 — whose
+             own first line reads "Summary of Seerah session". That hero is
+             now a CDN picture of something else, so the claim went with it. */
+          body: "Not all of it is work. The seerah circle and the other sessions Iwan runs are open to you, and you are welcome at them.",
+          /* `programme: true` makes Programme.jsx append this programme's own
+             nav path as the filter, the same way the hero CTA builds its
+             /events link. ⚠ NO blog post carries `programme: "/iwan-men"`
+             today, so this lands on the empty state until one does. */
+          link: { to: "/blogs", programme: true, label: "Read the write-ups" },
+        },
+        {
+          icon: "people",
+          title: "Mentoring",
+          body: "A couple of hours a month alongside Iwan Youth. Not teaching a syllabus, just being a few years further along the same road and willing to say so.",
+        },
+        {
+          icon: "calendar",
+          title: "Event support",
+          body: "Setting up, carrying, driving, cooking and clearing away afterwards. Most of what makes a session work happens either side of it.",
+        },
+        {
+          icon: "tool",
+          title: "Whatever you already do",
+          body: "Carpentry, wiring, accounts, a licence, a van, a good eye for design. Every project needs a different one, and one of them will be yours.",
+        },
+        {
+          icon: "bulb",
+          title: "Something of your own",
+          body: "Nothing here is fixed. If you can see something worth doing, say so and find the people for it. That is how most of this starts.",
+        },
+        {
+          icon: "hands",
+          title: "Service projects",
+          body: "Projects the neighbourhood actually needs, led by the men qualified to do them properly. You bring your profession and your judgement to it, not a spare pair of hands.",
+        },
+      ],
+    },
+
     banner: {
       heading: "Turn up. That is the whole ask.",
       body: "No application, no committee. Come to the next project, bring whatever you are good at, and get stuck in.",
-      img: "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=1200&auto=format&fit=crop",
+      /* Iwan's own, off the CDN — it replaced the stock photograph that used
+         to carry the byte-identical URL Iwan Women has. */
+      img: img("iwan-youth-0"),
     },
     journey: {
       heading: "Your Iwan Men journey",
@@ -408,12 +645,8 @@ export const PROGRAMMES_CONTENT = {
   },
 };
 
-/* ⚠ Transcribed from the live Youth page — verify before launch.
-   The address lives on BRAND so the event modal's map and this panel can
-   never disagree about where Iwan actually is. */
-export const PROGRAMME_CONTACT = {
-  phone: "+91 63600 049969",
-  address: BRAND.address,
-};
+/* The programme pages' "talk to us" panel reads brand.phone and brand.address
+   directly — it used to keep its own copy of both, which meant a country had to
+   override the same two values twice to change the number on one page. */
 
 export default PROGRAMMES_CONTENT;

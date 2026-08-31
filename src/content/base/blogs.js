@@ -41,7 +41,7 @@ export const BLOGS = [
         "li",
         "The Prophet ﷺ and about 313 companions initially set out to intercept a caravan.",
       ],
-      ["li", "They were lightly equipped — only 2 horses and 70 camels, sharing rides."],
+      ["li", "They were lightly equipped only 2 horses and 70 camels, sharing rides."],
       [
         "li",
         "Suddenly, they faced a fully armed army of 1,000. What began as a small mission turned into a defining moment for the Ummah.",
@@ -53,7 +53,7 @@ export const BLOGS = [
       ],
       [
         "li",
-        "Sa’d ibn Mu’adh (RA) spoke on behalf of the Ansar, pledging complete loyalty — even if it meant entering the sea.",
+        "Sa’d ibn Mu’adh (RA) spoke on behalf of the Ansar, pledging complete loyalty even if it meant entering the sea.",
       ],
       [
         "li",
@@ -139,10 +139,7 @@ export const BLOGS = [
       ["li", "Makkans seized Muslim property"],
       ["li", "Muslims were expelled and persecuted"],
       ["li", "Allah granted permission to fight (Surah Al-Hajj)"],
-      [
-        "li",
-        "Caravan interceptions were responses to injustice — not random aggression.",
-      ],
+      ["li", "Caravan interceptions were responses to injustice not random aggression."],
       ["p", "Lesson: Justice before retaliation."],
       ["p", "🌙 5. Prelude to Badr (2 AH – Ramadan)"],
       [
@@ -151,7 +148,7 @@ export const BLOGS = [
       ],
       [
         "p",
-        "The Prophet ﷺ strategically mobilized companions. With secrecy, planning, and tawakkul, this led to the historic Battle of Badr — where Allah granted victory despite overwhelming odds.",
+        "The Prophet ﷺ strategically mobilized companions. With secrecy, planning, and tawakkul, this led to the historic Battle of Badr where Allah granted victory despite overwhelming odds.",
       ],
       ["p", "Lesson: Strategy with trust in Allah."],
       ["p", "🌟 Core Takeaways for Us Today"],
@@ -688,11 +685,11 @@ export const BLOGS = [
       ],
       [
         "p",
-        "Each activity encouraged observation, collaboration, and inquiry-based learning. The facilitators guided participants through practical demonstrations, making abstract scientific concepts tangible. The interactive format promoted teamwork, creativity, and deeper understanding — aligning with Iwan’s mission of holistic learning and curiosity-driven education.",
+        "Each activity encouraged observation, collaboration, and inquiry-based learning. The facilitators guided participants through practical demonstrations, making abstract scientific concepts tangible. The interactive format promoted teamwork, creativity, and deeper understanding aligning with Iwan’s mission of holistic learning and curiosity-driven education.",
       ],
       [
         "p",
-        "The session concluded with a reflection segment, where children shared their favorite discoveries, reinforcing the joy of learning through exploration. Overall, the visit to PARSEC provided a memorable blend of education, excitement, and inspiration — cultivating a lifelong love for science.",
+        "The session concluded with a reflection segment, where children shared their favorite discoveries, reinforcing the joy of learning through exploration. Overall, the visit to PARSEC provided a memorable blend of education, excitement, and inspiration cultivating a lifelong love for science.",
       ],
     ],
   },

@@ -8,7 +8,7 @@ export const BRAND = {
   fullName: "iwan.community",
 
   heading: "Iwan",
-  subheading: "Bringing hope, support and brighter futures to those in need.",
+  subheading: "A Muslim community in Bangalore. Believe, act, serve thrive.",
 
   /* logo is the dark lockup for light backgrounds; logoLight is the reversed
      one for the hero header and footer. Brand.jsx falls back to a whitened
@@ -25,9 +25,17 @@ export const BRAND = {
      Transcribed from the live Iwan Youth page; VERIFY before launch. */
   whatsapp: "916360049969",
 
+  /* The same number written the way it is read aloud. `whatsapp` cannot double
+     as this — wa.me rejects the spacing — and a country that only sets one of
+     the two would show its own number in one place and India's in the other,
+     so both are overridden together. Every phone number the site displays
+     comes from here. */
+  phone: "+91 63600 049969",
+
   /* ⚠ Also transcribed from the live Iwan Youth page — VERIFY.
-     Used for the programme contact panel and as the map fallback in the
-     event modal, so a wrong value here shows the wrong place on a map. */
+     The one address the site shows: the contact page, the programme contact
+     panel, and the map fallback in the event modal all read it, so a wrong
+     value here shows the wrong place on a map. */
   address: "6 Church Rd, Kanakapura, Basavanagudi, Bengaluru, Karnataka 560004",
 
   /* Live accounts. `icon` picks the glyph drawn in Contact.jsx. */

@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { useScrollAnimations } from "../../hooks/useGsap.js";
 import Button from "../../components/Button/Button.jsx";
 import Icon from "../../components/Icon/Icon.jsx";
@@ -12,6 +13,7 @@ import StepsFeature from "../../components/StepsFeature/StepsFeature.jsx";
 import {
   useBrand,
   useCopy,
+  useHero,
   usePillars,
   useProgrammes,
 } from "../../content/ContentProvider.jsx";
@@ -62,6 +64,11 @@ const CARD_DELAYS = [
   "[animation-delay:0.3s]",
 ];
 
+/* "Iwan Men" → "Men". The CTA already sits on that programme's own page,
+   so repeating the org name in the button is noise. */
+const shortLabel = (label, brand) =>
+  label.startsWith(`${brand} `) ? label.slice(brand.length + 1) : label;
+
 const CONTAINER = "mx-auto w-full max-w-container px-6";
 /* the sentinel the filter compares against; `copy.allStrands` is what
    the chip actually reads */
@@ -76,15 +83,20 @@ export default function Programme({ page }) {
   const BRAND = useBrand();
   const copy = useCopy().programme;
   const PILLARS = usePillars();
-  const { content: PROGRAMMES_CONTENT, contact: PROGRAMME_CONTACT } = useProgrammes();
+  const { logos } = useHero();
+  const { content: PROGRAMMES_CONTENT } = useProgrammes();
   useScrollAnimations();
 
   const slug = page.path.replace("/", "");
   const c = PROGRAMMES_CONTENT[slug] ?? {};
   const skin = SKIN[slug] ?? SKIN["iwan-youth"];
+  /* the programme's own mark stands in for its name in the hero — `src` is
+     the version drawn for a photograph. A page with no mark keeps the label. */
+  const mark = logos.find((l) => l.id === page.mark);
 
   const strands = c.strands ?? [];
   const sessions = c.sessions ?? [];
+  const work = c.work ?? null;
   const [strand, setStrand] = useState(ALL);
 
   const shown = useMemo(
@@ -105,14 +117,22 @@ export default function Programme({ page }) {
         anchor="bottom-left"
         img={c.hero ?? page.tile}
         imgAlt={`${page.label} session`}
-        title={page.label}
-        eyebrow={
-          /* accent rather than the programme colour — the darker programme
-             tones lose too much contrast against the scrim */
-          <p className="mb-4 flex items-center gap-3 font-satoshi text-[18px] font-medium text-accent">
-            <span className={cx("h-2.5 w-2.5 rounded-full", skin.solid)} />
-            {BRAND.name} Programme
-          </p>
+        title={
+          mark ? (
+            <img
+              src={mark.src}
+              alt={page.label}
+              /* scale corrects the uneven padding in the exports — see
+                 hero.js. Width, not transform, so nothing fights the h1. */
+              style={{ "--s": mark.scale ?? 1 }}
+              className={cx(
+                "block w-[calc(min(340px,44vw)*var(--s))] max-w-[92vw]",
+                "max-phone:w-[calc(62vw*var(--s))]"
+              )}
+            />
+          ) : (
+            page.label
+          )
         }
       >
         {/* the lede and the CTAs come through as children rather than as
@@ -120,8 +140,8 @@ export default function Programme({ page }) {
         {(c.heroPhrases ?? []).length > 0 && (
           <p
             className={cx(
-              "mb-5 font-satoshi text-[clamp(1.3rem,2.4vw,30px)] font-bold leading-[1.2]",
-              "text-accent max-phone:text-[20px]"
+              "mb-5 font-satoshi text-[clamp(1.75rem,3.4vw,44px)] font-bold leading-[1.15]",
+              "text-accent max-phone:text-[26px]"
             )}
           >
             <Typewriter
@@ -136,8 +156,11 @@ export default function Programme({ page }) {
         </p>
 
         <div className="flex flex-wrap gap-3">
-          <a
-            href={`mailto:${BRAND.email}`}
+          {/* straight to /events with this programme's chip already on —
+              `programme` is the nav PATH, which is what the filter compares
+              against (see matchesProgramme in lib/events.js) */}
+          <Link
+            to={`/events?programme=${encodeURIComponent(page.path)}`}
             className={cx(
               "inline-block rounded-lg bg-white px-9 py-4",
               "font-satoshi text-[18px] font-medium leading-none text-primary-800",
@@ -145,11 +168,14 @@ export default function Programme({ page }) {
               "hover:-translate-y-0.5 hover:bg-accent"
             )}
           >
-            {copy.cta}
-          </a>
-          {sessions.length > 0 && (
+            {fill(copy.cta, { programme: shortLabel(page.label, BRAND.name) })}
+          </Link>
+          {/* one second CTA, pointing at whichever of the two sections
+              this programme actually has. Sessions win where both exist:
+              what a programme has already run beats what it is for. */}
+          {(sessions.length > 0 || work) && (
             <a
-              href="#sessions"
+              href={sessions.length > 0 ? "#sessions" : "#work"}
               className={cx(
                 "inline-block rounded-lg border-2 border-white/60 px-9 py-4",
                 "font-satoshi text-[18px] font-medium leading-none text-white",
@@ -157,7 +183,7 @@ export default function Programme({ page }) {
                 "hover:-translate-y-0.5 hover:bg-white hover:text-primary-800"
               )}
             >
-              {copy.sessionsCta}
+              {sessions.length > 0 ? copy.sessionsCta : copy.workCta}
             </a>
           )}
         </div>
@@ -225,7 +251,104 @@ export default function Programme({ page }) {
         </section>
       )}
 
-      {/* ===== SESSIONS ===== */}
+      {/* ===== WHAT TAKING PART LOOKS LIKE =====
+          The KINDS of thing a member turns up for, both attending and
+          contributing, rather than dated events — so it claims nothing ran.
+          On Men and Women it stands in for the `sessions` they do not have;
+          on Youth and Kids it sits alongside a real one, saying what the
+          programme is for where sessions says what it has done. See the notes
+          on those entries in programmes.js. Nothing here mounts late, so
+          `.reveal` is safe; the sessions grid needs a keyframe only because
+          its filter mounts cards after useGsap has scanned. */}
+      {work && (
+        <section className="py-16" id="work">
+          <div className={CONTAINER}>
+            <h2 className={cx(KICKER, "reveal")}>
+              {work.heading} <span className={MARK_YB}>{work.mark}</span>
+            </h2>
+            {work.body && (
+              <p className="reveal mb-8 max-w-[62ch] text-[17px] leading-[28px] text-muted">
+                {work.body}
+              </p>
+            )}
+
+            <div
+              className="grid grid-cols-3 gap-4 max-nav:grid-cols-2 max-phone:grid-cols-1"
+              data-stagger
+            >
+              {work.items.map((w) => (
+                <article
+                  className={cx(
+                    "reveal flex flex-col rounded-2xl border border-line bg-white p-7",
+                    "transition-[transform,box-shadow] duration-[250ms]",
+                    "hover:-translate-y-1 hover:shadow-card"
+                  )}
+                  key={w.title}
+                >
+                  <span
+                    className={cx(
+                      "mb-5 grid h-12 w-12 place-items-center rounded-full",
+                      skin.soft,
+                      skin.text
+                    )}
+                  >
+                    <Icon name={w.icon} className="h-6 w-6" />
+                  </span>
+                  <h3 className="mb-2 text-[19px] font-bold leading-[1.3]">{w.title}</h3>
+                  <p className="text-[15px] leading-[24px] text-muted">{w.body}</p>
+                  {/* optional, and pinned to the foot of the card so a row of
+                      cards keeps one baseline however long the bodies run */}
+                  {w.link && (
+                    <Link
+                      /* `programme: true` carries this programme's filter
+                         through to the destination, so arriving from here
+                         lands on its own posts rather than all of them. The
+                         nav PATH is what the filter compares against, same as
+                         the hero's /events CTA above. */
+                      to={
+                        w.link.programme
+                          ? `${w.link.to}?programme=${encodeURIComponent(page.path)}`
+                          : w.link.to
+                      }
+                      className={cx(
+                        "mt-auto inline-flex items-center gap-1 pt-4",
+                        "text-[14px] font-bold leading-none",
+                        "underline decoration-transparent underline-offset-4",
+                        "transition-colors duration-200 hover:decoration-current",
+                        skin.text
+                      )}
+                    >
+                      {w.link.label}
+                      <span aria-hidden="true">→</span>
+                    </Link>
+                  )}
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ===== JOURNEY =====
+          What taking part actually looks like over time. It replaces the
+          step chips that used to sit in the get-involved panel — two
+          numbered lists on one page read as a mistake. */}
+      {c.journey && (
+        <Journey
+          heading={c.journey.heading}
+          subtitle={c.journey.subtitle}
+          steps={c.journey.steps}
+          tone={skin.text}
+          className="bg-mist py-20 max-phone:py-14"
+        />
+      )}
+
+      {/* ===== SESSIONS =====
+          Sits AFTER the journey deliberately. `work` argues what taking part
+          is like and `journey` walks the path; this is the evidence for both,
+          so it reads better as the payoff than as a list you meet first. It
+          also keeps the two card grids apart: work (six) immediately followed
+          by sessions (five on Youth, seven on Kids) was a wall of cards. */}
       {sessions.length > 0 && (
         <section className="py-16" id="sessions">
           <div className={CONTAINER}>
@@ -310,20 +433,6 @@ export default function Programme({ page }) {
         </section>
       )}
 
-      {/* ===== JOURNEY =====
-          What taking part actually looks like over time. It replaces the
-          step chips that used to sit in the get-involved panel — two
-          numbered lists on one page read as a mistake. */}
-      {c.journey && (
-        <Journey
-          heading={c.journey.heading}
-          subtitle={c.journey.subtitle}
-          steps={c.journey.steps}
-          tone={skin.text}
-          className="bg-mist py-20 max-phone:py-14"
-        />
-      )}
-
       {/* ===== COME AND SEE ===== */}
       {c.banner && (
         <SplitFeature
@@ -348,8 +457,8 @@ export default function Programme({ page }) {
         body={fill(copy.contactBody, { name: BRAND.name })}
         steps={[
           [copy.contactSteps.email, BRAND.email],
-          [copy.contactSteps.phone, PROGRAMME_CONTACT.phone],
-          [copy.contactSteps.visit, PROGRAMME_CONTACT.address],
+          [copy.contactSteps.phone, BRAND.phone],
+          [copy.contactSteps.visit, BRAND.address],
         ]}
         stepTone={skin.solid}
         size="sm"

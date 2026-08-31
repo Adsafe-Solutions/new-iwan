@@ -71,6 +71,7 @@ export const useCopy = () => useContent().copy;
 export const useAbout = () => useContent().about;
 export const useNav = () => useContent().nav;
 export const usePillars = () => useContent().pillars;
+export const useWays = () => useContent().ways;
 export const useProgrammes = () => useContent().programmes;
 export const useEvents = () => useContent().events;
 export const useBlogs = () => useContent().blogs;

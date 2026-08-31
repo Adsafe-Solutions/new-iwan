@@ -6,10 +6,10 @@
    at once — the same rule the blog images already follow.
 
    ⚠ Each of these is a photograph of a REAL session, so it can only be used
-   where that session is what is being shown. There is no photograph of Iwan
-   Women or Iwan Men in what the live site publishes, which is why those two
-   still carry stock imagery: putting a youth workshop behind "Iwan Men" would
-   be a claim about something that did not happen. */
+   where that session is what is being shown. The live site publishes no Iwan
+   Women or Iwan Men session photograph, so those two heroes borrow a picture
+   off the CDN rather than claiming a session that did not happen — do not
+   caption either as a photograph of that programme. */
 const live = (path) =>
   `https://i0.wp.com/www.iwan.community/wp-content/uploads/${path}?w=1200`;
 
@@ -19,7 +19,7 @@ const live = (path) =>
 export const PROGRAMME_PHOTOS = {
   youth: "https://cdn.iwan.community/iwan-youth-fitness-2.webp",
   kids: live("2025/11/DSC05966.jpg"),
-  men: live("2026/03/WhatsApp-Image-2026-03-01-at-7.31.22-PM.jpeg"),
+  men: "https://cdn.iwan.community/iwan-youth-0.webp",
   women: "https://cdn.iwan.community/iwan-kids-3.webp",
 };
 

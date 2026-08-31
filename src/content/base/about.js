@@ -31,7 +31,7 @@ export const ABOUT = {
     mark: "in a pandemic",
     paragraphs: [
       "Iwan was born in 2020, during the COVID-19 pandemic, when a group of young people in Bangalore came together for community relief work under Mercy Mission. This collective act of service brought us closer, igniting a deeper realization of life's transient nature and the responsibility we carry.",
-      "The experience became the genesis of Iwan — a community where we could nurture our character, grow in god-consciousness, and strive to leave a meaningful legacy. Our weekly meetings became a space for reflection and growth, evolving over time into a vibrant collective with diverse activities that inspire and uplift.",
+      "The experience became the genesis of Iwan a community where we could nurture our character, grow in god-consciousness, and strive to leave a meaningful legacy. Our weekly meetings became a space for reflection and growth, evolving over time into a vibrant collective with diverse activities that inspire and uplift.",
       "Yet at its core, Iwan remains committed to living with purpose, serving others, and fostering a legacy of compassion and growth.",
     ],
   },
@@ -67,13 +67,13 @@ export const ABOUT = {
         id: "taqwa",
         name: "God-Conscious",
         ar: "تقوى",
-        body: "We strive to cultivate a community rooted in Taqwa (تقوى) — God-consciousness — where every action and interaction is guided by mindfulness of Allah. By fostering sincerity, accountability, and spiritual growth, we aim to uphold the values of piety and righteousness that bring us closer to our Creator and strengthen our bonds with one another.",
+        body: "We strive to cultivate a community rooted in Taqwa (تقوى) God-consciousness where every action and interaction is guided by mindfulness of Allah. By fostering sincerity, accountability, and spiritual growth, we aim to uphold the values of piety and righteousness that bring us closer to our Creator and strengthen our bonds with one another.",
       },
       {
         id: "adab",
         name: "Manners",
         ar: "آداب",
-        body: "We emphasize the importance of Adab (آداب) — Islamic manners — as a cornerstone of our community. By practicing respect, humility, and kindness in all interactions, we seek to embody the noble character taught by our Prophet ﷺ and create an environment of mutual dignity and harmony.",
+        body: "We emphasize the importance of Adab (آداب) Islamic manners as a cornerstone of our community. By practicing respect, humility, and kindness in all interactions, we seek to embody the noble character taught by our Prophet ﷺ and create an environment of mutual dignity and harmony.",
       },
       {
         id: "sadaqah",
@@ -91,7 +91,7 @@ export const ABOUT = {
         id: "iman",
         name: "Believe",
         ar: "إيمان",
-        body: "Our foundation is built on Iman (إيمان) — faith and belief in Allah. It is the guiding light that strengthens our hearts, unites our community, and inspires us to live with purpose, trust, and unwavering devotion to our Creator.",
+        body: "Our foundation is built on Iman (إيمان) faith and belief in Allah. It is the guiding light that strengthens our hearts, unites our community, and inspires us to live with purpose, trust, and unwavering devotion to our Creator.",
       },
       {
         id: "dawah",
