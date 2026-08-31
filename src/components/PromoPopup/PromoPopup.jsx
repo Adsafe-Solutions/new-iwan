@@ -39,8 +39,9 @@ const remember = (id) => {
   }
 };
 
-/* Gated by SECTIONS.promoPopup (config/sections.js) and content/base/promo.js
-   — flip the flag off, or leave promo.js empty, and this renders nothing.
+/* Gated by SECTIONS.promoPopup (config/sections.js) and by the CMS having a
+   promo to show — flip the flag off, or publish none, and this renders
+   nothing. There is no static promo behind it.
 
    Dismissal is remembered per `promo.id`, not a fixed key, so changing the
    id when the actual promotion changes (a new season, a new campaign) shows

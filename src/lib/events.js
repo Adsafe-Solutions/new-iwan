@@ -85,25 +85,3 @@ export const programmeFilters = (events, pages = []) => {
   const used = new Set(events.map((e) => e.programme).filter(Boolean));
   return pages.filter((p) => used.has(p.path));
 };
-
-/* Which country an event belongs to. Events are the one content type kept as
-   a single list for every country rather than a base set plus per-country
-   overrides, because an event is a real thing that happens in one place —
-   `resolveContent` filters on this before any component sees the list. */
-export const inCountry = (event, code) => {
-  const c = event.country;
-  if (!c) return true;
-  return Array.isArray(c) ? c.includes(code) : c === code;
-};
-
-export const eventsForCountry = (events = [], code) =>
-  events.filter((e) => inCountry(e, code));
-
-/* Newest first, with anything undated last — two of the blog posts carry no
-   date on the live site and none has been invented for them. */
-export const byNewest = (a, b) => {
-  if (!a.date && !b.date) return 0;
-  if (!a.date) return 1;
-  if (!b.date) return -1;
-  return b.date.localeCompare(a.date);
-};

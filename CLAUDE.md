@@ -120,15 +120,11 @@ WhatsAppFab, WipeBand.
 Homepage order (`pages/Home/Home.jsx`): Hero → TrustedBy → Pillars →
 TakeAction → Events → Testimonials → Instagram.
 
-**Events are the one content type NOT split by country folder.** They live in
-a single array in `content/base/events.js` and each carries its own `country` —
-`"in"`, a list like `["in", "ca"]`, or omitted for everywhere. `resolveContent`
-filters that list after the merge, so no component has to remember. An event is
-a real thing that happens in one place; a base-plus-override model would have
-meant restating the whole list per country to say so. ⚠ India has all six
-today, so **Canada has none** — the homepage section renders nothing at all
-rather than a heading over an empty calendar, and `/ca/events` shows its empty
-state. Add Canadian events to the same array with `country: "ca"`.
+**Events come only from the CMS.** There is no `content/base/events.js` any
+more; the API filters by country server-side and the site renders what it is
+given. A country with nothing published shows no homepage section at all
+rather than a heading over an empty calendar, and its `/events` shows the
+empty state. Add events in the CMS, tagged for the country.
 
 **`/contact-us`** is a real page now, not a nav entry — the header CTA and
 `ContactCta` point at it, so `Contact.jsx` (the parked homepage band) is the
@@ -139,8 +135,8 @@ live site's Contact Form 7 endpoint refuses a cross-origin request;
 `lib/contact.js` held that and is gone. ⚠ Nobody is emailed when a message
 arrives, so the Audience tab in the CMS is where they are read.
 
-**`/podcast`** is one show and one episode, transcribed from the live page
-into `content/base/podcast.js`. `AudioPlayer` wraps a native `<audio>` — the
+**`/podcast`** is whatever the CMS publishes — there is no static show or
+episode behind it. `AudioPlayer` wraps a native `<audio>` — the
 element stays the engine, so seeking, buffering and the media keys keep
 working and only the chrome is ours. ⚠ It carries `preload="none"` and takes
 the running time from `length` (seconds) in content: Podbean serves the whole
@@ -150,20 +146,15 @@ Podbean.
 
 **Blogs mirror the events shape**: `/blogs` (`pages/Blogs`) lists every post
 with the same programme filter, and `/blogs/:slug` (`pages/BlogPost`) is the
-post's own page. Content is `content/base/blogs.js`, transcribed from the live
-site — 13 posts, each `[kind, text]` blocks (`h` / `p` / `li`), which is as
-much structure as the source pages carry. Two posts have no date and none has
-been invented for them: `byNewest` sorts them last and both the card and the
-page render without one. **Pagination is component state, not the URL** — six
-per page, and paging never remounts the route or resets the filter. Posts tied
+post's own page. Posts come only from the CMS — `content/base/blogs.js` is
+gone, and with it the `[kind, text]` block format and the `byNewest` sort the
+in-browser list used. **Paging and filtering are the server's**, addressed
+through the URL. Posts tied
 to no programme are filed as **"Default"**, not events' "Open to all"
 (`EventFilters` takes a `communityLabel`), and a post with no photo falls back
 to its programme's mark — the community one on a dark ground, because that
-mark is drawn light. Every post closes with `ContactCta`; the comment
-markup the source pages included was stripped from `blogs.js`, and one
-slug lost a percent-encoded emoji, which could never have matched since React
-Router decodes a param before it reaches us.
-⚠ Post images are hotlinked from the live site's uploads **with `?w=1200`**,
+mark is drawn light. Every post closes with `ContactCta`.
+⚠ Post images hotlinked from the live site's uploads need **`?w=1200`**,
 which is not optional: the originals are 8–9MB camera JPEGs and i0.wp.com
 (Jetpack's CDN) returns 429 when several are pulled at once.
 
@@ -245,19 +236,24 @@ src/content/
 ```
 
 `base/` holds `brand.js` · `nav.js` · `pillars.js` · `programmes.js` ·
-`events.js` · `testimonials.js` · `stats.js` · `instagram.js` (+ the generated
+`ways.js` · `about.js` · `legal.js` · `contact.js` · `photos.js` ·
+`testimonials.js` · `stats.js` · `instagram.js` (+ the generated
 `instagram-feed.json`) · `hero.js` · `focusAreas.js` · `advisors.js` — and
 **`copy.js`**, which holds every word the components used to hold themselves.
 `base/index.js` assembles them into the one snapshot shape everything
 downstream reads:
 
 ```js
-{ brand, copy, nav: { programmesGroup, pages }, pillars,
-  programmes: { content }, events, testimonials, stats,
+{ brand, copy, about, nav: { programmesGroup, pages }, pillars, ways,
+  programmes: { content }, contact, testimonials, stats,
   instagram: { handle, url, posts, isLive },
   hero: { image, logos, slides, programmeMarks }, focus: { areas, links },
   advisors }
 ```
+
+⚠ `events`, `blogs`, `podcast` and `promo` are **not** in that shape. The CMS
+adds them, and with it off they are simply absent — `useEvents()` and
+`useBlogs()` return `[]`, `usePodcast()` an empty show, `usePromo()` null.
 
 **`copy.js` is one key per section** — `header`, `hero`, `heroV2`, `trustedBy`,
 `pillars`, `takeAction`, `events`, `testimonials`, `instagram`, `eventModal`,
@@ -300,8 +296,8 @@ step.
 | ----------------------------------------------------- | --------------------------------------------- |
 | `{ brand: { email: "…" } }`                           | changes `email`, inherits the rest of `brand` |
 | `{ programmes: { content: { "iwan-women": null } } }` | **deletes** that key                          |
-| `{ events: add({ … }) }`                              | edits base's list — see `content/ops.js`      |
-| `{ events: [ … ] }`                                   | **replaces** the list outright                |
+| `{ testimonials: add({ … }) }`                        | edits base's list — see `content/ops.js`      |
+| `{ testimonials: [ … ] }`                             | **replaces** the list outright                |
 
 A plain array replaces because merging two unrelated lists by index is a
 footgun. `null` deletes, because merging objects can otherwise only ever add —
@@ -313,14 +309,13 @@ worth naming — `add` / `addFirst`, `remove`, `update` — and anything they do
 not cover is a plain arrow:
 
 ```js
-events: add({ title: "Toronto meetup", date: "2026-09-12" }),
 nav: { pages: remove("path", "/iwan-women") },
 testimonials: update("name", "Aisha", { role: "Volunteer lead" }),
 stats: (list) => list.slice(0, 3),
 ```
 
 The first argument is whichever field identifies an item in that list — `path`
-for nav pages, `id` for hero logos, `date` for events. Content is data, so
+for nav pages, `id` for hero logos. Content is data, so
 neither `null` nor a function is ever a real value, and both sentinels are
 unambiguous. Base is never mutated.
 
@@ -351,15 +346,17 @@ which is what `CountrySwitcher` calls.
 
 ## The CMS
 
-Events, blogs, podcast episodes and promos can come from a CMS instead of the
-static files. Two sibling repos: **`iwan-cms-api`** (Express + Mongoose on
+Events, blogs, podcast episodes and promos come **only** from the CMS. Two
+sibling repos: **`iwan-cms-api`** (Express + Mongoose on
 MongoDB Atlas, deployed on Render) and **`iwan-cms-admin`** (React + Tailwind on
 Vercel). Each has its own README.
 
-⚠ **`VITE_CMS_API_URL` is the switch, and unset is OFF** — which is the default.
-With no URL the site renders `content/base` exactly as it did before the CMS
-existed. Setting it is the cutover, clearing it is the rollback, and neither is
-a code change. `src/content/cms.js` is the whole client.
+⚠ **`VITE_CMS_API_URL` is the switch, and unset means those four are EMPTY.**
+There is no static copy of them left to fall back to — clearing the URL is no
+longer a rollback to the old site, it is a site with no events, posts, episodes
+or promo. Everything else (brand, nav, copy, pillars, programmes, about, legal)
+still ships with the code and is unaffected. `src/content/cms.js` is the whole
+client.
 
 The order is **base → country override → CMS**, and it matters: the country
 folder is a deliberate editorial decision made in code (Canada runs fewer
@@ -373,18 +370,18 @@ mount, so content arriving afterwards would be stranded at `opacity: 0` forever 
 the same `.reveal` trap documented below. It also keeps `resolveContent`
 **synchronous**, which every hook depends on.
 
-The fetch carries a 3s timeout and never rejects. A CMS that is down, slow or
-misconfigured falls back to the static content rather than blanking the site.
+The fetch carries a 3s timeout and never rejects — a dead CMS costs the site
+its events, blogs, podcast and promo, not the whole site.
 ⚠ On Render's free tier the service spins down after ~15 minutes idle and cold
-starts take far longer than 3s, so the first visitor after a quiet spell gets
-static content. That is the intended degradation, but it is also why the API
-wants a paid instance once the CMS is the source of truth.
+starts take far longer than 3s, so **the first visitor after a quiet spell sees
+those four sections empty**. That was tolerable when static content sat behind
+them; now it is lost content, which is why the API needs a paid instance.
 
-The CMS only owns `events`, `blogs`, `podcast` and `promo` (the `OWNED` list in
-`cms.js`). Everything else — brand, nav, copy, pillars, programmes — is still
-shipped with the code. A key the API omits keeps its static value; a key it
-sends as an empty list replaces it, because "this country has no events yet" is
-a real answer the site already renders properly.
+The CMS owns `events`, `blogs`, `podcast` and `promo` outright, plus the
+volunteer and career forms. Everything else — brand, nav, copy, pillars,
+programmes — is still shipped with the code. A key the API omits stays absent
+and its hook returns empty; "this country has no events yet" is a real answer
+the site renders properly.
 
 **The CMS is fetched in two shapes.** `/api/content` is a **bootstrap**: the
 first page of each list in CARD projection, plus the promo — bounded at six of
@@ -415,8 +412,9 @@ already used for route changes.
 UTC deciding that tonight's event is already past — for someone reading that
 morning — is exactly the bug the site's date handling exists to avoid.
 
-⚠ **Every page still works with the CMS off**, filtering and paging the static
-list in the browser. That path is not dead code until the static content goes.
+⚠ **Only one view is answered without a request** — page one of each unfiltered
+list, which the bootstrap already carries. Every other page and filter is the
+server's answer. There is no in-browser filtering or paging any more.
 
 **Every event carries its own registration form.** The questions are built per
 event in the CMS and arrive on `event.form`; `RegisterForm` renders whatever it
@@ -435,9 +433,10 @@ the offered options is refused — and returns per-field errors that the form
 shows against each question. ⚠ Turnstile gates the button but is still not
 verified server-side; the rate limit is what actually protects the endpoint.
 
-⚠ With the CMS off there is no form and nowhere to post, so `RegisterForm` falls
-back to the old name-and-email flow that submits nowhere. That path goes when the
-static events do.
+⚠ **There is no fallback form.** With no `VITE_CMS_API_URL`, or on an event
+carrying no questions, `RegisterForm` renders `eventModal.closed` instead of the
+Register button. A form that silently discards a registration is worse than
+saying we are not taking them.
 
 **Blog posts from the CMS are HTML**, written in a rich-text editor and rendered
 by `BlogPost` with `dangerouslySetInnerHTML`. ⚠ That is safe _only_ because the
@@ -448,12 +447,11 @@ Never render HTML from anywhere else this way.
 component stylesheets" (after `.reveal` and `.no-smooth`), for the same reason:
 the markup arrives as a string, so there is nowhere to hang a utility class.
 
-⚠ `BlogPost` still carries the old `[kind, text]` block renderer as a fallback,
-and it is **not dead code** — it is what runs when the CMS is switched off, since
-`content/base/blogs.js` only has pairs. It goes when the static blog content
-does. One `reveal` sits on the whole article rather than one per block: there is
-nothing to hang per-block classes on, and a long post fading in paragraph by
-paragraph as you read it is a distraction rather than an effect.
+`BlogPost` renders the sanitised `html` and nothing else — the old
+`[kind, text]` block renderer is gone with the static posts. One `reveal` sits
+on the whole article rather than one per block: there is nothing to hang
+per-block classes on, and a long post fading in paragraph by paragraph as you
+read it is a distraction rather than an effect.
 
 ⚠ **`src/content/ca/index.js` carries Canada's own phone and address and
 otherwise only drops programmes.** The rest is still India's — the "started in
@@ -642,10 +640,9 @@ order of preference:
    documented Embed API — for something that must not break, add `coords` and
    let route 1 handle it, or move to the official Embed API with a key.
 
-Venue names in `events.js` are placeholders ("Iwan Hall, 14 Main Street"), so
-searching them would pin somewhere arbitrary. Anything without its own
-`coords` or `mapQuery` therefore falls back to `BRAND.address` — which is why
-that value living in one place matters.
+An event whose venue is typed loosely in the CMS would pin somewhere
+arbitrary, so anything without its own `coords` or `mapQuery` falls back to
+`BRAND.address` — which is why that value living in one place matters.
 
 ## Instagram feed
 

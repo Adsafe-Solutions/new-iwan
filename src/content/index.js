@@ -1,7 +1,6 @@
 import { DEFAULT_COUNTRY } from "../config/countries.js";
 import { BASE_CONTENT } from "./base/index.js";
 import { merge } from "./merge.js";
-import { eventsForCountry } from "../lib/events.js";
 import { applyCms, fetchContent, CMS_ENABLED } from "./cms.js";
 
 /* Country folders are discovered rather than imported by name, so adding
@@ -25,18 +24,7 @@ const cache = new Map();
    code — Canada runs three programmes, not four — and the CMS is the live
    content on top of it. Reversing the two would let a CMS row reintroduce
    something a country has explicitly dropped. */
-const build = (code, cms) => {
-  const snapshot = applyCms(merge(BASE_CONTENT, OVERRIDES[code]), cms);
-
-  /* Events are the one list kept whole across countries and split by their own
-     `country` field — see content/base/events.js. Filtering after the merge
-     means a country override of `events` is filtered too.
-
-     ⚠ The CMS has already filtered its own list server-side, so this is a
-     no-op for CMS content. It stays because the STATIC list has not been
-     filtered, and this is the same function either way. */
-  return { ...snapshot, events: eventsForCountry(snapshot.events, code) };
-};
+const build = (code, cms) => applyCms(merge(BASE_CONTENT, OVERRIDES[code]), cms);
 
 /* ⚠ Synchronous, and it has to stay that way. Every hook in ContentProvider
    and `setCountry`'s "does the target country have this page?" check read it
@@ -55,13 +43,15 @@ export function resolveContent(code = DEFAULT_COUNTRY) {
    that GSAP scans the DOM once per mount, and content that arrives afterwards
    never becomes visible.
 
-   A no-op when VITE_CMS_API_URL is unset, which is the pre-cutover default. */
+   ⚠ A no-op when VITE_CMS_API_URL is unset — and since nothing in content/base
+   backs events, blogs, podcast or promo, that leaves all four empty. There is
+   no static content to fall back to any more; the API is the only source. */
 export async function primeContent(code = DEFAULT_COUNTRY) {
   if (!CMS_ENABLED) return false;
 
   const payload = await fetchContent(code);
   /* Null means the request failed or timed out. cms.js has already logged it;
-     leaving the cache alone means the static content is what renders. */
+     leaving the cache alone means the CMS-owned sections render empty. */
   if (!payload) return false;
 
   cache.set(code, build(code, payload));

@@ -172,6 +172,21 @@ export const COPY = {
     applyCareerBody: "Tell us what you do and what you're looking for next.",
   },
 
+  /* /volunteer and /careers. ⚠ ONLY the furniture — every word a visitor
+     reads on those pages (heading, intro, button label, thank-you) comes from
+     whichever form an editor has made live in the CMS. These are the things
+     the CMS has no field for: what the page says when no form is live, and
+     the two labels the button needs while it is working. */
+  apply: {
+    closedHeading: "Not right now",
+    closedBody:
+      "We are not taking applications through this page at the moment. Do get in touch and we will let you know when that changes.",
+    sending: "Sending…",
+    /* Only used when an editor left the CMS's own submit label empty — a
+       button with no words on it is broken, not honest. */
+    submit: "Send my details",
+  },
+
   /* the /blogs page and each post's own /blogs/<slug> page */
   blogsPage: {
     eyebrow: "Writing",
@@ -291,10 +306,9 @@ export const COPY = {
     free: "Free to attend · everyone welcome",
     formHeading: "Save your place",
     subscribeLabel: "Keep me posted about Iwan events and news",
-    nameLabel: "Your name",
-    namePlaceholder: "First and last",
-    emailLabel: "Email",
-    emailPlaceholder: "you@email.com",
+    /* Shown INSTEAD of the Register button when the event carries no questions
+       or the CMS is switched off — see RegisterForm. */
+    closed: "Registration is not open for this event.",
     submit: "Confirm my place",
     cancel: "Cancel",
     doneHeading: "You’re in{name}",

@@ -17,8 +17,6 @@ import { cx } from "../../lib/cx.js";
 import { useCms } from "../../hooks/useCms.js";
 import { CMS_ENABLED } from "../../content/cms.js";
 
-const PROSE = "text-[17px] leading-[29px] text-ink-2";
-
 export default function BlogPost() {
   const { slug } = useParams();
   const BLOGS = useBlogs();
@@ -33,8 +31,8 @@ export default function BlogPost() {
      only, which is what keeps the first payload bounded however many posts
      exist. The full record is fetched here, by the one route that renders it.
 
-     With the CMS switched off there is nothing to fetch: the static files in
-     content/base hold the whole post, blocks and all. */
+     ⚠ With no VITE_CMS_API_URL there is nothing to fetch and nothing behind
+     it — posts live only in the CMS now. */
   const { data, loading, ready } = useCms(`/api/blogs/${slug}`, {
     enabled: CMS_ENABLED,
   });
@@ -161,31 +159,7 @@ export default function BlogPost() {
                 />
               ))}
             </div>
-          ) : (
-            /* ⚠ The pre-CMS format: `[kind, text]` pairs, which is all the
-               static files in content/base carry. This branch is what the site
-               renders when the CMS is switched off (no VITE_CMS_API_URL), so it
-               is not dead code yet — it goes when the static blog content does. */
-            post.body?.map(([kind, text], i) =>
-              kind === "h" ? (
-                <h2
-                  className="reveal mb-3 mt-9 text-[22px] font-black uppercase leading-[1.25] tracking-[-0.01em] first:mt-0"
-                  key={i}
-                >
-                  {text}
-                </h2>
-              ) : kind === "li" ? (
-                <p className={cx("reveal mb-2 flex gap-3 pl-1", PROSE)} key={i}>
-                  <span className="mt-[11px] h-[6px] w-[6px] flex-none rounded-full bg-primary" />
-                  <span>{text}</span>
-                </p>
-              ) : (
-                <p className={cx("reveal mb-5", PROSE)} key={i}>
-                  {text}
-                </p>
-              )
-            )
-          )}
+          ) : null}
 
           {programme && (
             <Link

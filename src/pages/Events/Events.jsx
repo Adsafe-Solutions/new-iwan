@@ -4,15 +4,9 @@ import { useScrollAnimations } from "../../hooks/useGsap.js";
 import EventCard from "../../components/EventCard/EventCard.jsx";
 import EventFilters from "../../components/EventFilters/EventFilters.jsx";
 import Pagination from "../../components/Pagination/Pagination.jsx";
-import { useCopy, useEvents, useNav, useTotals } from "../../content/ContentProvider.jsx";
+import { useCopy, useEvents, useTotals } from "../../content/ContentProvider.jsx";
 import { fill } from "../../lib/fill.js";
-import {
-  ALL_PROGRAMMES,
-  NO_PROGRAMME,
-  matchesProgramme,
-  midnight,
-  upcomingFrom,
-} from "../../lib/events.js";
+import { ALL_PROGRAMMES, NO_PROGRAMME } from "../../lib/events.js";
 import { cx } from "../../lib/cx.js";
 import { KICKER, MARK_B } from "../../lib/type.js";
 import { useCms } from "../../hooks/useCms.js";
@@ -39,7 +33,6 @@ export default function EventsPage() {
   const EVENTS = useEvents();
   const totals = useTotals();
   const copy = useCopy().eventsPage;
-  const { pages } = useNav();
   const listRef = useRef(null);
 
   /* ⚠ Page and filter live in the URL — /events?page=2 has to be an address the
@@ -48,26 +41,17 @@ export default function EventsPage() {
   const page = Math.max(1, Number(params.get("page")) || 1);
   const programme = params.get("programme") ?? ALL_PROGRAMMES;
 
-  const today = useMemo(() => midnight(new Date()), []);
   const isFirstView = page === 1 && programme === ALL_PROGRAMMES;
 
-  /* What the site can answer without a request. The bootstrap already holds
-     page one of the upcoming list — already filtered to upcoming by the API's
-     `?from=` — and with the CMS off the static files are the entire list, so
-     everything is filtered and paged here instead. */
-  const local = useMemo(() => {
-    if (CMS_ENABLED) {
-      return isFirstView
-        ? { items: EVENTS, total: totals?.events ?? EVENTS.length }
-        : null;
-    }
-    const upcoming = upcomingFrom(EVENTS, today);
-    const filtered = upcoming.filter((e) => matchesProgramme(e, programme, pages));
-    return {
-      items: filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE),
-      total: filtered.length,
-    };
-  }, [EVENTS, totals, isFirstView, programme, page, pages, today]);
+  /* The one view the site can answer without a request: the bootstrap holds
+     page one of the upcoming list, already filtered to upcoming by the API's
+     `?from=`. Every other page and filter is the server's answer — the CMS is
+     the only source of events. */
+  const local = useMemo(
+    () =>
+      isFirstView ? { items: EVENTS, total: totals?.events ?? EVENTS.length } : null,
+    [EVENTS, totals, isFirstView]
+  );
 
   const query =
     `/api/events?page=${page}&limit=${PER_PAGE}` +

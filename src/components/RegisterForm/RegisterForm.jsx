@@ -17,9 +17,11 @@ import { CMS_ENABLED, CMS_URL } from "../../content/cms.js";
    given rather than knowing any of it. The only thing hard-coded is the
    furniture: the button, the errors, the confirmation.
 
-   ⚠ With the CMS switched off there is no form to render and nothing to post
-   to, so it falls back to the old name-and-email flow, which submits nowhere.
-   That path goes when the static events do. */
+   ⚠ There is no fallback form. With no VITE_CMS_API_URL, or on an event that
+   carries no questions, this renders the closed state rather than boxes that
+   post nowhere — a form that silently discards a registration is worse than
+   saying we are not taking them. The API refuses to PUBLISH an event without a
+   form, so a live event always has one. */
 
 const CTA_ROW = "flex flex-wrap items-center gap-[0.9rem]";
 
@@ -28,8 +30,8 @@ export default function RegisterForm({ event, locale = "en-GB", heading = true }
   const [country] = useCountry();
 
   const fields = event.form ?? [];
-  /* Only a CMS-backed event can actually be submitted — a static one has no
-     form and there is nowhere to send it. */
+  /* Both halves are needed to submit: questions to ask, and a URL to post them
+     to. Without either there is nothing honest to render. */
   const live = CMS_ENABLED && fields.length > 0;
 
   const [stage, setStage] = useState("cta");
@@ -65,13 +67,6 @@ export default function RegisterForm({ event, locale = "en-GB", heading = true }
 
   const submit = async (e) => {
     e.preventDefault();
-
-    if (!live) {
-      /* The pre-CMS path: no form to send, so the flow ends here as it always
-         did. */
-      setStage("done");
-      return;
-    }
 
     setSending(true);
     setErrors({});
@@ -111,6 +106,12 @@ export default function RegisterForm({ event, locale = "en-GB", heading = true }
     }
   };
 
+  /* ⚠ No questions, or nowhere to post them. Say so rather than showing a
+     Register button that leads to a form nobody receives. */
+  if (!live) {
+    return <p className="text-[15px] text-muted">{copy.closed}</p>;
+  }
+
   if (stage === "cta") {
     return (
       <div className={CTA_ROW}>
@@ -146,46 +147,16 @@ export default function RegisterForm({ event, locale = "en-GB", heading = true }
         )}
 
         <div className="mb-[1.1rem] flex flex-col gap-[1.1rem]">
-          {live ? (
-            fields.map((field) => (
-              <Question
-                key={field.key}
-                field={field}
-                value={values[field.key]}
-                error={errors[field.key]}
-                onChange={(v) => set(field.key, v)}
-                copy={copy}
-              />
-            ))
-          ) : (
-            /* ⚠ The pre-CMS fallback: two boxes that go nowhere, exactly as
-               before. Rendered only when the event carries no form. */
-            <>
-              <Question
-                field={{
-                  key: "name",
-                  type: "name",
-                  label: copy.nameLabel,
-                  required: true,
-                }}
-                value={values.name ?? { first: "", last: "" }}
-                onChange={(v) => set("name", v)}
-                copy={copy}
-              />
-              <Question
-                field={{
-                  key: "email",
-                  type: "email",
-                  label: copy.emailLabel,
-                  placeholder: copy.emailPlaceholder,
-                  required: true,
-                }}
-                value={values.email ?? ""}
-                onChange={(v) => set("email", v)}
-                copy={copy}
-              />
-            </>
-          )}
+          {fields.map((field) => (
+            <Question
+              key={field.key}
+              field={field}
+              value={values[field.key]}
+              error={errors[field.key]}
+              onChange={(v) => set(field.key, v)}
+              copy={copy}
+            />
+          ))}
         </div>
 
         <label className="mb-[1.1rem] flex cursor-pointer items-start gap-2.5 text-[14px] leading-[21px] text-ink-2">
