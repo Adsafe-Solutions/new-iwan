@@ -336,11 +336,14 @@ export const COPY = {
   programme: {
     /* the hero CTA opens /events already filtered to this programme */
     cta: "Explore {programme} Events",
-    sessionsCta: "What's on",
+    sessionsCta: "See the sessions",
     /* the hero's second CTA on a programme with `work` but no `sessions` */
     workCta: "What you'd be doing",
-    sessionsHeading: "What's",
-    sessionsMark: "on",
+    /* "What's on" read like an events listing, which this is not: these are
+       the sessions a programme has actually run, not a calendar of what is
+       coming. `work` next to it carries the shape of taking part. */
+    sessionsHeading: "Sessions",
+    sessionsMark: "so far",
     allStrands: "All",
     aboutEyebrow: "About {programme}",
     pillarsHeading: "Where this sits in the mission",

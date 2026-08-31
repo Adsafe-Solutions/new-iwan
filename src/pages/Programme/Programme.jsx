@@ -251,7 +251,104 @@ export default function Programme({ page }) {
         </section>
       )}
 
-      {/* ===== SESSIONS ===== */}
+      {/* ===== WHAT TAKING PART LOOKS LIKE =====
+          The KINDS of thing a member turns up for, both attending and
+          contributing, rather than dated events — so it claims nothing ran.
+          On Men and Women it stands in for the `sessions` they do not have;
+          on Youth and Kids it sits alongside a real one, saying what the
+          programme is for where sessions says what it has done. See the notes
+          on those entries in programmes.js. Nothing here mounts late, so
+          `.reveal` is safe; the sessions grid needs a keyframe only because
+          its filter mounts cards after useGsap has scanned. */}
+      {work && (
+        <section className="py-16" id="work">
+          <div className={CONTAINER}>
+            <h2 className={cx(KICKER, "reveal")}>
+              {work.heading} <span className={MARK_YB}>{work.mark}</span>
+            </h2>
+            {work.body && (
+              <p className="reveal mb-8 max-w-[62ch] text-[17px] leading-[28px] text-muted">
+                {work.body}
+              </p>
+            )}
+
+            <div
+              className="grid grid-cols-3 gap-4 max-nav:grid-cols-2 max-phone:grid-cols-1"
+              data-stagger
+            >
+              {work.items.map((w) => (
+                <article
+                  className={cx(
+                    "reveal flex flex-col rounded-2xl border border-line bg-white p-7",
+                    "transition-[transform,box-shadow] duration-[250ms]",
+                    "hover:-translate-y-1 hover:shadow-card"
+                  )}
+                  key={w.title}
+                >
+                  <span
+                    className={cx(
+                      "mb-5 grid h-12 w-12 place-items-center rounded-full",
+                      skin.soft,
+                      skin.text
+                    )}
+                  >
+                    <Icon name={w.icon} className="h-6 w-6" />
+                  </span>
+                  <h3 className="mb-2 text-[19px] font-bold leading-[1.3]">{w.title}</h3>
+                  <p className="text-[15px] leading-[24px] text-muted">{w.body}</p>
+                  {/* optional, and pinned to the foot of the card so a row of
+                      cards keeps one baseline however long the bodies run */}
+                  {w.link && (
+                    <Link
+                      /* `programme: true` carries this programme's filter
+                         through to the destination, so arriving from here
+                         lands on its own posts rather than all of them. The
+                         nav PATH is what the filter compares against, same as
+                         the hero's /events CTA above. */
+                      to={
+                        w.link.programme
+                          ? `${w.link.to}?programme=${encodeURIComponent(page.path)}`
+                          : w.link.to
+                      }
+                      className={cx(
+                        "mt-auto inline-flex items-center gap-1 pt-4",
+                        "text-[14px] font-bold leading-none",
+                        "underline decoration-transparent underline-offset-4",
+                        "transition-colors duration-200 hover:decoration-current",
+                        skin.text
+                      )}
+                    >
+                      {w.link.label}
+                      <span aria-hidden="true">→</span>
+                    </Link>
+                  )}
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ===== JOURNEY =====
+          What taking part actually looks like over time. It replaces the
+          step chips that used to sit in the get-involved panel — two
+          numbered lists on one page read as a mistake. */}
+      {c.journey && (
+        <Journey
+          heading={c.journey.heading}
+          subtitle={c.journey.subtitle}
+          steps={c.journey.steps}
+          tone={skin.text}
+          className="bg-mist py-20 max-phone:py-14"
+        />
+      )}
+
+      {/* ===== SESSIONS =====
+          Sits AFTER the journey deliberately. `work` argues what taking part
+          is like and `journey` walks the path; this is the evidence for both,
+          so it reads better as the payoff than as a list you meet first. It
+          also keeps the two card grids apart: work (six) immediately followed
+          by sessions (five on Youth, seven on Kids) was a wall of cards. */}
       {sessions.length > 0 && (
         <section className="py-16" id="sessions">
           <div className={CONTAINER}>
@@ -334,97 +431,6 @@ export default function Programme({ page }) {
             </div>
           </div>
         </section>
-      )}
-
-      {/* ===== WHAT TURNING UP LOOKS LIKE =====
-          The honest stand-in for `sessions` on a programme that has none to
-          list. It describes the KINDS of thing a member turns up for, both
-          attending and contributing, rather than dated events — so it fills
-          the gap without claiming anything ran. See the note on the Iwan Men
-          entry in programmes.js. Nothing here mounts late, so `.reveal` is
-          safe; the sessions grid needs a keyframe only because its filter
-          mounts cards after useGsap has scanned. */}
-      {work && (
-        <section className="py-16" id="work">
-          <div className={CONTAINER}>
-            <h2 className={cx(KICKER, "reveal")}>
-              {work.heading} <span className={MARK_YB}>{work.mark}</span>
-            </h2>
-            {work.body && (
-              <p className="reveal mb-8 max-w-[62ch] text-[17px] leading-[28px] text-muted">
-                {work.body}
-              </p>
-            )}
-
-            <div
-              className="grid grid-cols-3 gap-4 max-nav:grid-cols-2 max-phone:grid-cols-1"
-              data-stagger
-            >
-              {work.items.map((w) => (
-                <article
-                  className={cx(
-                    "reveal flex flex-col rounded-2xl border border-line bg-white p-7",
-                    "transition-[transform,box-shadow] duration-[250ms]",
-                    "hover:-translate-y-1 hover:shadow-card"
-                  )}
-                  key={w.title}
-                >
-                  <span
-                    className={cx(
-                      "mb-5 grid h-12 w-12 place-items-center rounded-full",
-                      skin.soft,
-                      skin.text
-                    )}
-                  >
-                    <Icon name={w.icon} className="h-6 w-6" />
-                  </span>
-                  <h3 className="mb-2 text-[19px] font-bold leading-[1.3]">{w.title}</h3>
-                  <p className="text-[15px] leading-[24px] text-muted">{w.body}</p>
-                  {/* optional, and pinned to the foot of the card so a row of
-                      cards keeps one baseline however long the bodies run */}
-                  {w.link && (
-                    <Link
-                      /* `programme: true` carries this programme's filter
-                         through to the destination, so arriving from here
-                         lands on its own posts rather than all of them. The
-                         nav PATH is what the filter compares against, same as
-                         the hero's /events CTA above. */
-                      to={
-                        w.link.programme
-                          ? `${w.link.to}?programme=${encodeURIComponent(page.path)}`
-                          : w.link.to
-                      }
-                      className={cx(
-                        "mt-auto inline-flex items-center gap-1 pt-4",
-                        "text-[14px] font-bold leading-none",
-                        "underline decoration-transparent underline-offset-4",
-                        "transition-colors duration-200 hover:decoration-current",
-                        skin.text
-                      )}
-                    >
-                      {w.link.label}
-                      <span aria-hidden="true">→</span>
-                    </Link>
-                  )}
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ===== JOURNEY =====
-          What taking part actually looks like over time. It replaces the
-          step chips that used to sit in the get-involved panel — two
-          numbered lists on one page read as a mistake. */}
-      {c.journey && (
-        <Journey
-          heading={c.journey.heading}
-          subtitle={c.journey.subtitle}
-          steps={c.journey.steps}
-          tone={skin.text}
-          className="bg-mist py-20 max-phone:py-14"
-        />
       )}
 
       {/* ===== COME AND SEE ===== */}

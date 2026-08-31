@@ -138,6 +138,55 @@ export const PROGRAMMES_CONTENT = {
         img: img("iwan-youth-fitness-1"),
       },
     ],
+    /* ⚠ THIS IS NOT A SECOND SESSIONS LIST. `sessions` above is the real,
+       transcribed record of what this programme has run; this is the shape of
+       taking part, on the same footing as `journey`. The two are deliberately
+       different registers, which is why the headings differ too. Nothing here
+       names a dated thing, and nothing here may.
+
+       Every item restates something this entry already claims.
+       The strands, mentoring and community service are `glance` and `strands`
+       verbatim; leading a session is `journey`'s last step; and the write-ups
+       card is true of the six /iwan-youth posts in blogs.js. */
+    work: {
+      heading: "What taking part",
+      mark: "looks like",
+      body: "The sessions above are only part of it. This is the shape of a year here, and any one of these is a reasonable place to start.",
+      items: [
+        {
+          icon: "bulb",
+          title: "Learning something new",
+          body: "Tech Hub one month, Islamic history the next, fitness after that. You do not have to know which strand is yours before you turn up.",
+        },
+        {
+          icon: "people",
+          title: "Being mentored",
+          body: "Pairing up with someone a few years further along the same road. Close enough to remember what it was like, far enough along to be useful.",
+        },
+        {
+          icon: "spark",
+          title: "Leading a session",
+          body: "Running one yourself, on something you already know. Most of what is listed above was led by someone who started out in the room.",
+        },
+        {
+          icon: "hands",
+          title: "Community service",
+          body: "The volunteering side, alongside the rest of Iwan. Skills are worth more once they are pointed at something outside yourself.",
+        },
+        {
+          icon: "growth",
+          title: "Training and sport",
+          body: "Strength, nutrition and the habit of looking after yourself. It sits alongside everything else here rather than apart from it.",
+        },
+        {
+          icon: "book",
+          title: "Reading the write-ups",
+          body: "Sessions get written up afterwards, so you can catch one you missed or go back over the parts worth keeping.",
+          link: { to: "/blogs", programme: true, label: "Read the write-ups" },
+        },
+      ],
+    },
+
     banner: {
       heading: "Come and see for yourself.",
       body: "The quickest way to know whether this is for you is to turn up to one session. Bring a friend if that makes it easier.",
@@ -258,6 +307,56 @@ export const PROGRAMMES_CONTENT = {
         img: img("iwan-kids-cl-2"),
       },
     ],
+    /* ⚠ THIS IS NOT A SECOND SESSIONS LIST. `sessions` above is the real,
+       transcribed record of what this programme has run; this is the shape of
+       taking part, on the same footing as `journey`. The two are deliberately
+       different registers, which is why the headings differ too. Nothing here
+       names a dated thing, and nothing here may.
+
+       Every item restates something this entry already claims.
+       The strands, the trips and the parents-welcome line come from `strands`,
+       `sessions` and `banner`; the write-ups card is true of the four
+       /iwan-kids posts in blogs.js. ⚠ Written for the PARENT reading it, who
+       is the one deciding whether to come. */
+    work: {
+      heading: "What a morning",
+      mark: "looks like",
+      body: "The subjects change every few weeks. What stays the same is the shape of a session, and what your child gets out of one.",
+      items: [
+        {
+          icon: "spark",
+          title: "Trying things out",
+          body: "Cooking one week, world history the next, first aid after that. Nobody is expected to be good at it beforehand, which is rather the point.",
+        },
+        {
+          icon: "target",
+          title: "Taekwondo",
+          body: "The one thing here that is graded, belt by belt. The discipline and the control are what it is for, more than the kicking.",
+        },
+        {
+          icon: "bulb",
+          title: "Making and experimenting",
+          body: "Painting, stitching, prisms and growing vegetables. A fair amount of it looks like play, which is how the learning gets in.",
+        },
+        {
+          icon: "globe",
+          title: "Getting outside",
+          body: "Trips out to gardens, science centres and anywhere else worth seeing. A morning out counts as a session rather than a treat.",
+        },
+        {
+          icon: "people",
+          title: "Staying with them",
+          body: "You are welcome to stay rather than drop off, and plenty of parents do. Nobody treats it as getting in the way.",
+        },
+        {
+          icon: "book",
+          title: "Reading the write-ups",
+          body: "Sessions get written up afterwards, so you can see what your child did and carry the good bits on at home.",
+          link: { to: "/blogs", programme: true, label: "Read the write-ups" },
+        },
+      ],
+    },
+
     banner: {
       heading: "Bring them along.",
       body: "Children work out within one session whether something is for them. Come and let yours find out parents are welcome to stay.",
