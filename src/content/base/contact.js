@@ -32,7 +32,7 @@ export const CONTACT = {
     messageLabel: "Your message",
     messageOptional: "optional",
     messagePlaceholder: "Tell us a little more",
-    subscribeLabel: "Keep me posted about Iwan events and news",
+    subscribeLabel: "Subscribe to newsletter",
     submit: "Send message",
     note: "We usually reply within a couple of days.",
     sending: "Sending…",
