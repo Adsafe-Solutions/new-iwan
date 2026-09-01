@@ -1,4 +1,5 @@
 import { cx } from "../../lib/cx.js";
+import { phoneClean } from "../../lib/validate.js";
 
 /* One question, and the shapes around it. Shared by the event registration form
    and the volunteer/career forms — both render a field list the CMS owns, so
@@ -82,6 +83,8 @@ export function Question({ field, value, error, onChange, copy }) {
                 id={`${id}-${part}`}
                 name={`${field.key}.${part}`}
                 autoComplete={part === "first" ? "given-name" : "family-name"}
+                maxLength={300}
+                placeholder={part === "first" ? copy.firstName : copy.lastName}
                 value={value?.[part] ?? ""}
                 onChange={(e) => onChange({ ...value, [part]: e.target.value })}
               />
@@ -190,8 +193,9 @@ export function Question({ field, value, error, onChange, copy }) {
         <textarea
           {...common}
           rows={4}
+          maxLength={2000}
           value={value ?? ""}
-          placeholder={field.placeholder}
+          placeholder={field.placeholder || copy.answerPlaceholder}
           onChange={(e) => onChange(e.target.value)}
           className={cx(common.className, "resize-y leading-[1.6]")}
         />
@@ -203,6 +207,14 @@ export function Question({ field, value, error, onChange, copy }) {
   /* ── everything that is one box ── */
   const TYPE = { email: "email", phone: "tel", number: "number", date: "date" };
   const AUTO = { email: "email", phone: "tel" };
+  const phone = field.type === "phone";
+  /* The builder's own placeholder wins; these fill in when it was left empty. */
+  const FALLBACK = {
+    email: copy.emailPlaceholder,
+    phone: copy.phonePlaceholder,
+    number: copy.numberPlaceholder,
+    date: copy.datePlaceholder,
+  };
 
   return (
     <label htmlFor={id} className="block">
@@ -211,10 +223,16 @@ export function Question({ field, value, error, onChange, copy }) {
         {...common}
         type={TYPE[field.type] ?? "text"}
         autoComplete={AUTO[field.type]}
-        inputMode={field.type === "phone" ? "tel" : undefined}
+        inputMode={phone ? "tel" : undefined}
+        /* ⚠ 300 is where the API silently slices every one-line answer —
+           stopping the keystrokes there beats losing what was typed. Phones
+           get the audience row's own tighter cap. */
+        maxLength={phone ? 32 : 300}
         value={value ?? ""}
-        placeholder={field.placeholder}
-        onChange={(e) => onChange(e.target.value)}
+        placeholder={field.placeholder || FALLBACK[field.type] || copy.answerPlaceholder}
+        /* type="tel" restricts NOTHING — it only picks the keypad. The filter
+           is what keeps letters out of a phone box. */
+        onChange={(e) => onChange(phone ? phoneClean(e.target.value) : e.target.value)}
       />
       {trailer}
     </label>

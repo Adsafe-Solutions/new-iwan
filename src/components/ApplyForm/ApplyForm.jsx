@@ -7,6 +7,7 @@ import { useCopy, useCountry } from "../../content/ContentProvider.jsx";
 import { useCms } from "../../hooks/useCms.js";
 import { CMS_ENABLED } from "../../content/cms.js";
 import { applyCareer, applyVolunteer } from "../../lib/forms.js";
+import { checkAnswers } from "../../lib/validate.js";
 
 /* The volunteer and career forms.
 
@@ -77,6 +78,16 @@ export default function ApplyForm({ kind, onReady }) {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+
+    /* The client-side mirror of the API's rules — same messages, no round
+       trip. The server still re-checks everything. */
+    const problems = checkAnswers(fields, answers);
+    if (Object.keys(problems).length) {
+      setFieldErrors(problems);
+      setFailed("");
+      return;
+    }
+
     setSending(true);
     setFailed("");
     setFieldErrors({});

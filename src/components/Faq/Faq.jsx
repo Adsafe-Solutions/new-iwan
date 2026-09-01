@@ -38,7 +38,7 @@ export default function Faq() {
           {copy.items.map(([q, a], i) => (
             <div
               className={cx(
-                "overflow-hidden rounded-[3px] border transition-colors duration-300",
+                "overflow-hidden rounded-2xl border transition-colors duration-300",
                 open === i ? "border-primary" : "border-hairline"
               )}
               key={q}

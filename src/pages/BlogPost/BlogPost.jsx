@@ -2,8 +2,13 @@ import { useRef } from "react";
 import { Link, useParams } from "react-router-dom";
 import { IconArrowLeft, IconArrowUpRight } from "@tabler/icons-react";
 import { useScrollAnimations } from "../../hooks/useGsap.js";
+import { usePageTitle } from "../../hooks/usePageTitle.js";
 import ContactCta from "../../components/ContactCta/ContactCta.jsx";
 import ReadingProgress from "../../components/ReadingProgress/ReadingProgress.jsx";
+import MediaBrand from "../../components/MediaBrand/MediaBrand.jsx";
+import DetailNav from "../../components/DetailNav/DetailNav.jsx";
+import RelatedRail from "../../components/RelatedRail/RelatedRail.jsx";
+import BlogCard from "../../components/BlogCard/BlogCard.jsx";
 import {
   useBlogs,
   useCopy,
@@ -49,6 +54,7 @@ export default function BlogPost() {
      article renders and stays at `opacity: 0` forever — this pass would have
      already run against a page that had no article in it. */
   useScrollAnimations(ready);
+  usePageTitle(post?.title);
 
   if (!post && loading) {
     return (
@@ -128,13 +134,15 @@ export default function BlogPost() {
       </section>
 
       <article className="py-14" ref={article}>
-        <div className="mx-auto w-full max-w-[760px] px-6">
+        {/* Wider than the old 760px column, but still a measure the eye can
+            track line to line — the related rail below is what goes full
+            width, not the prose. */}
+        <div className="mx-auto w-full max-w-[880px] px-6">
           {post.img && (
-            <img
-              src={post.img}
-              alt=""
-              className="reveal mb-10 max-h-[460px] w-full rounded-2xl object-cover"
-            />
+            <span className="reveal relative mb-10 block overflow-hidden rounded-2xl">
+              <img src={post.img} alt="" className="max-h-[460px] w-full object-cover" />
+              <MediaBrand />
+            </span>
           )}
 
           {post.html ? (
@@ -170,6 +178,27 @@ export default function BlogPost() {
               <IconArrowUpRight className="h-4 w-4" stroke={2} aria-hidden="true" />
             </Link>
           )}
+
+          {/* Only on the fetched record — the card-initial payload has no nav
+              or related, and both components render nothing on empty. */}
+          {data?.nav && (
+            <DetailNav
+              prev={data.nav.prev}
+              next={data.nav.next}
+              base="/blogs"
+              className="mt-10"
+            />
+          )}
+        </div>
+
+        {/* Full page width — the rail is a browse surface, not prose, so it
+            gets the site container rather than the reading column. */}
+        <div className="mx-auto w-full max-w-container px-6">
+          <RelatedRail
+            heading={copy.related}
+            items={data?.related ?? []}
+            render={(b) => <BlogCard key={b.id} post={b} className="h-full" />}
+          />
         </div>
       </article>
 

@@ -33,6 +33,15 @@ export const key = (d) =>
 
 export const midnight = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
 
+/* Today minus n months, as a YYYY-MM-DD key — what the events listing sends as
+   `?from=` to reach back for recently-ended events. The Date constructor
+   handles the year rollover (month -1 is last December). */
+export const monthsBackKey = (n, today = new Date()) =>
+  key(new Date(today.getFullYear(), today.getMonth() - n, today.getDate()));
+
+/* Before the visitor's own calendar day — the "this event has ended" test. */
+export const isPast = (iso, today = new Date()) => parse(iso) < midnight(today);
+
 export const longDate = (iso, locale = "en-GB") =>
   parse(iso).toLocaleDateString(locale, {
     weekday: "long",

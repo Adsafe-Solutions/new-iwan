@@ -42,7 +42,7 @@ const FULL = "block w-[128px]";
    section is pinned, and GSAP's reveal pass would leave the ones that start
    outside the viewport stranded at opacity 0. */
 const CARD = cx(
-  "group flex w-[364px] flex-none flex-col overflow-hidden rounded border border-line bg-white",
+  "group flex w-[364px] flex-none flex-col overflow-hidden rounded-2xl border border-line bg-white",
   "transition-transform duration-[350ms] hover:-translate-y-2 hover:shadow-card",
   "max-nav:w-full"
 );

@@ -15,7 +15,7 @@ import { KICKER, MARK_B, MARK_YB } from "../../lib/type.js";
 
 const CONTAINER = "mx-auto w-full max-w-container px-6";
 /* the panel that floats over a WipeBand — StepsFeature's shape */
-const CARD = "reveal rounded-lg bg-white p-12 shadow max-nav:p-8";
+const CARD = "reveal rounded-2xl bg-white p-12 shadow max-nav:p-8";
 const EYEBROW =
   "reveal mb-4 text-[12px] font-bold uppercase leading-4 tracking-[0.16em] text-primary";
 const BODY = "text-[17px] leading-[28px] text-ink-2";

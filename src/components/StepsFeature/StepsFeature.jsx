@@ -51,7 +51,7 @@ export default function StepsFeature({
     <WipeBand from={from} tone={wipeTone} className={className}>
       <div
         className={cx(
-          "reveal grid grid-cols-2 items-center rounded-[3px] bg-white shadow max-nav:grid-cols-1",
+          "reveal grid grid-cols-2 items-center rounded-2xl bg-white shadow max-nav:grid-cols-1",
           z.card,
           cardClassName
         )}

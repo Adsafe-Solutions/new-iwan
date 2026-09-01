@@ -1,8 +1,10 @@
 import Modal from "../Modal/Modal.jsx";
 import RegisterForm from "../RegisterForm/RegisterForm.jsx";
+import brandLogo from "../../assests/logos/brand-main-logo-light.webp";
 import VenueMap from "../VenueMap/VenueMap.jsx";
 import { useBrand, useCopy, useCountry, useNav } from "../../content/ContentProvider.jsx";
 import { longDate, programmeOf } from "../../lib/events.js";
+import { fill } from "../../lib/fill.js";
 import { useCms } from "../../hooks/useCms.js";
 import { CMS_ENABLED } from "../../content/cms.js";
 
@@ -12,6 +14,7 @@ const LABEL =
 export default function EventModal({ event: card, onClose }) {
   const BRAND = useBrand();
   const copy = useCopy().eventModal;
+  const detailCopy = useCopy().eventDetail;
   const eventsCopy = useCopy().events;
   const [country] = useCountry();
   const { pages } = useNav();
@@ -43,7 +46,17 @@ export default function EventModal({ event: card, onClose }) {
          they appear — the shared CLOSE's own text colour would win */
       closeClassName="!text-white/70 hover:!text-accent"
     >
-      <div className="bg-primary-800 p-[clamp(1.4rem,4vw,2.2rem)] py-[1.8rem] pr-[4.5rem]">
+      <div className="relative bg-primary-800 p-[clamp(1.4rem,4vw,2.2rem)] py-[1.8rem] pr-[11rem] max-xs:pr-[4.5rem]">
+        {/* The brand mark, right side of the header — below the close button's
+            row and inside the pr clearance, so the two never collide. The
+            light cut: this ground is dark. Hidden where the header has no
+            room to give away. */}
+        <img
+          src={brandLogo}
+          alt=""
+          aria-hidden="true"
+          className="absolute right-[4.5rem] top-[1.8rem] w-[92px] opacity-90 max-xs:hidden"
+        />
         <div className="mb-[0.7rem] flex flex-wrap items-center gap-3">
           <span className="text-[13px] font-extrabold uppercase tracking-[0.12em] text-accent">
             {longDate(event.date, country.locale)}
@@ -59,7 +72,16 @@ export default function EventModal({ event: card, onClose }) {
           {event.title}
         </h3>
         <p className="text-[15px] font-medium text-white/70">
-          {event.start}–{event.end} · {event.kind} · {event.spots} places
+          {/* Only the parts this event has — a spotless or kindless event
+              used to print "· · places". The spots line reuses the detail
+              page's copy key rather than a second hardcoded "places". */}
+          {[
+            event.start && event.end && `${event.start}–${event.end}`,
+            event.kind,
+            event.spots && fill(detailCopy.spotsValue, { spots: event.spots }),
+          ]
+            .filter(Boolean)
+            .join(" · ")}
         </p>
       </div>
 

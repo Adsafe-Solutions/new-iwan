@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useScrollAnimations } from "../../hooks/useGsap.js";
 import EventCard from "../../components/EventCard/EventCard.jsx";
@@ -6,7 +6,7 @@ import EventFilters from "../../components/EventFilters/EventFilters.jsx";
 import Pagination from "../../components/Pagination/Pagination.jsx";
 import { useCopy, useEvents, useTotals } from "../../content/ContentProvider.jsx";
 import { fill } from "../../lib/fill.js";
-import { ALL_PROGRAMMES, NO_PROGRAMME } from "../../lib/events.js";
+import { ALL_PROGRAMMES, NO_PROGRAMME, monthsBackKey } from "../../lib/events.js";
 import { cx } from "../../lib/cx.js";
 import { KICKER, MARK_B } from "../../lib/type.js";
 import { useCms } from "../../hooks/useCms.js";
@@ -25,7 +25,7 @@ const CARD_DELAYS = [
   "[animation-delay:300ms]",
 ];
 
-const NOTE = "rounded-lg border border-line bg-white p-8 text-[16px] text-muted";
+const NOTE = "rounded-2xl border border-line bg-white p-8 text-[16px] text-muted";
 
 /* No photo hero: there is no real Iwan photograph to put behind one, and a
    stock image at that size would read as a claim about the events below. */
@@ -59,9 +59,16 @@ export default function EventsPage() {
       ? ""
       : `&programme=${encodeURIComponent(programme === NO_PROGRAMME ? "__none" : programme)}`);
 
+  /* ⚠ `from` reaches TWO MONTHS BACK, so recently-ended events appear in the
+     same chronological list, marked Ended (see EventCard). The homepage and
+     the bootstrap keep today's `from` — upcoming only. Known reflow, accepted:
+     the bootstrap's page one is upcoming-only, so the first paint shows that
+     and the fetch swaps in the mixed list a moment later; dropping `initial`
+     would trade it for a skeleton flash on every visit. */
   const { data, loading, ready } = useCms(query, {
     enabled: CMS_ENABLED,
     initial: local,
+    from: monthsBackKey(2),
   });
 
   useScrollAnimations(ready);
@@ -70,6 +77,18 @@ export default function EventsPage() {
   const shown = result?.items ?? [];
   const count = result?.total ?? 0;
   const totalPages = Math.max(1, Math.ceil(count / PER_PAGE));
+
+  /* ⚠ An out-of-range ?page= (a stale share, a hand-typed URL) otherwise
+     renders an empty grid under a pager pointing elsewhere. Once the real
+     total is known, walk back to the last page that exists — `replace`, so
+     Back does not return to the dead address. */
+  useEffect(() => {
+    if (loading || page <= totalPages) return;
+    const q = new URLSearchParams(params);
+    if (totalPages > 1) q.set("page", String(totalPages));
+    else q.delete("page");
+    setParams(q, { replace: true });
+  }, [loading, page, totalPages, params, setParams]);
 
   const setParam = (next) => {
     const q = new URLSearchParams(params);

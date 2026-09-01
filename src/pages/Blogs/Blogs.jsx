@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useScrollAnimations } from "../../hooks/useGsap.js";
 import BlogCard from "../../components/BlogCard/BlogCard.jsx";
@@ -25,7 +25,7 @@ const CARD_DELAYS = [
   "[animation-delay:300ms]",
 ];
 
-const NOTE = "rounded-lg border border-line bg-white p-8 text-[16px] text-muted";
+const NOTE = "rounded-2xl border border-line bg-white p-8 text-[16px] text-muted";
 
 export default function BlogsPage() {
   const BLOGS = useBlogs();
@@ -76,6 +76,18 @@ export default function BlogsPage() {
   const count = result?.total ?? 0;
   const total = Math.max(1, Math.ceil(count / PER_PAGE));
   const safePage = Math.min(page, total);
+
+  /* ⚠ An out-of-range ?page= (a stale share, a hand-typed URL) otherwise
+     renders an empty grid under a pager pointing elsewhere. Once the real
+     total is known, walk back to the last page that exists — `replace`, so
+     Back does not return to the dead address. */
+  useEffect(() => {
+    if (loading || page <= total) return;
+    const q = new URLSearchParams(params);
+    if (total > 1) q.set("page", String(total));
+    else q.delete("page");
+    setParams(q, { replace: true });
+  }, [loading, page, total, params, setParams]);
 
   const setParam = (next) => {
     const q = new URLSearchParams(params);

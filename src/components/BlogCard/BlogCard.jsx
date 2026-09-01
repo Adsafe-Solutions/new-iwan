@@ -3,6 +3,7 @@ import { IconArrowRight } from "@tabler/icons-react";
 import { useCopy, useCountry, useHero, useNav } from "../../content/ContentProvider.jsx";
 import { fill, truncate } from "../../lib/fill.js";
 import { longDate, programmeOf } from "../../lib/events.js";
+import MediaBrand from "../MediaBrand/MediaBrand.jsx";
 import { cx } from "../../lib/cx.js";
 
 /* `relative` anchors the stretched title link that makes the whole card
@@ -47,12 +48,16 @@ export default function BlogCard({ post, className }) {
     <article className={cx(CARD, className)}>
       <span className={cx("relative block aspect-[16/9] overflow-hidden", tile)}>
         {post.img ? (
-          <img
-            src={post.img}
-            alt=""
-            loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-[600ms] group-hover:scale-[1.04]"
-          />
+          <>
+            <img
+              src={post.img}
+              alt=""
+              loading="lazy"
+              className="h-full w-full object-cover transition-transform duration-[600ms] group-hover:scale-[1.04]"
+            />
+            {/* photo branch only — a logo stamped over the mark below is noise */}
+            <MediaBrand size={52} />
+          </>
         ) : (
           mark && (
             <span className="grid h-full w-full place-items-center px-8">

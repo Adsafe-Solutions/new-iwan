@@ -2,7 +2,8 @@ import { useMemo, useState } from "react";
 import Button from "../Button/Button.jsx";
 import { useCopy, useCountry } from "../../content/ContentProvider.jsx";
 import { fill } from "../../lib/fill.js";
-import { longDate } from "../../lib/events.js";
+import { isPast, longDate } from "../../lib/events.js";
+import { checkAnswers } from "../../lib/validate.js";
 import { cx } from "../../lib/cx.js";
 import { Question, blankAnswers } from "../FormFields/FormFields.jsx";
 import Turnstile, { TURNSTILE_ENABLED } from "../Turnstile/Turnstile.jsx";
@@ -39,10 +40,11 @@ export default function RegisterForm({ event, locale = "en-GB", heading = true }
   const [errors, setErrors] = useState({});
   const [banner, setBanner] = useState(null);
   const [sending, setSending] = useState(false);
-  /* Ticked by default, on every event. ⚠ Sent beside the answers rather than
-     as one of them — the API validates answers against the event's own form
+  /* Both ticked by default, on every event. ⚠ Sent beside the answers rather
+     than as answers — the API validates answers against the event's own form
      and drops any key it does not define. */
   const [subscribe, setSubscribe] = useState(true);
+  const [photoConsent, setPhotoConsent] = useState(true);
   const [turnstileToken, setTurnstileToken] = useState("");
 
   /* The name typed in, for the confirmation line — whichever question happens
@@ -68,6 +70,15 @@ export default function RegisterForm({ event, locale = "en-GB", heading = true }
   const submit = async (e) => {
     e.preventDefault();
 
+    /* The client-side mirror of the API's rules — same messages, no round
+       trip. The server still re-checks everything. */
+    const problems = checkAnswers(fields, values);
+    if (Object.keys(problems).length) {
+      setErrors(problems);
+      setBanner(copy.fixBelow);
+      return;
+    }
+
     setSending(true);
     setErrors({});
     setBanner(null);
@@ -78,7 +89,7 @@ export default function RegisterForm({ event, locale = "en-GB", heading = true }
         {
           method: "POST",
           headers: { "content-type": "application/json" },
-          body: JSON.stringify({ answers: values, subscribe }),
+          body: JSON.stringify({ answers: values, subscribe, photoConsent }),
         }
       );
 
@@ -106,6 +117,12 @@ export default function RegisterForm({ event, locale = "en-GB", heading = true }
     }
   };
 
+  /* ⚠ Ended beats closed: once the date has passed there is nothing to
+     register for, whatever the form situation is. */
+  if (isPast(event.date)) {
+    return <p className="text-[15px] text-muted">{copy.ended}</p>;
+  }
+
   /* ⚠ No questions, or nowhere to post them. Say so rather than showing a
      Register button that leads to a form nobody receives. */
   if (!live) {
@@ -125,7 +142,9 @@ export default function RegisterForm({ event, locale = "en-GB", heading = true }
         >
           {copy.register}
         </Button>
-        <span className="text-[14px] text-muted">{copy.free}</span>
+        <span className="text-[14px] text-muted">
+          {event.admission === "ticket" ? copy.ticket : copy.free}
+        </span>
       </div>
     );
   }
@@ -159,15 +178,25 @@ export default function RegisterForm({ event, locale = "en-GB", heading = true }
           ))}
         </div>
 
-        <label className="mb-[1.1rem] flex cursor-pointer items-start gap-2.5 text-[14px] leading-[21px] text-ink-2">
-          <input
-            type="checkbox"
-            checked={subscribe}
-            onChange={(e) => setSubscribe(e.target.checked)}
-            className="mt-[3px] h-4 w-4 flex-none cursor-pointer accent-primary"
-          />
-          {copy.subscribeLabel}
-        </label>
+        <div className="mb-[1.1rem] flex flex-col gap-2">
+          {[
+            [subscribe, setSubscribe, copy.subscribeLabel],
+            [photoConsent, setPhotoConsent, copy.photoConsentLabel],
+          ].map(([checked, setChecked, label]) => (
+            <label
+              key={label}
+              className="flex cursor-pointer items-start gap-2.5 text-[14px] leading-[21px] text-ink-2"
+            >
+              <input
+                type="checkbox"
+                checked={checked}
+                onChange={(e) => setChecked(e.target.checked)}
+                className="mt-[3px] h-4 w-4 flex-none cursor-pointer accent-primary"
+              />
+              {label}
+            </label>
+          ))}
+        </div>
 
         {/* ⚠ Rendered only when a site key exists. Without one the widget draws
             nothing and issues no token, and gating the button below on a token

@@ -1,9 +1,13 @@
 import { Link, useParams } from "react-router-dom";
-import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
+import { IconArrowLeft } from "@tabler/icons-react";
 import { useScrollAnimations } from "../../hooks/useGsap.js";
+import { usePageTitle } from "../../hooks/usePageTitle.js";
 import AudioPlayer from "../../components/AudioPlayer/AudioPlayer.jsx";
 import VideoPlayer from "../../components/VideoPlayer/VideoPlayer.jsx";
 import ContactCta from "../../components/ContactCta/ContactCta.jsx";
+import DetailNav from "../../components/DetailNav/DetailNav.jsx";
+import RelatedRail from "../../components/RelatedRail/RelatedRail.jsx";
+import PodcastCard from "../../components/PodcastCard/PodcastCard.jsx";
 import { useCopy, usePodcast } from "../../content/ContentProvider.jsx";
 import { useCms } from "../../hooks/useCms.js";
 import { CMS_ENABLED } from "../../content/cms.js";
@@ -45,6 +49,7 @@ export default function PodcastEpisode() {
   const episode = data ?? (index === -1 ? null : episodes[index]);
 
   useScrollAnimations(ready);
+  usePageTitle(episode?.title);
 
   if (!episode && loading) {
     return (
@@ -73,11 +78,9 @@ export default function PodcastEpisode() {
     );
   }
 
-  /* ⚠ Both of these are read from the bootstrap's first page, which is the only
-     list this page has. An episode beyond it still renders correctly — it was
-     fetched by slug — but has no neighbour to offer and no position to print,
-     so each is simply left out rather than guessed at. */
-  const next = index === -1 ? null : episodes[index + 1];
+  /* The API's own answers, computed against the WHOLE list — the bootstrap
+     index only fills in for the first page while the fetch is out. */
+  const number = data?.number ?? (index === -1 ? null : index + 1);
 
   return (
     <main>
@@ -93,9 +96,9 @@ export default function PodcastEpisode() {
 
           <div className="reveal mb-4 flex flex-wrap items-center gap-3">
             <span className="inline-block rounded-full bg-primary/[0.08] px-3 py-1 text-[12px] font-extrabold uppercase tracking-[0.14em] text-primary">
-              {index === -1
+              {number === null
                 ? listCopy.episodesHeading
-                : fill(listCopy.episode, { n: String(index + 1).padStart(2, "0") })}
+                : fill(listCopy.episode, { n: String(number).padStart(2, "0") })}
             </span>
             {episode.author && (
               <span className="text-[13px] font-semibold text-muted">
@@ -148,30 +151,23 @@ export default function PodcastEpisode() {
             </div>
           )}
 
-          {next && (
-            <Link
-              to={`/podcast/${next.id}`}
-              className={cx(
-                "reveal group mt-10 flex items-center justify-between gap-4 rounded-2xl",
-                "border border-line bg-white p-7 transition-[border-color,box-shadow,transform] duration-[250ms]",
-                "hover:-translate-y-1 hover:border-primary hover:shadow-ecard"
-              )}
-            >
-              <div className="min-w-0">
-                <p className="mb-1.5 text-[12px] font-extrabold uppercase tracking-[0.14em] text-primary">
-                  {copy.nextHeading}
-                </p>
-                <p className="truncate text-[18px] font-bold leading-[1.3]">
-                  {next.title}
-                </p>
-              </div>
-              <IconArrowRight
-                className="h-5 w-5 flex-none text-primary transition-transform duration-200 group-hover:translate-x-1"
-                stroke={2}
-                aria-hidden="true"
-              />
-            </Link>
+          {data?.nav && (
+            <DetailNav
+              prev={data.nav.prev}
+              next={data.nav.next}
+              base="/podcast"
+              className="mt-10"
+            />
           )}
+        </div>
+
+        {/* Full page width, like the blog's — a browse surface, not prose. */}
+        <div className={cx(CONTAINER)}>
+          <RelatedRail
+            heading={copy.related}
+            items={data?.related ?? []}
+            render={(ep) => <PodcastCard key={ep.id} episode={ep} className="h-full" />}
+          />
         </div>
       </section>
 

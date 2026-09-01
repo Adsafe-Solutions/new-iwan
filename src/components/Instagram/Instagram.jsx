@@ -25,7 +25,7 @@ const ASPECTS = [
   "aspect-[3/4]",
 ];
 
-const TILE = "mb-3 block break-inside-avoid overflow-hidden rounded-md bg-ink";
+const TILE = "mb-3 block break-inside-avoid overflow-hidden rounded-2xl bg-ink";
 const IMG =
   "h-full w-full object-cover transition-transform duration-[600ms] group-hover:scale-[1.07]";
 

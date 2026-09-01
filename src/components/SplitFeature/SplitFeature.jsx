@@ -48,7 +48,7 @@ export default function SplitFeature({
     <WipeBand from={from} tone={wipeTone} className={className}>
       <div
         className={cx(
-          "reveal relative grid grid-cols-2 overflow-hidden rounded-lg max-nav:grid-cols-1",
+          "reveal relative grid grid-cols-2 overflow-hidden rounded-2xl max-nav:grid-cols-1",
           s.card,
           cardTone
         )}

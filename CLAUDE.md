@@ -192,9 +192,12 @@ photograph with the brand mark cycling through the programme logos, reusing
 the same `heroRise`/`heroSet` pair. v2 also hides the header until the page
 is scrolled — that lives in `App.jsx`, since it owns the scroll position.
 
-`WhatsAppFab` and `ThemeSwitcher` are rendered by `App.jsx`, so they sit on
-every page — bottom-right and bottom-left respectively, deliberately opposite
-corners so they never collide.
+`WhatsAppFab` and `ThemeSwitcher` are rendered by `App.jsx` — bottom-right
+and bottom-left respectively, deliberately opposite corners so they never
+collide. ⚠ On the three detail routes (`/blogs/:slug`, `/podcast/:slug`,
+`/events/:slug`) the corner button is `ShareFab` instead — a share tray
+(WhatsApp, Facebook, X, LinkedIn, Telegram, copy-link) built from plain share
+URLs; everywhere else it is the WhatsApp chat button.
 
 **`News`, `Difference` and `Contact` are deliberately not on the homepage.**
 `News` was invented press copy about worldwide offices Iwan does not have;
@@ -394,6 +397,20 @@ write. Everything else is fetched by the route that needs it, through
 | `/events`, `/blogs`, `/podcast`                   | `?page=` and `?programme=` — server-paged and server-filtered |
 | `/events/:slug`, `/blogs/:slug`, `/podcast/:slug` | the full record                                               |
 | the homepage event modal                          | the full event, on open                                       |
+
+⚠ `/events` alone overrides `from` to two months back (`monthsBackKey(2)`), so
+recently-ended events ride in the same list marked "Ended" with registration
+suppressed; the homepage and bootstrap stay upcoming-only. Blog and podcast
+detail responses also carry `nav` (prev/next cards), `related` (up to 3), and
+episodes a `number` — rendered by `DetailNav`/`RelatedRail`, which deliberately
+carry no `.reveal` (they mount after GSAP's scan). All three listings clamp an
+out-of-range `?page=` back to the last real page.
+
+**Client-side validation is `src/lib/validate.js`** — zod schemas and a
+question-driven checker that MIRROR the API's validators (same messages, same
+rules; the header comment names the two API files). All four public forms
+validate on submit before posting, into the same per-field error state the
+server errors use.
 
 ⚠ **Lists carry card fields; only `/…/:slug` carries the heavy ones.** A post's
 `html` was 81% of the old single payload and an event's `details` + `agenda` are

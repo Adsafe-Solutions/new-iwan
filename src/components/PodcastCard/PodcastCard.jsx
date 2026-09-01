@@ -4,6 +4,7 @@ import { useCopy, useHero, useNav } from "../../content/ContentProvider.jsx";
 import { programmeOf } from "../../lib/events.js";
 import { fill } from "../../lib/fill.js";
 import { duration } from "../../lib/podcast.js";
+import MediaBrand from "../MediaBrand/MediaBrand.jsx";
 import { cx } from "../../lib/cx.js";
 
 /* `relative` anchors the stretched title link that makes the whole card
@@ -43,12 +44,16 @@ export default function PodcastCard({ episode, cover, index, className }) {
              a tinted box reads as a thumbnail floating in padding — which is
              what this looked like before. Only the LOGO fallback below is
              contained, because a wordmark cropped to 16/9 loses half itself. */
-          <img
-            src={cover}
-            alt=""
-            loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-[600ms] group-hover:scale-[1.04]"
-          />
+          <>
+            <img
+              src={cover}
+              alt=""
+              loading="lazy"
+              className="h-full w-full object-cover transition-transform duration-[600ms] group-hover:scale-[1.04]"
+            />
+            {/* photo branch only — a logo stamped over the mark below is noise */}
+            <MediaBrand size={52} />
+          </>
         ) : (
           mark && (
             <span className="grid h-full w-full place-items-center px-8">
@@ -66,9 +71,13 @@ export default function PodcastCard({ episode, cover, index, className }) {
 
       <div className="flex flex-1 flex-col p-[1.25rem]">
         <div className="mb-2.5 flex flex-wrap items-center gap-3">
-          <span className="inline-block rounded-full bg-primary/[0.08] px-2 py-[3px] text-[11px] font-extrabold uppercase tracking-[0.12em] text-primary">
-            {fill(copy.episode, { n: String(index + 1).padStart(2, "0") })}
-          </span>
+          {/* The related rail passes no index — a wrong number is worse than
+              none, so the chip simply stays off there. */}
+          {Number.isFinite(index) && (
+            <span className="inline-block rounded-full bg-primary/[0.08] px-2 py-[3px] text-[11px] font-extrabold uppercase tracking-[0.12em] text-primary">
+              {fill(copy.episode, { n: String(index + 1).padStart(2, "0") })}
+            </span>
+          )}
           {Number.isFinite(episode.length) && (
             <span className="text-[12px] font-semibold text-muted">
               {duration(episode.length)}
