@@ -14,9 +14,8 @@ export default function VideoPlayer({ src, title, author, className }) {
   const copy = useCopy().podcastPage;
   const id = youtubeId(src);
 
-  /* Nothing to embed. The CMS cannot store such a URL, but a stale payload or
-     the static content can still hand one over, and an empty frame is worse
-     than no frame. */
+  /* Nothing to embed. The CMS cannot store such a URL, but a stale payload
+     can still hand one over, and an empty frame is worse than no frame. */
   if (!id) return null;
 
   return (

@@ -1,18 +1,12 @@
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useScrollAnimations } from "../../hooks/useGsap.js";
 import EventCard from "../../components/EventCard/EventCard.jsx";
 import EventFilters from "../../components/EventFilters/EventFilters.jsx";
 import Pagination from "../../components/Pagination/Pagination.jsx";
-import { useCopy, useEvents, useNav, useTotals } from "../../content/ContentProvider.jsx";
+import { useCopy, useEvents, useTotals } from "../../content/ContentProvider.jsx";
 import { fill } from "../../lib/fill.js";
-import {
-  ALL_PROGRAMMES,
-  NO_PROGRAMME,
-  matchesProgramme,
-  midnight,
-  upcomingFrom,
-} from "../../lib/events.js";
+import { ALL_PROGRAMMES, NO_PROGRAMME, monthsBackKey } from "../../lib/events.js";
 import { cx } from "../../lib/cx.js";
 import { KICKER, MARK_B } from "../../lib/type.js";
 import { useCms } from "../../hooks/useCms.js";
@@ -31,7 +25,7 @@ const CARD_DELAYS = [
   "[animation-delay:300ms]",
 ];
 
-const NOTE = "rounded-lg border border-line bg-white p-8 text-[16px] text-muted";
+const NOTE = "rounded-2xl border border-line bg-white p-8 text-[16px] text-muted";
 
 /* No photo hero: there is no real Iwan photograph to put behind one, and a
    stock image at that size would read as a claim about the events below. */
@@ -39,7 +33,6 @@ export default function EventsPage() {
   const EVENTS = useEvents();
   const totals = useTotals();
   const copy = useCopy().eventsPage;
-  const { pages } = useNav();
   const listRef = useRef(null);
 
   /* ⚠ Page and filter live in the URL — /events?page=2 has to be an address the
@@ -48,26 +41,17 @@ export default function EventsPage() {
   const page = Math.max(1, Number(params.get("page")) || 1);
   const programme = params.get("programme") ?? ALL_PROGRAMMES;
 
-  const today = useMemo(() => midnight(new Date()), []);
   const isFirstView = page === 1 && programme === ALL_PROGRAMMES;
 
-  /* What the site can answer without a request. The bootstrap already holds
-     page one of the upcoming list — already filtered to upcoming by the API's
-     `?from=` — and with the CMS off the static files are the entire list, so
-     everything is filtered and paged here instead. */
-  const local = useMemo(() => {
-    if (CMS_ENABLED) {
-      return isFirstView
-        ? { items: EVENTS, total: totals?.events ?? EVENTS.length }
-        : null;
-    }
-    const upcoming = upcomingFrom(EVENTS, today);
-    const filtered = upcoming.filter((e) => matchesProgramme(e, programme, pages));
-    return {
-      items: filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE),
-      total: filtered.length,
-    };
-  }, [EVENTS, totals, isFirstView, programme, page, pages, today]);
+  /* The one view the site can answer without a request: the bootstrap holds
+     page one of the upcoming list, already filtered to upcoming by the API's
+     `?from=`. Every other page and filter is the server's answer — the CMS is
+     the only source of events. */
+  const local = useMemo(
+    () =>
+      isFirstView ? { items: EVENTS, total: totals?.events ?? EVENTS.length } : null,
+    [EVENTS, totals, isFirstView]
+  );
 
   const query =
     `/api/events?page=${page}&limit=${PER_PAGE}` +
@@ -75,9 +59,16 @@ export default function EventsPage() {
       ? ""
       : `&programme=${encodeURIComponent(programme === NO_PROGRAMME ? "__none" : programme)}`);
 
+  /* ⚠ `from` reaches TWO MONTHS BACK, so recently-ended events appear in the
+     same chronological list, marked Ended (see EventCard). The homepage and
+     the bootstrap keep today's `from` — upcoming only. Known reflow, accepted:
+     the bootstrap's page one is upcoming-only, so the first paint shows that
+     and the fetch swaps in the mixed list a moment later; dropping `initial`
+     would trade it for a skeleton flash on every visit. */
   const { data, loading, ready } = useCms(query, {
     enabled: CMS_ENABLED,
     initial: local,
+    from: monthsBackKey(2),
   });
 
   useScrollAnimations(ready);
@@ -86,6 +77,18 @@ export default function EventsPage() {
   const shown = result?.items ?? [];
   const count = result?.total ?? 0;
   const totalPages = Math.max(1, Math.ceil(count / PER_PAGE));
+
+  /* ⚠ An out-of-range ?page= (a stale share, a hand-typed URL) otherwise
+     renders an empty grid under a pager pointing elsewhere. Once the real
+     total is known, walk back to the last page that exists — `replace`, so
+     Back does not return to the dead address. */
+  useEffect(() => {
+    if (loading || page <= totalPages) return;
+    const q = new URLSearchParams(params);
+    if (totalPages > 1) q.set("page", String(totalPages));
+    else q.delete("page");
+    setParams(q, { replace: true });
+  }, [loading, page, totalPages, params, setParams]);
 
   const setParam = (next) => {
     const q = new URLSearchParams(params);

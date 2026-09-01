@@ -1,7 +1,9 @@
 import { Link, useParams } from "react-router-dom";
 import { IconArrowLeft, IconArrowUpRight } from "@tabler/icons-react";
 import { useScrollAnimations } from "../../hooks/useGsap.js";
+import { usePageTitle } from "../../hooks/usePageTitle.js";
 import RegisterForm from "../../components/RegisterForm/RegisterForm.jsx";
+import MediaBrand from "../../components/MediaBrand/MediaBrand.jsx";
 import {
   useBrand,
   useCopy,
@@ -20,7 +22,7 @@ import { CMS_ENABLED } from "../../content/cms.js";
 const LABEL =
   "mb-[0.9rem] block text-[12px] font-extrabold uppercase tracking-[0.12em] text-muted";
 
-const GLANCE = "rounded-lg border border-line bg-white px-5 py-4";
+const GLANCE = "rounded-2xl border border-line bg-white px-5 py-4";
 const GLANCE_LABEL =
   "mb-1 block text-[11px] font-extrabold uppercase tracking-[0.12em] text-muted";
 const GLANCE_VALUE = "text-[16px] font-bold leading-[1.35]";
@@ -54,6 +56,7 @@ export default function EventDetail() {
   /* Hands GSAP a reason to rescan once the detail lands; without it everything
      the response rendered stays at `opacity: 0`. */
   useScrollAnimations(ready);
+  usePageTitle(event?.title);
 
   if (!event && loading) {
     return (
@@ -137,6 +140,20 @@ export default function EventDetail() {
       <section className="py-14">
         <div className="mx-auto grid w-full max-w-container grid-cols-[1fr_360px] items-start gap-12 px-6 max-nav:grid-cols-1 max-nav:gap-10">
           <div className="flex flex-col gap-10">
+            {/* The event's own photo, branded like every other card image.
+                Only when one was set — the band above already carries the
+                identity, so no stock stand-in. */}
+            {event.img && (
+              <span className="reveal relative block overflow-hidden rounded-2xl">
+                <img
+                  src={event.img}
+                  alt=""
+                  className="max-h-[420px] w-full object-cover"
+                />
+                <MediaBrand />
+              </span>
+            )}
+
             <div className="reveal">
               <span className={LABEL}>{copy.aboutHeading}</span>
               <p className="max-w-[62ch] text-[17px] leading-[28px] text-ink-2">
@@ -204,7 +221,7 @@ export default function EventDetail() {
               </span>
             </div>
 
-            <div className="rounded-lg border border-line bg-white p-6">
+            <div className="rounded-2xl border border-line bg-white p-6">
               <span className="mb-4 block text-[18px] font-extrabold leading-[1.2]">
                 {copy.registerHeading}
               </span>

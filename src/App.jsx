@@ -4,7 +4,7 @@ import Topbar from "./components/Topbar/Topbar.jsx";
 import Header from "./components/Header/Header.jsx";
 import Footer from "./components/Footer/Footer.jsx";
 import Home from "./pages/Home/Home.jsx";
-import Zakat from "./pages/Zakat/Zakat.jsx";
+// import Zakat from "./pages/Zakat/Zakat.jsx";
 import Placeholder from "./pages/Placeholder/Placeholder.jsx";
 import Legal from "./pages/Legal/Legal.jsx";
 import ComingSoon from "./pages/ComingSoon/ComingSoon.jsx";
@@ -26,6 +26,7 @@ import ContentProvider, { useNav, useProgrammes } from "./content/ContentProvide
 import ScrollToTop from "./components/ScrollToTop/ScrollToTop.jsx";
 import ThemeSwitcher from "./components/ThemeSwitcher/ThemeSwitcher.jsx";
 import WhatsAppFab from "./components/WhatsAppFab/WhatsAppFab.jsx";
+import ShareFab from "./components/ShareFab/ShareFab.jsx";
 import LocationPrompt from "./components/LocationPrompt/LocationPrompt.jsx";
 import PromoPopup from "./components/PromoPopup/PromoPopup.jsx";
 
@@ -90,7 +91,7 @@ function Shell() {
       <Header stuck={stuck} overlay={overlay} pinned={home} hidden={heroV2 && !stuck} />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/zakat" element={<Zakat />} />
+        {/* <Route path="/zakat" element={<Zakat />} /> */}
         {/* not a nav entry — the header CTA is what points at it */}
         <Route path="/contact-us" element={<ContactPage />} />
         {/* ⚠ Real pages, and the footer links point at them. They describe what
@@ -148,7 +149,15 @@ function Shell() {
       </Routes>
       <Footer />
       <ThemeSwitcher />
-      <WhatsAppFab />
+      {/* On a detail page the corner button shares the page instead of
+          opening WhatsApp — the one place a visitor has something specific
+          to pass on. The pathname is basename-relative, so this needs no
+          country handling. */}
+      {/^\/(blogs|podcast|events)\/[^/]+$/.test(pathname) ? (
+        <ShareFab />
+      ) : (
+        <WhatsAppFab />
+      )}
       <LocationPrompt />
       <PromoPopup />
     </>

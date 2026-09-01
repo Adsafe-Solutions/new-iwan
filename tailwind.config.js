@@ -85,6 +85,11 @@ export const palette = {
      so it stays fixed rather than following the theme */
   whatsapp: "#25d366",
   whatsappDark: "#1da851",
+  /* the share tray's network buttons — each network's own brand colour */
+  facebook: "#1877f2",
+  xbrand: "#0f1419",
+  linkedin: "#0a66c2",
+  telegram: "#26a5e4",
 
   /* the "ways to connect" marks, sampled from the three logo exports the
      designer has delivered so far, so a card's rule and its arch agree.
@@ -242,6 +247,10 @@ export default {
           ])
         ),
         whatsapp: { DEFAULT: palette.whatsapp, dark: palette.whatsappDark },
+        facebook: palette.facebook,
+        xbrand: palette.xbrand,
+        linkedin: palette.linkedin,
+        telegram: palette.telegram,
         red: { DEFAULT: palette.red, dark: palette.redDark },
         way: {
           read: { DEFAULT: palette.wayRead, soft: palette.wayReadSoft },
@@ -320,6 +329,13 @@ export default {
         "card-scrim": `linear-gradient(${alpha(palette.shade, 0.1)}, rgb(var(--c-blue) / 0.35))`,
         /* bottom-weighted scrim behind a take-action tile label */
         "tile-scrim": `linear-gradient(transparent 45%, ${alpha(palette.shade2, 0.7)})`,
+        /* scrim behind the brand mark on card/detail photos — dark at both
+           edges, clear through the middle, so the logo reads on any photo
+           without dimming the subject */
+        "brand-scrim": [
+          `linear-gradient(${alpha(palette.shade2, 0.6)}, ${alpha(palette.shade2, 0.22)} 24%, transparent 42%)`,
+          `linear-gradient(transparent 58%, ${alpha(palette.shade2, 0.22)} 76%, ${alpha(palette.shade2, 0.6)})`,
+        ].join(", "),
         /* advisor initials circle */
         avatar: "linear-gradient(135deg, rgb(var(--c-blue)), rgb(var(--c-teal)))",
         /* footer wash: the primary tinted into white, deepening downwards */

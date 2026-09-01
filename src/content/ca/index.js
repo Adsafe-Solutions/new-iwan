@@ -67,9 +67,9 @@ export default {
 /* ⚠ Everything else is still inherited from India — the "started in Bangalore
    in 2020" story included.
 
-   Events are the exception: they live in one list in base/events.js and carry
-   their own `country`, so Canada shows only the ones tagged for it rather than
-   inheriting India's.
+   Events, blogs, podcast and promo are the exception: nothing in content/base
+   carries them, so Canada gets whatever the CMS publishes for `ca` and nothing
+   else — there is no India content to inherit or override.
 
    Nothing above has been invented; these are the keys that need real Canadian
    values before this country is shown publicly:

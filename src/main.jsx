@@ -14,9 +14,10 @@ import { primeContent } from "./content/index.js";
    per mount, so every section the newly-arrived content touched would sit at
    `opacity: 0` forever.
 
-   `primeContent` leaves the static content in place when the CMS is switched
-   off (no VITE_CMS_API_URL), unreachable, or slow — it carries its own 3s
-   timeout and never rejects, so this can neither hang the page nor fail it.
+   `primeContent` carries its own 3s timeout and never rejects, so this can
+   neither hang the page nor fail it. ⚠ When the CMS is switched off (no
+   VITE_CMS_API_URL), unreachable, or slow, events, blogs, podcast and promo
+   are simply empty — nothing static backs them any more.
 
    ⚠ `.then()` rather than a top-level `await`: Vite's default build target is
    es2020, which has no top-level await, and the build fails outright rather

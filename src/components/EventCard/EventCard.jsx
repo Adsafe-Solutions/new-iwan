@@ -3,11 +3,12 @@ import { IconArrowRight } from "@tabler/icons-react";
 import Button from "../Button/Button.jsx";
 import { useCopy, useNav } from "../../content/ContentProvider.jsx";
 import { fill } from "../../lib/fill.js";
-import { dayNumber, programmeOf, shortMonth } from "../../lib/events.js";
+import { dayNumber, isPast, programmeOf, shortMonth } from "../../lib/events.js";
+import MediaBrand from "../MediaBrand/MediaBrand.jsx";
 import { cx } from "../../lib/cx.js";
 
 const ROW = cx(
-  "flex items-center gap-4 rounded-lg border border-line bg-white px-[1.3rem] py-[1.1rem]",
+  "flex items-center gap-4 rounded-2xl border border-line bg-white px-[1.3rem] py-[1.1rem]",
   "transition-[border-color,box-shadow,transform] duration-[250ms]",
   "hover:-translate-y-0.5 hover:border-primary hover:shadow-ecard",
   "max-phone:flex-col max-phone:items-stretch max-phone:gap-[0.9rem]"
@@ -27,8 +28,10 @@ const ROW_TRIGGER = cx(
   "max-phone:flex-col max-phone:items-stretch"
 );
 
+/* rounded-xl inside the card's rounded-2xl, so the inner curve sits inside
+   the outer one instead of poking through it. */
 const ROW_THUMB =
-  "relative h-[96px] w-[132px] flex-none overflow-hidden rounded max-phone:h-[150px] max-phone:w-full";
+  "relative h-[96px] w-[132px] flex-none overflow-hidden rounded-xl max-phone:h-[150px] max-phone:w-full";
 
 /* No colour of its own: the programme's `tone` supplies the background, and a
    base rule with an opinion on it would outrank that — Tailwind emits
@@ -45,10 +48,15 @@ const DATE_BADGE = cx(
   "flex flex-col items-center rounded bg-primary px-2 py-1 leading-[1.1] text-white"
 );
 
-function DateBadge({ iso, big = false }) {
+function DateBadge({ iso, big = false, muted = false }) {
   return (
     <span
-      className={cx(DATE_BADGE, big && "px-[0.6rem] py-[0.35rem]")}
+      className={cx(
+        DATE_BADGE,
+        big && "px-[0.6rem] py-[0.35rem]",
+        /* `!` — DATE_BADGE's own bg-primary would win on Tailwind's ordering */
+        muted && "!bg-ink/50"
+      )}
       aria-hidden="true"
     >
       <b className={big ? "text-[19px] font-extrabold" : "text-[17px] font-extrabold"}>
@@ -74,6 +82,9 @@ export default function EventCard({ event, to, onOpen, size = "row", className }
   const label = fill(copy.more, { title: event.title });
   const chip = programme ? programme.label : copy.community;
   const chipTone = programme ? cx(programme.tone, "text-white") : CHIP_NEUTRAL;
+  /* Ended events ride in the same list, dimmed, with no register affordance —
+     the detail page and modal say the rest. */
+  const ended = isPast(event.date);
 
   if (size === "tile") {
     return (
@@ -83,15 +94,24 @@ export default function EventCard({ event, to, onOpen, size = "row", className }
             src={event.img}
             alt=""
             loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-[600ms] group-hover:scale-[1.04]"
+            className={cx(
+              "h-full w-full object-cover transition-transform duration-[600ms] group-hover:scale-[1.04]",
+              ended && "opacity-70 grayscale"
+            )}
           />
+          <MediaBrand size={52} />
           <span className="absolute left-3 top-3">
-            <DateBadge iso={event.date} big />
+            <DateBadge iso={event.date} big muted={ended} />
           </span>
         </span>
 
         <div className="flex flex-1 flex-col p-[1.25rem]">
-          <span className={cx(CHIP, chipTone, "mb-2.5 self-start")}>{chip}</span>
+          <span className="mb-2.5 flex flex-wrap gap-1.5 self-start">
+            <span className={cx(CHIP, chipTone)}>{chip}</span>
+            {ended && (
+              <span className={cx(CHIP, "bg-ink/10 text-ink-2")}>{copy.ended}</span>
+            )}
+          </span>
 
           <h3 className="mb-1.5 text-[20px] font-bold leading-[1.28] tracking-[-0.01em]">
             <Link
@@ -113,12 +133,14 @@ export default function EventCard({ event, to, onOpen, size = "row", className }
           </p>
 
           <div className="relative z-[1] flex flex-wrap items-center gap-4 border-t border-line pt-4">
-            <Button
-              to={to}
-              className="px-[1.2rem] py-[0.65rem] text-[12px] max-xs:w-full"
-            >
-              {copy.register}
-            </Button>
+            {!ended && (
+              <Button
+                to={to}
+                className="px-[1.2rem] py-[0.65rem] text-[12px] max-xs:w-full"
+              >
+                {copy.register}
+              </Button>
+            )}
             <Link
               to={to}
               className="inline-flex items-center gap-1 text-[14px] font-bold text-primary underline underline-offset-4"
@@ -139,15 +161,21 @@ export default function EventCard({ event, to, onOpen, size = "row", className }
           src={event.img}
           alt=""
           loading="lazy"
-          className="h-full w-full object-cover"
+          className={cx("h-full w-full object-cover", ended && "opacity-70 grayscale")}
         />
+        <MediaBrand size={44} />
         <span className="absolute left-2 top-2">
-          <DateBadge iso={event.date} />
+          <DateBadge iso={event.date} muted={ended} />
         </span>
       </span>
 
       <span className="min-w-0">
-        <span className={cx(CHIP, chipTone, "mb-[0.45rem]")}>{chip}</span>
+        <span className="mb-[0.45rem] flex flex-wrap gap-1.5">
+          <span className={cx(CHIP, chipTone)}>{chip}</span>
+          {ended && (
+            <span className={cx(CHIP, "bg-ink/10 text-ink-2")}>{copy.ended}</span>
+          )}
+        </span>
         <h3 className="mb-[0.3rem] text-[19px] font-bold leading-[1.3]">{event.title}</h3>
         <p className="mb-[0.35rem] text-[13px] font-semibold text-muted">
           {event.start}–{event.end} · {event.venue}
@@ -177,7 +205,7 @@ export default function EventCard({ event, to, onOpen, size = "row", className }
         </button>
       )}
 
-      {to ? (
+      {ended ? null : to ? (
         <Button
           variant="outline"
           to={to}

@@ -36,7 +36,7 @@ import { KICKER, MARK_YB } from "../../lib/type.js";
    GSAP writes an inline transform, which would override `hover:-translate-y-2`
    outright if they shared an element. */
 const CARD = cx(
-  "group flex h-full flex-col overflow-hidden rounded shadow-card",
+  "group flex h-full flex-col overflow-hidden rounded-2xl shadow-card",
   "transition-transform duration-[350ms] hover:-translate-y-2"
 );
 const PLATE = "absolute inset-0 flex flex-col items-center justify-center gap-3";

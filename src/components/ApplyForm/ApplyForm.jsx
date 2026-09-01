@@ -7,7 +7,7 @@ import { useCopy, useCountry } from "../../content/ContentProvider.jsx";
 import { useCms } from "../../hooks/useCms.js";
 import { CMS_ENABLED } from "../../content/cms.js";
 import { applyCareer, applyVolunteer } from "../../lib/forms.js";
-import { APPLY_FALLBACK_FIELDS } from "../../content/base/apply.js";
+import { checkAnswers } from "../../lib/validate.js";
 
 /* The volunteer and career forms.
 
@@ -15,29 +15,32 @@ import { APPLY_FALLBACK_FIELDS } from "../../content/base/apply.js";
    editor has made live, and nothing here merges site copy in underneath — what
    they see in the builder is what a visitor gets.
 
-   Two states this has to render honestly: no form live (the page says it is not
-   taking applications, rather than inventing one), and the CMS switched off
-   entirely, where the built-in list keeps the page working. */
-export default function ApplyForm({ kind, copy, onReady }) {
+   ⚠ There is no built-in list of questions behind this. No form live, no
+   questions on the live one, or no VITE_CMS_API_URL at all, and the page says
+   it is not taking applications — it never invents a form, because answers to
+   invented questions go nowhere. */
+export default function ApplyForm({ kind, onReady }) {
   const [country] = useCountry();
   const modal = useCopy().eventModal;
+  const copy = useCopy().apply;
 
   /* ⚠ Per country — the CMS resolves exact country → global → its defaults, so
-     the site asks for one answer rather than reconciling two. */
-  const { data, ready } = useCms(`/api/apply-forms/${kind}?country=${country.code}`, {
+     the site asks for one answer rather than reconciling two. useCms appends
+     the country itself; naming it here too sent `?country=in&country=in`. */
+  const { data, ready } = useCms(`/api/apply-forms/${kind}`, {
     enabled: CMS_ENABLED,
   });
 
-  /* ⚠ `active: false` is a real answer, not a missing one — an editor has
-     nothing live for this country. Only a switched-off CMS falls back. */
-  const closed = CMS_ENABLED && ready && data?.active === false;
+  const settled = ready !== "pending";
 
-  const fields = useMemo(
-    () => (data?.fields?.length ? data.fields : APPLY_FALLBACK_FIELDS[kind]),
-    [data, kind]
-  );
+  /* ⚠ Every way of having no form is the same answer to a visitor: an editor
+     turned it off (`active: false`), never made one, left it with no
+     questions, or the CMS is switched off entirely. All of them close the
+     page rather than putting up something that posts nowhere. */
+  const fields = useMemo(() => data?.fields ?? [], [data]);
+  const closed = settled && fields.length === 0;
 
-  const [answers, setAnswers] = useState(() => blankAnswers(APPLY_FALLBACK_FIELDS[kind]));
+  const [answers, setAnswers] = useState({});
   const [subscribe, setSubscribe] = useState(true);
   const [turnstileToken, setTurnstileToken] = useState("");
   const [sending, setSending] = useState(false);
@@ -46,9 +49,9 @@ export default function ApplyForm({ kind, copy, onReady }) {
   const [sent, setSent] = useState(false);
   const doneRef = useRef(null);
 
-  /* ⚠ Reset when the QUESTIONS change, not on every render — the CMS list
-     arrives after the first paint, and keeping the fallback's keys would post
-     answers to questions the form no longer asks. */
+  /* ⚠ Reset when the QUESTIONS change, not on every render — the list arrives
+     after the first paint, and keeping the old keys would post answers to
+     questions the form no longer asks. */
   useEffect(() => {
     setAnswers(blankAnswers(fields));
   }, [fields]);
@@ -68,13 +71,23 @@ export default function ApplyForm({ kind, copy, onReady }) {
     doneRef.current?.focus();
   }, [sent]);
 
-  /* ⚠ CMS first and site second, and the site half only ever applies with the
-     CMS off — `data` is null then. With it on, an empty value is an empty value
-     on the page, which is what "the CMS is the page" means. */
-  const say = (key) => (data ? (data[key] ?? "") : copy[key]);
+  /* ⚠ The CMS is the only source. An empty value there is an empty value on
+     the page — that is what "the CMS is the page" means, and it is what lets
+     an editor trust the builder. */
+  const say = (key) => data?.[key] ?? "";
 
   const onSubmit = async (e) => {
     e.preventDefault();
+
+    /* The client-side mirror of the API's rules — same messages, no round
+       trip. The server still re-checks everything. */
+    const problems = checkAnswers(fields, answers);
+    if (Object.keys(problems).length) {
+      setFieldErrors(problems);
+      setFailed("");
+      return;
+    }
+
     setSending(true);
     setFailed("");
     setFieldErrors({});
@@ -91,6 +104,10 @@ export default function ApplyForm({ kind, copy, onReady }) {
       setSending(false);
     }
   };
+
+  /* Nothing to draw until the questions land — an empty form with only a
+     submit button on it would be a worse first paint than none. */
+  if (!settled) return null;
 
   if (closed) {
     return (

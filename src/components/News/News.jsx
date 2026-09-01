@@ -27,13 +27,13 @@ const SIDE_NEWS = {
 };
 
 const CARD = "reveal group block";
-const MEDIA = "relative overflow-hidden rounded-t-[3px] bg-ink";
+const MEDIA = "relative overflow-hidden rounded-t-2xl bg-ink";
 /* the two full-height cards; everything else is a short strip */
 const MEDIA_TALL = "h-[398px] max-nav:h-[300px]";
 
 /* text tile — flush under the image, fills brand blue on hover */
 const TILE = cx(
-  "rounded-b-[3px] border-2 border-transparent p-4",
+  "rounded-b-2xl border-2 border-transparent p-4",
   "transition-[background-color,border-color] duration-300",
   "group-hover:border-primary group-hover:bg-primary"
 );

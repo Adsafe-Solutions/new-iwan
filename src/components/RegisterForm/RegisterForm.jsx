@@ -2,7 +2,8 @@ import { useMemo, useState } from "react";
 import Button from "../Button/Button.jsx";
 import { useCopy, useCountry } from "../../content/ContentProvider.jsx";
 import { fill } from "../../lib/fill.js";
-import { longDate } from "../../lib/events.js";
+import { isPast, longDate } from "../../lib/events.js";
+import { checkAnswers } from "../../lib/validate.js";
 import { cx } from "../../lib/cx.js";
 import { Question, blankAnswers } from "../FormFields/FormFields.jsx";
 import Turnstile, { TURNSTILE_ENABLED } from "../Turnstile/Turnstile.jsx";
@@ -17,9 +18,11 @@ import { CMS_ENABLED, CMS_URL } from "../../content/cms.js";
    given rather than knowing any of it. The only thing hard-coded is the
    furniture: the button, the errors, the confirmation.
 
-   ⚠ With the CMS switched off there is no form to render and nothing to post
-   to, so it falls back to the old name-and-email flow, which submits nowhere.
-   That path goes when the static events do. */
+   ⚠ There is no fallback form. With no VITE_CMS_API_URL, or on an event that
+   carries no questions, this renders the closed state rather than boxes that
+   post nowhere — a form that silently discards a registration is worse than
+   saying we are not taking them. The API refuses to PUBLISH an event without a
+   form, so a live event always has one. */
 
 const CTA_ROW = "flex flex-wrap items-center gap-[0.9rem]";
 
@@ -28,8 +31,8 @@ export default function RegisterForm({ event, locale = "en-GB", heading = true }
   const [country] = useCountry();
 
   const fields = event.form ?? [];
-  /* Only a CMS-backed event can actually be submitted — a static one has no
-     form and there is nowhere to send it. */
+  /* Both halves are needed to submit: questions to ask, and a URL to post them
+     to. Without either there is nothing honest to render. */
   const live = CMS_ENABLED && fields.length > 0;
 
   const [stage, setStage] = useState("cta");
@@ -37,10 +40,11 @@ export default function RegisterForm({ event, locale = "en-GB", heading = true }
   const [errors, setErrors] = useState({});
   const [banner, setBanner] = useState(null);
   const [sending, setSending] = useState(false);
-  /* Ticked by default, on every event. ⚠ Sent beside the answers rather than
-     as one of them — the API validates answers against the event's own form
+  /* Both ticked by default, on every event. ⚠ Sent beside the answers rather
+     than as answers — the API validates answers against the event's own form
      and drops any key it does not define. */
   const [subscribe, setSubscribe] = useState(true);
+  const [photoConsent, setPhotoConsent] = useState(true);
   const [turnstileToken, setTurnstileToken] = useState("");
 
   /* The name typed in, for the confirmation line — whichever question happens
@@ -66,10 +70,12 @@ export default function RegisterForm({ event, locale = "en-GB", heading = true }
   const submit = async (e) => {
     e.preventDefault();
 
-    if (!live) {
-      /* The pre-CMS path: no form to send, so the flow ends here as it always
-         did. */
-      setStage("done");
+    /* The client-side mirror of the API's rules — same messages, no round
+       trip. The server still re-checks everything. */
+    const problems = checkAnswers(fields, values);
+    if (Object.keys(problems).length) {
+      setErrors(problems);
+      setBanner(copy.fixBelow);
       return;
     }
 
@@ -83,7 +89,7 @@ export default function RegisterForm({ event, locale = "en-GB", heading = true }
         {
           method: "POST",
           headers: { "content-type": "application/json" },
-          body: JSON.stringify({ answers: values, subscribe }),
+          body: JSON.stringify({ answers: values, subscribe, photoConsent }),
         }
       );
 
@@ -111,6 +117,18 @@ export default function RegisterForm({ event, locale = "en-GB", heading = true }
     }
   };
 
+  /* ⚠ Ended beats closed: once the date has passed there is nothing to
+     register for, whatever the form situation is. */
+  if (isPast(event.date)) {
+    return <p className="text-[15px] text-muted">{copy.ended}</p>;
+  }
+
+  /* ⚠ No questions, or nowhere to post them. Say so rather than showing a
+     Register button that leads to a form nobody receives. */
+  if (!live) {
+    return <p className="text-[15px] text-muted">{copy.closed}</p>;
+  }
+
   if (stage === "cta") {
     return (
       <div className={CTA_ROW}>
@@ -124,7 +142,9 @@ export default function RegisterForm({ event, locale = "en-GB", heading = true }
         >
           {copy.register}
         </Button>
-        <span className="text-[14px] text-muted">{copy.free}</span>
+        <span className="text-[14px] text-muted">
+          {event.admission === "ticket" ? copy.ticket : copy.free}
+        </span>
       </div>
     );
   }
@@ -146,57 +166,37 @@ export default function RegisterForm({ event, locale = "en-GB", heading = true }
         )}
 
         <div className="mb-[1.1rem] flex flex-col gap-[1.1rem]">
-          {live ? (
-            fields.map((field) => (
-              <Question
-                key={field.key}
-                field={field}
-                value={values[field.key]}
-                error={errors[field.key]}
-                onChange={(v) => set(field.key, v)}
-                copy={copy}
-              />
-            ))
-          ) : (
-            /* ⚠ The pre-CMS fallback: two boxes that go nowhere, exactly as
-               before. Rendered only when the event carries no form. */
-            <>
-              <Question
-                field={{
-                  key: "name",
-                  type: "name",
-                  label: copy.nameLabel,
-                  required: true,
-                }}
-                value={values.name ?? { first: "", last: "" }}
-                onChange={(v) => set("name", v)}
-                copy={copy}
-              />
-              <Question
-                field={{
-                  key: "email",
-                  type: "email",
-                  label: copy.emailLabel,
-                  placeholder: copy.emailPlaceholder,
-                  required: true,
-                }}
-                value={values.email ?? ""}
-                onChange={(v) => set("email", v)}
-                copy={copy}
-              />
-            </>
-          )}
+          {fields.map((field) => (
+            <Question
+              key={field.key}
+              field={field}
+              value={values[field.key]}
+              error={errors[field.key]}
+              onChange={(v) => set(field.key, v)}
+              copy={copy}
+            />
+          ))}
         </div>
 
-        <label className="mb-[1.1rem] flex cursor-pointer items-start gap-2.5 text-[14px] leading-[21px] text-ink-2">
-          <input
-            type="checkbox"
-            checked={subscribe}
-            onChange={(e) => setSubscribe(e.target.checked)}
-            className="mt-[3px] h-4 w-4 flex-none cursor-pointer accent-primary"
-          />
-          {copy.subscribeLabel}
-        </label>
+        <div className="mb-[1.1rem] flex flex-col gap-2">
+          {[
+            [subscribe, setSubscribe, copy.subscribeLabel],
+            [photoConsent, setPhotoConsent, copy.photoConsentLabel],
+          ].map(([checked, setChecked, label]) => (
+            <label
+              key={label}
+              className="flex cursor-pointer items-start gap-2.5 text-[14px] leading-[21px] text-ink-2"
+            >
+              <input
+                type="checkbox"
+                checked={checked}
+                onChange={(e) => setChecked(e.target.checked)}
+                className="mt-[3px] h-4 w-4 flex-none cursor-pointer accent-primary"
+              />
+              {label}
+            </label>
+          ))}
+        </div>
 
         {/* ⚠ Rendered only when a site key exists. Without one the widget draws
             nothing and issues no token, and gating the button below on a token

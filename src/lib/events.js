@@ -33,6 +33,15 @@ export const key = (d) =>
 
 export const midnight = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
 
+/* Today minus n months, as a YYYY-MM-DD key — what the events listing sends as
+   `?from=` to reach back for recently-ended events. The Date constructor
+   handles the year rollover (month -1 is last December). */
+export const monthsBackKey = (n, today = new Date()) =>
+  key(new Date(today.getFullYear(), today.getMonth() - n, today.getDate()));
+
+/* Before the visitor's own calendar day — the "this event has ended" test. */
+export const isPast = (iso, today = new Date()) => parse(iso) < midnight(today);
+
 export const longDate = (iso, locale = "en-GB") =>
   parse(iso).toLocaleDateString(locale, {
     weekday: "long",
@@ -84,26 +93,4 @@ export const matchesProgramme = (event, value, pages = []) => {
 export const programmeFilters = (events, pages = []) => {
   const used = new Set(events.map((e) => e.programme).filter(Boolean));
   return pages.filter((p) => used.has(p.path));
-};
-
-/* Which country an event belongs to. Events are the one content type kept as
-   a single list for every country rather than a base set plus per-country
-   overrides, because an event is a real thing that happens in one place —
-   `resolveContent` filters on this before any component sees the list. */
-export const inCountry = (event, code) => {
-  const c = event.country;
-  if (!c) return true;
-  return Array.isArray(c) ? c.includes(code) : c === code;
-};
-
-export const eventsForCountry = (events = [], code) =>
-  events.filter((e) => inCountry(e, code));
-
-/* Newest first, with anything undated last — two of the blog posts carry no
-   date on the live site and none has been invented for them. */
-export const byNewest = (a, b) => {
-  if (!a.date && !b.date) return 0;
-  if (!a.date) return 1;
-  if (!b.date) return -1;
-  return b.date.localeCompare(a.date);
 };

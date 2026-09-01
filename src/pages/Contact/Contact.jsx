@@ -6,10 +6,11 @@ import PhoneField from "../../components/PhoneField/PhoneField.jsx";
 import Icon from "../../components/Icon/Icon.jsx";
 import { useBrand, useContact, useCountry } from "../../content/ContentProvider.jsx";
 import { sendContact } from "../../lib/forms.js";
+import { contactSchema, flatten } from "../../lib/validate.js";
 import { fill } from "../../lib/fill.js";
 import { cx } from "../../lib/cx.js";
 import { KICKER, MARK_B } from "../../lib/type.js";
-import Turnstile from "../../components/Turnstile/Turnstile.jsx";
+import Turnstile, { TURNSTILE_ENABLED } from "../../components/Turnstile/Turnstile.jsx";
 
 const CONTAINER = "mx-auto w-full max-w-container px-6";
 
@@ -69,6 +70,19 @@ export default function ContactPage() {
   const [turnstileToken, setTurnstileToken] = useState("");
   const [sending, setSending] = useState(false);
   const [failed, setFailed] = useState(null);
+  const [fieldErrors, setFieldErrors] = useState({});
+
+  /* Clear a field's complaint the moment it is touched — leaving it while
+     someone fixes it reads as "still wrong". */
+  const touch = (key, setter) => (value) => {
+    setter(value);
+    setFieldErrors((prev) => {
+      if (!(key in prev)) return prev;
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
+  };
   const doneRef = useRef(null);
 
   /* ⚠ The confirmation replaces a form well down the page, so without this it
@@ -82,20 +96,42 @@ export default function ContactPage() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+
+    /* The client-side mirror of the API's own schema — same messages, no
+       round trip. The server still re-checks everything. */
+    const checked = flatten(
+      contactSchema.safeParse({ name, email, subject, message, mobile })
+    );
+    if (!checked.ok) {
+      setFieldErrors(checked.fields);
+      setFailed(null);
+      return;
+    }
+
     setSending(true);
     setFailed(null);
+    setFieldErrors({});
     try {
-      await sendContact(
-        { name, email, subject, message, mobile, subscribe },
-        { country: country.code }
-      );
+      /* The PARSED values — trimmed and lowercased the way the API stores
+         them, so what was checked is what is sent. */
+      await sendContact({ ...checked.data, subscribe }, { country: country.code });
       setSent(true);
     } catch (err) {
+      /* The API names which fields it refused; show each against its own
+         control rather than one banner. */
+      setFieldErrors(err.fields ?? {});
       setFailed(err.message || copy.form.failed);
     } finally {
       setSending(false);
     }
   };
+
+  const errorLine = (key) =>
+    fieldErrors[key] ? (
+      <span role="alert" className="text-[12px] font-semibold normal-case text-red">
+        {fieldErrors[key]}
+      </span>
+    ) : null;
 
   return (
     <main>
@@ -211,7 +247,11 @@ export default function ContactPage() {
                   </div>
                 </div>
               ) : (
-                <form onSubmit={onSubmit}>
+                <form onSubmit={onSubmit} noValidate>
+                  {/* ⚠ noValidate: the zod mirror words every complaint the
+                      way the server does and shows them per field — the
+                      browser's own bubbles would preempt it with different
+                      words. */}
                   {/* Freezes every control while the request is out, so a
                       second Enter cannot send a duplicate. */}
                   <fieldset disabled={sending} className="contents">
@@ -219,25 +259,31 @@ export default function ContactPage() {
                       <label className={LABEL}>
                         {copy.form.nameLabel}
                         <input
-                          className={FIELD}
+                          className={cx(FIELD, fieldErrors.name && "border-red")}
+                          maxLength={120}
                           value={name}
-                          onChange={(e) => setName(e.target.value)}
+                          onChange={(e) => touch("name", setName)(e.target.value)}
                           placeholder={copy.form.namePlaceholder}
                           autoComplete="name"
+                          aria-invalid={fieldErrors.name ? true : undefined}
                           required
                         />
+                        {errorLine("name")}
                       </label>
                       <label className={LABEL}>
                         {copy.form.emailLabel}
                         <input
-                          className={FIELD}
+                          className={cx(FIELD, fieldErrors.email && "border-red")}
                           type="email"
+                          maxLength={200}
                           value={email}
-                          onChange={(e) => setEmail(e.target.value)}
+                          onChange={(e) => touch("email", setEmail)(e.target.value)}
                           placeholder={copy.form.emailPlaceholder}
                           autoComplete="email"
+                          aria-invalid={fieldErrors.email ? true : undefined}
                           required
                         />
+                        {errorLine("email")}
                       </label>
                     </div>
 
@@ -249,22 +295,26 @@ export default function ContactPage() {
                         </span>
                       </span>
                       <PhoneField
-                        fieldClassName={FIELD}
+                        fieldClassName={cx(FIELD, fieldErrors.mobile && "border-red")}
                         value={mobile}
-                        onChange={setMobile}
+                        onChange={touch("mobile", setMobile)}
                         placeholder={copy.form.mobilePlaceholder}
                       />
+                      {errorLine("mobile")}
                     </label>
 
                     <label className={cx(LABEL, "mb-4")}>
                       {copy.form.subjectLabel}
                       <input
-                        className={FIELD}
+                        className={cx(FIELD, fieldErrors.subject && "border-red")}
+                        maxLength={200}
                         value={subject}
-                        onChange={(e) => setSubject(e.target.value)}
+                        onChange={(e) => touch("subject", setSubject)(e.target.value)}
                         placeholder={copy.form.subjectPlaceholder}
+                        aria-invalid={fieldErrors.subject ? true : undefined}
                         required
                       />
+                      {errorLine("subject")}
                     </label>
 
                     <label className={cx(LABEL, "mb-5")}>
@@ -275,11 +325,17 @@ export default function ContactPage() {
                         </span>
                       </span>
                       <textarea
-                        className={cx(FIELD, "min-h-[132px] resize-y")}
+                        className={cx(
+                          FIELD,
+                          "min-h-[132px] resize-y",
+                          fieldErrors.message && "border-red"
+                        )}
+                        maxLength={5000}
                         value={message}
-                        onChange={(e) => setMessage(e.target.value)}
+                        onChange={(e) => touch("message", setMessage)(e.target.value)}
                         placeholder={copy.form.messagePlaceholder}
                       />
+                      {errorLine("message")}
                     </label>
 
                     <label className="mb-5 flex cursor-pointer items-start gap-2.5 text-[14px] leading-[21px] text-ink-2">
@@ -292,9 +348,16 @@ export default function ContactPage() {
                       {copy.form.subscribeLabel}
                     </label>
 
-                    <div className="mb-5 max-w-[420px]">
-                      <Turnstile action="contact" onChange={setTurnstileToken} />
-                    </div>
+                    {/* ⚠ Only when a site key exists — without one the widget
+                        draws nothing and issues no token, and gating the
+                        button on a token that can never arrive left this form
+                        permanently unsubmittable. Same guard as every other
+                        form. */}
+                    {TURNSTILE_ENABLED && (
+                      <div className="mb-5 max-w-[420px]">
+                        <Turnstile action="contact" onChange={setTurnstileToken} />
+                      </div>
+                    )}
 
                     {failed && (
                       <p role="alert" className="mb-4 text-[14px] font-semibold text-red">
@@ -303,7 +366,10 @@ export default function ContactPage() {
                     )}
 
                     <div className="flex flex-wrap items-center gap-4">
-                      <Button type="submit" disabled={!turnstileToken || sending}>
+                      <Button
+                        type="submit"
+                        disabled={(TURNSTILE_ENABLED && !turnstileToken) || sending}
+                      >
                         {sending ? copy.form.sending : copy.form.submit}
                       </Button>
                       <span className="text-[13px] leading-[20px] text-muted">

@@ -19,7 +19,7 @@ import { useCountry } from "../content/ContentProvider.jsx";
    what it finds; anything that appears later is stranded at `opacity: 0`
    forever. Pass `ready` to `useScrollAnimations` on any page that fetches, or
    the fetched content never becomes visible. */
-export function useCms(path, { enabled = true, initial = null } = {}) {
+export function useCms(path, { enabled = true, initial = null, from = null } = {}) {
   const [country] = useCountry();
 
   const [data, setData] = useState(initial);
@@ -32,9 +32,11 @@ export function useCms(path, { enabled = true, initial = null } = {}) {
 
   /* The country and today's date belong to every request, so callers pass the
      path alone and cannot forget either. */
+  /* `from` defaults to the visitor's own day — "upcoming". The events listing
+     overrides it to reach back for recently-ended events; nothing else does. */
   const url =
     path && CMS_ENABLED
-      ? `${CMS_URL}${path}${path.includes("?") ? "&" : "?"}country=${country.code}&from=${todayKey()}`
+      ? `${CMS_URL}${path}${path.includes("?") ? "&" : "?"}country=${country.code}&from=${from ?? todayKey()}`
       : null;
 
   useEffect(() => {

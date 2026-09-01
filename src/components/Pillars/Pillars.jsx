@@ -84,7 +84,7 @@ export default function Pillars() {
             <div className="relative" key={p.id} data-deck-card>
               <article
                 className={cx(
-                  "flex h-full flex-col rounded p-6 shadow-card",
+                  "flex h-full flex-col rounded-2xl p-6 shadow-card",
                   "transition-transform duration-[350ms] hover:-translate-y-2",
                   p.tone,
                   p.ink

@@ -97,6 +97,8 @@ export const COPY = {
     clearFilter: "Clear filter",
     /* the chip on an event that is not tied to one programme */
     community: "Open to all",
+    /* The pill on an event whose date has passed — see EventCard. */
+    ended: "Ended",
     filterLabel: "Filter by programme",
     allProgrammes: "All programmes",
     seeAll: "See all events",
@@ -124,8 +126,8 @@ export const COPY = {
   /* /podcast/:id — one episode's own page. */
   podcastEpisode: {
     back: "All episodes",
+    related: "More like this",
     aboutShow: "About the show",
-    nextHeading: "Next episode",
     notFound: "We can’t find that episode",
     notFoundBody: "It may have moved, or the link may be wrong.",
   },
@@ -180,6 +182,40 @@ export const COPY = {
     applyCareerBody: "Tell us what you do and what you're looking for next.",
   },
 
+  /* /volunteer and /careers. ⚠ ONLY the furniture — every word a visitor
+     reads on those pages (heading, intro, button label, thank-you) comes from
+     whichever form an editor has made live in the CMS. These are the things
+     the CMS has no field for: what the page says when no form is live, and
+     the two labels the button needs while it is working. */
+  apply: {
+    closedHeading: "Not right now",
+    closedBody:
+      "We are not taking applications through this page at the moment. Do get in touch and we will let you know when that changes.",
+    sending: "Sending…",
+    /* Only used when an editor left the CMS's own submit label empty — a
+       button with no words on it is broken, not honest. */
+    submit: "Send my details",
+  },
+
+  /* The prev/next cards at the foot of a blog post or podcast episode. */
+  detailNav: {
+    prev: "Previous",
+    next: "Up next",
+  },
+
+  /* The corner share button on detail pages — it replaces the WhatsApp chat
+     button there, so the tray needs its own words. */
+  share: {
+    open: "Share this page",
+    whatsapp: "Share on WhatsApp",
+    facebook: "Share on Facebook",
+    x: "Share on X",
+    linkedin: "Share on LinkedIn",
+    telegram: "Share on Telegram",
+    copy: "Copy link",
+    copied: "Link copied",
+  },
+
   /* the /blogs page and each post's own /blogs/<slug> page */
   blogsPage: {
     eyebrow: "Writing",
@@ -202,6 +238,7 @@ export const COPY = {
 
   blogPost: {
     back: "All posts",
+    related: "More like this",
     programmeLink: "More about {programme}",
     notFound: "We can’t find that post",
     notFoundBody: "It may have moved, or the link may be wrong.",
@@ -231,7 +268,7 @@ export const COPY = {
     kindLabel: "Type",
     spotsLabel: "Places",
     spotsValue: "{spots} places",
-    registerHeading: "Save your place",
+    registerHeading: "Save your spot",
     programmeLink: "More about {programme}",
     notFound: "We can’t find that event",
     notFoundBody: "It may have finished, or the link may be wrong.",
@@ -296,6 +333,7 @@ export const COPY = {
     mapTitle: "Map showing {venue}",
     directions: "Get directions",
     register: "Register",
+    /* Which one shows follows the event's own `admission` field. */
     free: "Free to attend · everyone welcome",
     formHeading: "Save your place",
     subscribeLabel: "Keep me posted about Iwan events and news",
@@ -308,7 +346,7 @@ export const COPY = {
     submitError: "We could not register you right now. Please try again.",
     cancel: "Cancel",
     doneHeading: "You’re in{name}",
-    doneBody: "We’ve noted your place at {title} on {date}.",
+    doneBody: "Your spot at {title} on {date} is confirmed.",
 
     /* The registration form is built per event in the CMS, so the QUESTIONS
        are content and live there. What stays here is the furniture around
@@ -317,6 +355,14 @@ export const COPY = {
     firstName: "First Name",
     lastName: "Last Name",
     choosePlaceholder: "Choose one",
+    /* Fallback placeholders per question type, for when the editor left the
+       CMS's own placeholder box empty — an empty input reads as broken. A
+       placeholder set in the builder still wins. */
+    emailPlaceholder: "you@email.com",
+    phonePlaceholder: "98765 43210",
+    numberPlaceholder: "Enter a number",
+    datePlaceholder: "YYYY-MM-DD",
+    answerPlaceholder: "Type your answer",
     sending: "Sending…",
     /* ⚠ Deliberately vague about the cause. The person filling this in cannot
        act on "the database refused it", and the specifics are in the field

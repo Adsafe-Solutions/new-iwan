@@ -1,17 +1,12 @@
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useScrollAnimations } from "../../hooks/useGsap.js";
 import BlogCard from "../../components/BlogCard/BlogCard.jsx";
 import EventFilters from "../../components/EventFilters/EventFilters.jsx";
 import Pagination from "../../components/Pagination/Pagination.jsx";
-import { useBlogs, useCopy, useNav, useTotals } from "../../content/ContentProvider.jsx";
+import { useBlogs, useCopy, useTotals } from "../../content/ContentProvider.jsx";
 import { fill } from "../../lib/fill.js";
-import {
-  ALL_PROGRAMMES,
-  NO_PROGRAMME,
-  byNewest,
-  matchesProgramme,
-} from "../../lib/events.js";
+import { ALL_PROGRAMMES, NO_PROGRAMME } from "../../lib/events.js";
 import { useCms } from "../../hooks/useCms.js";
 import { CMS_ENABLED } from "../../content/cms.js";
 import { cx } from "../../lib/cx.js";
@@ -30,13 +25,12 @@ const CARD_DELAYS = [
   "[animation-delay:300ms]",
 ];
 
-const NOTE = "rounded-lg border border-line bg-white p-8 text-[16px] text-muted";
+const NOTE = "rounded-2xl border border-line bg-white p-8 text-[16px] text-muted";
 
 export default function BlogsPage() {
   const BLOGS = useBlogs();
   const totals = useTotals();
   const copy = useCopy().blogsPage;
-  const { pages: navPages } = useNav();
   const listRef = useRef(null);
 
   /* ⚠ The page and the filter live in the URL, not in component state. With the
@@ -49,23 +43,17 @@ export default function BlogsPage() {
 
   const isFirstView = page === 1 && programme === ALL_PROGRAMMES;
 
-  /* What the site can answer WITHOUT a request: the bootstrap already carries
-     page one of the unfiltered list, and with the CMS switched off the static
-     files are the entire list, so everything is paged here in the browser. */
-  const local = useMemo(() => {
-    if (CMS_ENABLED) {
-      return isFirstView
+  /* The one view the site can answer WITHOUT a request: the bootstrap already
+     carries page one of the unfiltered list. Any other page or filter is the
+     server's answer, and there is nothing local to page through — the CMS is
+     the only source of posts. */
+  const local = useMemo(
+    () =>
+      isFirstView
         ? { items: BLOGS, total: totals?.blogs ?? BLOGS.length, page: 1 }
-        : null;
-    }
-    const sorted = [...BLOGS].sort(byNewest);
-    const filtered = sorted.filter((p) => matchesProgramme(p, programme, navPages));
-    return {
-      items: filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE),
-      total: filtered.length,
-      page,
-    };
-  }, [BLOGS, totals, isFirstView, programme, page, navPages]);
+        : null,
+    [BLOGS, totals, isFirstView]
+  );
 
   const query =
     `/api/blogs?page=${page}&limit=${PER_PAGE}` +
@@ -88,6 +76,18 @@ export default function BlogsPage() {
   const count = result?.total ?? 0;
   const total = Math.max(1, Math.ceil(count / PER_PAGE));
   const safePage = Math.min(page, total);
+
+  /* ⚠ An out-of-range ?page= (a stale share, a hand-typed URL) otherwise
+     renders an empty grid under a pager pointing elsewhere. Once the real
+     total is known, walk back to the last page that exists — `replace`, so
+     Back does not return to the dead address. */
+  useEffect(() => {
+    if (loading || page <= total) return;
+    const q = new URLSearchParams(params);
+    if (total > 1) q.set("page", String(total));
+    else q.delete("page");
+    setParams(q, { replace: true });
+  }, [loading, page, total, params, setParams]);
 
   const setParam = (next) => {
     const q = new URLSearchParams(params);

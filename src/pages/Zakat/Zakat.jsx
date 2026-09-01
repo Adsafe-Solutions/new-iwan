@@ -92,7 +92,7 @@ const ZY = "text-accent";
 /* Focus-area card, reused from the homepage but with the Zakat page's own
    badge tracking and caption sizing. */
 const DCARD =
-  "reveal group relative flex flex-col overflow-hidden rounded bg-primary shadow transition-[transform,box-shadow] duration-[350ms] hover:-translate-y-2 hover:shadow-card";
+  "reveal group relative flex flex-col overflow-hidden rounded-2xl bg-primary shadow transition-[transform,box-shadow] duration-[350ms] hover:-translate-y-2 hover:shadow-card";
 
 const SCHOLAR_AV =
   "grid h-20 w-20 place-items-center rounded-full border-2 border-white bg-avatar text-2xl font-extrabold text-white shadow max-phone:h-16 max-phone:w-16 max-phone:text-[1.3rem]";
@@ -192,7 +192,7 @@ export default function Zakat() {
             uncollected every year. Your <b>2.5%</b> can change everything.
           </h2>
 
-          <div className="reveal rounded-lg bg-primary p-[2.4rem] text-white">
+          <div className="reveal rounded-2xl bg-primary p-[2.4rem] text-white">
             <h3 className="mb-[1.1rem] inline-block text-[38.4px] font-black uppercase leading-[48px] tracking-[-0.01em]">
               The Iwan Pathway: Giving Your Zakat
               <span
@@ -306,7 +306,7 @@ export default function Zakat() {
       {/* the gutter lives on the section, not the card, or the rounded and
           shadowed box would carry a transparent strip down each side */}
       <section className="bg-calc-wash px-6 py-20 max-xs:px-4 max-xs:py-14" id="zcalc">
-        <div className="reveal mx-auto grid w-full max-w-container grid-cols-2 overflow-hidden rounded-[3px] p-0 shadow-calc max-nav:grid-cols-1">
+        <div className="reveal mx-auto grid w-full max-w-container grid-cols-2 overflow-hidden rounded-2xl p-0 shadow-calc max-nav:grid-cols-1">
           {/* min-w-0: grid items default to min-width:auto and refuse to shrink
               below their content, which pushed the panels wider than the card */}
           <div className="min-w-0 bg-primary px-[3.2rem] py-12 text-white max-xs:px-6 max-xs:py-[2.2rem]">
@@ -430,7 +430,7 @@ export default function Zakat() {
             </Button>
           </div>
 
-          <div className="rounded-[3px] border border-white/[0.16] bg-white/[0.08] p-8">
+          <div className="rounded-2xl border border-white/[0.16] bg-white/[0.08] p-8">
             <h3 className="mb-[1.2rem] text-[24px] font-bold leading-8 text-accent">
               The Eight Categories of Zakat
             </h3>
@@ -490,7 +490,7 @@ export default function Zakat() {
             {FAQ.map(([q, a], i) => (
               <div
                 className={cx(
-                  "overflow-hidden rounded-[3px] border transition-colors duration-300",
+                  "overflow-hidden rounded-2xl border transition-colors duration-300",
                   open === i ? "border-primary" : "border-hairline"
                 )}
                 key={q}

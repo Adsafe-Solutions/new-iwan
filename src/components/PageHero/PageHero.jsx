@@ -76,7 +76,7 @@ export default function PageHero({
         ) : (
           <div
             className={cx(
-              "max-w-full rounded-[3px] bg-white px-8 py-10 shadow-card",
+              "max-w-full rounded-2xl bg-white px-8 py-10 shadow-card",
               "max-xs:px-[22px] max-xs:py-7",
               cardClassName
             )}

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { DIAL_CODES, dialFor } from "../../config/dialCodes.js";
 import { useCountry } from "../../content/ContentProvider.jsx";
 import { cx } from "../../lib/cx.js";
+import { phoneClean } from "../../lib/validate.js";
 
 /* A dial-code select beside the number, emitting the two joined — "+91 90000
    00000" — which is what the API stores.
@@ -29,7 +30,10 @@ export default function PhoneField({
   const [dial, setDial] = useState(() => dialFor(country.code));
   const [number, setNumber] = useState("");
 
-  const emit = (nextDial, nextNumber) => {
+  const emit = (nextDial, rawNumber) => {
+    /* ⚠ Filtered as typed — letters never appear in the box. Capped so the
+       joined "+xxx number" stays inside the API's 32-character mobile field. */
+    const nextNumber = phoneClean(rawNumber).slice(0, 24);
     setDial(nextDial);
     setNumber(nextNumber);
     /* Nothing to send until a number is typed — an empty field must stay empty

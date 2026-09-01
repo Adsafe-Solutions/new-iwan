@@ -222,7 +222,7 @@ export default function Testimonials() {
                 aria-hidden={!isActive}
                 className={cx(
                   "relative box-border flex shrink-0 flex-col gap-5",
-                  "overflow-hidden rounded-[20px] border p-7 max-phone:p-6",
+                  "overflow-hidden rounded-2xl border p-7 max-phone:p-6",
                   "transition-[opacity,filter,transform,box-shadow,background-color,border-color]",
                   "duration-[600ms] ease-[cubic-bezier(.4,0,.2,1)]",
                   DEPTH[Math.min(depth, 2)],

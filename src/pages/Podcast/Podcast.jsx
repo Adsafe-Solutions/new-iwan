@@ -1,5 +1,7 @@
+import { useEffect } from "react";
 import { useScrollAnimations } from "../../hooks/useGsap.js";
 import PodcastCard from "../../components/PodcastCard/PodcastCard.jsx";
+import EventFilters from "../../components/EventFilters/EventFilters.jsx";
 import ContactCta from "../../components/ContactCta/ContactCta.jsx";
 import { useCopy, usePodcast, useTotals } from "../../content/ContentProvider.jsx";
 import { useCms } from "../../hooks/useCms.js";
@@ -8,6 +10,7 @@ import { useSearchParams } from "react-router-dom";
 import Pagination from "../../components/Pagination/Pagination.jsx";
 
 const PER_PAGE = 12;
+import { ALL_PROGRAMMES, NO_PROGRAMME } from "../../lib/events.js";
 import { cx } from "../../lib/cx.js";
 import { KICKER, MARK_B } from "../../lib/type.js";
 
@@ -18,19 +21,29 @@ export default function PodcastPage() {
   const totals = useTotals();
 
   /* ⚠ The bootstrap carries only the first page of episodes. Reading it alone
-     silently truncated this list the moment a seventh episode existed. */
+     silently truncated this list the moment a seventh episode existed. Page
+     and filter live in the URL, like /events and /blogs. */
   const [params, setParams] = useSearchParams();
   const page = Math.max(1, Number(params.get("page")) || 1);
+  const programme = params.get("programme") ?? ALL_PROGRAMMES;
 
+  /* Only the unfiltered first page — the bootstrap knows nothing about a
+     programme filter, so serving it under one would show the wrong list. */
   const local =
-    page === 1
+    page === 1 && programme === ALL_PROGRAMMES
       ? {
           items: show.episodes ?? [],
           total: totals?.episodes ?? (show.episodes ?? []).length,
         }
       : null;
 
-  const { data, loading, ready } = useCms(`/api/podcast?page=${page}&limit=${PER_PAGE}`, {
+  const query =
+    `/api/podcast?page=${page}&limit=${PER_PAGE}` +
+    (programme === ALL_PROGRAMMES
+      ? ""
+      : `&programme=${encodeURIComponent(programme === NO_PROGRAMME ? "__none" : programme)}`);
+
+  const { data, loading, ready } = useCms(query, {
     enabled: CMS_ENABLED,
     initial: local,
   });
@@ -38,6 +51,18 @@ export default function PodcastPage() {
   const result = data ?? local;
   const count = result?.total ?? 0;
   const totalPages = Math.max(1, Math.ceil(count / PER_PAGE));
+
+  /* ⚠ An out-of-range ?page= (a stale share, a hand-typed URL) otherwise
+     renders an empty grid under a pager pointing elsewhere. Once the real
+     total is known, walk back to the last page that exists — `replace`, so
+     Back does not return to the dead address. */
+  useEffect(() => {
+    if (loading || page <= totalPages) return;
+    const q = new URLSearchParams(params);
+    if (totalPages > 1) q.set("page", String(totalPages));
+    else q.delete("page");
+    setParams(q, { replace: true });
+  }, [loading, page, totalPages, params, setParams]);
   const copy = useCopy().podcastPage;
   useScrollAnimations(ready);
 
@@ -65,8 +90,24 @@ export default function PodcastPage() {
             {copy.episodesHeading}
           </h2>
 
+          <EventFilters
+            fromNav
+            events={episodes}
+            value={programme}
+            onChange={(v) => {
+              const q = new URLSearchParams(params);
+              if (v === ALL_PROGRAMMES) q.delete("programme");
+              else q.set("programme", v);
+              /* A different filter is a different list — page 2 of the old
+                 one is not an address in the new one. */
+              q.delete("page");
+              setParams(q);
+            }}
+            className="reveal mb-8"
+          />
+
           {loading && episodes.length === 0 ? null : episodes.length === 0 ? (
-            <p className="rounded-lg border border-line bg-white p-8 text-[16px] text-muted">
+            <p className="rounded-2xl border border-line bg-white p-8 text-[16px] text-muted">
               {copy.empty}
             </p>
           ) : (
@@ -84,7 +125,10 @@ export default function PodcastPage() {
                      the card's own fallback — the programme mark — was never
                      reached. The show art already has its band above. */
                   cover={ep.cover}
-                  index={i}
+                  /* Continuous across pages — page 2 must not restart at 01.
+                     ⚠ Position within the current filter's list, which is the
+                     only honest number a filtered page has. */
+                  index={(page - 1) * PER_PAGE + i}
                 />
               ))}
             </div>

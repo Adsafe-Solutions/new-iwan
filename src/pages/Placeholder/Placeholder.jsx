@@ -22,10 +22,6 @@ export default function Placeholder({ title, intro }) {
             {copy.work}
           </Link>{" "}
           {copy.or}{" "}
-          <Link to="/zakat" className={LINK}>
-            {copy.zakat}
-          </Link>
-          .
         </p>
       </div>
     </main>

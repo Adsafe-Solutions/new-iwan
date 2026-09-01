@@ -6,9 +6,13 @@ import kids from "../../assests/logos/iwan-kids-logo.webp";
 import men from "../../assests/logos/iwan-men-logo.webp";
 import women from "../../assests/logos/iwan-women-logo.webp";
 
-/* `scale` corrects uneven padding inside the exports: the mark fills 80% of
-   the canvas on community/youth/kids, 65% on women, 53% on men. Re-export
-   those two with matching margins and every scale goes back to 1. */
+/* `scale` normalises the padding baked into each export, so every mark draws
+   its arch at the SAME width wherever these are rendered. The four programme
+   files are trimmed tight — ink fills 100% of the canvas — so they sit at 1;
+   community carries ~20% margin, hence 1.25. Re-export it trimmed and that
+   goes back to 1 too. ⚠ Measure the ink box before changing a number here;
+   men and women were left at 1.51 and 1.23 after a re-export removed the
+   padding those values were correcting, and drew half again too large. */
 export const HERO_LOGOS = [
   /* `dark` is the same mark for light grounds — the hero cycles `src`, which
      is drawn for a photograph, so anything on white reaches for this. */
@@ -17,10 +21,12 @@ export const HERO_LOGOS = [
     src: community,
     dark: communityDark,
     alt: "iwan.community",
-    scale: 1,
+    /* both community files measure ~0.80 ink width; the dark one is 0.808,
+       which is under a percent of difference and not worth a second field. */
+    scale: 1.25,
   },
-  { id: "men", src: men, alt: "Iwan Men", scale: 1.51 },
-  { id: "women", src: women, alt: "Iwan Women", scale: 1.23 },
+  { id: "men", src: men, alt: "Iwan Men", scale: 1 },
+  { id: "women", src: women, alt: "Iwan Women", scale: 1 },
   { id: "youth", src: youth, alt: "Iwan Youth", scale: 1 },
   { id: "kids", src: kids, alt: "Iwan Kids", scale: 1 },
 ];

@@ -34,7 +34,7 @@ export default function Difference() {
           {FOCUS_AREAS.map((a) => (
             <a
               className={cx(
-                "reveal group relative flex flex-col overflow-hidden rounded bg-primary shadow",
+                "reveal group relative flex flex-col overflow-hidden rounded-2xl bg-primary shadow",
                 "transition-[transform,box-shadow] duration-[350ms]",
                 "hover:-translate-y-2 hover:shadow-card",
                 /* the cards are the anchor targets for the focus-area links —

@@ -16,7 +16,9 @@ export const CMS_ENABLED = Boolean(CMS_URL);
    edge-cached response and sidesteps the whole class of bug.
 
    The timeout is what stops a slow or dead API from holding the page hostage:
-   when it fires the site renders the static content and carries on. */
+   when it fires the site renders without the CMS-owned sections and carries
+   on. ⚠ Nothing in content/base backs those four any more, so a timeout costs
+   real content — the empty states are honest, not a soft landing. */
 const TIMEOUT_MS = 3000;
 
 /* ⚠ Today as the VISITOR's calendar day, not the server's. The API filters
@@ -44,11 +46,11 @@ export async function fetchContent(code) {
     if (!res.ok) throw new Error(`CMS responded ${res.status}`);
     return await res.json();
   } catch (err) {
-    /* Never rethrow. A CMS that is down must degrade to the static content,
-       not take the site with it. */
+    /* Never rethrow. A CMS that is down must cost the site its events, blogs,
+       podcast and promo — not take the whole site with it. */
     if (import.meta.env.DEV) {
       console.warn(
-        `[cms] falling back to the static content: ${err.name === "AbortError" ? `no response in ${TIMEOUT_MS}ms` : err.message}`
+        `[cms] no content — events, blogs, podcast and promo will be empty: ${err.name === "AbortError" ? `no response in ${TIMEOUT_MS}ms` : err.message}`
       );
     }
     return null;
@@ -68,14 +70,13 @@ export async function fetchContent(code) {
    beside them under `totals`, so a listing knows whether there is a page two
    without changing any existing hook.
 
-   ⚠ A key the API omits entirely keeps its static value; a key it sends as an
-   empty list REPLACES it with an empty list. Those are different answers and
-   both are meant: "the CMS has nothing for you" is a real thing for a country
-   with no events yet, and the site already renders that state properly (the
-   homepage section disappears rather than showing a heading over an empty
-   calendar). `merge` treats `null` as a deletion, which is how the API says
-   "there is no promo to show" — the key goes away and `usePromo()` is
-   undefined, exactly as PromoPopup expects. */
+   ⚠ These four keys have no static counterpart — content/base does not carry
+   events, blogs, podcast or promo at all, so whatever the API says is the whole
+   answer. A key it omits stays absent and the matching hook returns empty;
+   `merge` treats `null` as a deletion, which is how the API says "there is no
+   promo to show". "The CMS has nothing for you" is a real answer for a country
+   with no events yet, and the site renders it properly — the homepage section
+   disappears rather than showing a heading over an empty calendar. */
 export function applyCms(snapshot, payload) {
   if (!payload) return snapshot;
 
@@ -92,8 +93,7 @@ export function applyCms(snapshot, payload) {
     ...merged,
     /* How many there are in total, per type — what a listing page reads to
        decide whether to render a pager. Absent when the CMS is off, which is
-       exactly right: the static files are the whole list, so there is no
-       page two to offer. */
+       exactly right: there is nothing to page through then. */
     totals: payload.events
       ? {
           events: payload.events.total,

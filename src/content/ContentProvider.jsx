@@ -73,9 +73,17 @@ export const useNav = () => useContent().nav;
 export const usePillars = () => useContent().pillars;
 export const useWays = () => useContent().ways;
 export const useProgrammes = () => useContent().programmes;
-export const useEvents = () => useContent().events;
-export const useBlogs = () => useContent().blogs;
-export const usePodcast = () => useContent().podcast;
+/* ⚠ The four CMS-owned reads. Nothing in content/base backs them, so with the
+   CMS off — or up but with nothing published — these return empty rather than
+   stand-in content, and every consumer already renders that state. The frozen
+   empties are shared so a re-render never hands a component a new [] and
+   retriggers a memo keyed on it. */
+const NO_ITEMS = Object.freeze([]);
+const NO_SHOW = Object.freeze({ episodes: NO_ITEMS });
+
+export const useEvents = () => useContent().events ?? NO_ITEMS;
+export const useBlogs = () => useContent().blogs ?? NO_ITEMS;
+export const usePodcast = () => useContent().podcast ?? NO_SHOW;
 export const useContact = () => useContent().contact;
 export const useTestimonials = () => useContent().testimonials;
 export const useStats = () => useContent().stats;
@@ -83,13 +91,13 @@ export const useInstagram = () => useContent().instagram;
 export const useHero = () => useContent().hero;
 export const useFocus = () => useContent().focus;
 export const useAdvisors = () => useContent().advisors;
-export const usePromo = () => useContent().promo;
+export const usePromo = () => useContent().promo ?? null;
 
 /* How many of each type EXIST, as opposed to how many are in hand. The
    bootstrap carries only the first page of each list, so a listing page needs
    this to know whether to offer a page two.
-   ⚠ Null when the CMS is off — the static files are the whole list, so there is
-   no page two to offer and a pager would be a lie. */
+   ⚠ Null when the CMS is off, and then there is nothing to page through at
+   all — the lists are empty. */
 export const useTotals = () => useContent().totals ?? null;
 
 export default ContentProvider;

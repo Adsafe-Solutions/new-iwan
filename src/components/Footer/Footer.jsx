@@ -4,6 +4,7 @@ import { useBrand, useCopy, useNav, useCountry } from "../../content/ContentProv
 import { fill } from "../../lib/fill.js";
 import { cx } from "../../lib/cx.js";
 import { subscribe } from "../../lib/forms.js";
+import { flatten, subscribeSchema } from "../../lib/validate.js";
 import Icon from "../Icon/Icon.jsx";
 import Turnstile, { TURNSTILE_ENABLED } from "../Turnstile/Turnstile.jsx";
 
@@ -23,9 +24,20 @@ export default function Footer() {
 
   const onSubscribe = async (e) => {
     e.preventDefault();
+
+    /* The client-side mirror of the API's schema — the native type="email"
+       check still runs first, this catches what it lets through and words
+       the complaint the way the server would. */
+    const checked = flatten(subscribeSchema.safeParse({ email }));
+    if (!checked.ok) {
+      setFailed(checked.fields.email);
+      setState("failed");
+      return;
+    }
+
     setState("sending");
     try {
-      await subscribe(email, { country: country.code });
+      await subscribe(checked.data.email, { country: country.code });
       setEmail("");
       setState("done");
     } catch (err) {
@@ -158,6 +170,7 @@ export default function Footer() {
                     "[font-family:inherit] placeholder:text-ink/60 focus:outline-none"
                   )}
                   type="email"
+                  maxLength={200}
                   placeholder={copy.emailPlaceholder}
                   aria-label={copy.emailLabel}
                   required
