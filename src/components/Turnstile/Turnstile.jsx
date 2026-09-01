@@ -5,6 +5,16 @@ const SCRIPT_SRC =
   "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
 const SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY;
 
+/* ⚠ Whether the widget can work at all in this build.
+
+   A caller that gates its submit button on having a token MUST check this
+   first. With no site key the widget never renders and never issues a token, so
+   `disabled={!token}` would disable the button forever — and a missing
+   anti-spam widget silently making a form unsubmittable is a far worse failure
+   than the spam it was meant to stop. Especially since the token is not yet
+   verified server-side, so it is not load-bearing security. */
+export const TURNSTILE_ENABLED = Boolean(SITE_KEY);
+
 function loadTurnstile() {
   if (window.turnstile) return Promise.resolve(window.turnstile);
 

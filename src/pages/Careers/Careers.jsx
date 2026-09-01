@@ -117,14 +117,46 @@ export default function Careers() {
       </section>
 
       {/* ===== OPEN ROLES =====
-          Says plainly that there isn't a jobs board yet, rather than
-          faking an "Apply now" flow the way the inherited template did. */}
+          Still no jobs board — but there is somewhere to put your name now,
+          which is what the two cards below are. */}
       <section className="py-16">
-        <div className={cx(CONTAINER, "mx-auto max-w-[640px] text-center")}>
+        <div className={cx(CONTAINER, "mx-auto max-w-[820px] text-center")}>
           <h2 className="reveal mb-3 text-[22px] font-black uppercase tracking-[-0.01em]">
             {copy.openRolesHeading}
           </h2>
-          <p className={cx("reveal mx-auto", BODY)}>{copy.openRolesBody}</p>
+          <p className={cx("reveal mx-auto mb-9 max-w-[62ch]", BODY)}>
+            {copy.openRolesBody}
+          </p>
+
+          <div className="grid grid-cols-2 gap-5 text-left max-phone:grid-cols-1">
+            {[
+              {
+                to: "/volunteer",
+                title: copy.applyVolunteer,
+                body: copy.applyVolunteerBody,
+              },
+              { to: "/careers", title: copy.applyCareer, body: copy.applyCareerBody },
+            ].map((card) => (
+              <Link
+                key={card.to}
+                to={card.to}
+                className={cx(
+                  "reveal group flex flex-col rounded-2xl border border-line bg-white p-7",
+                  "transition-[border-color,box-shadow,transform] duration-[250ms]",
+                  "hover:-translate-y-1 hover:border-primary hover:shadow-ecard"
+                )}
+              >
+                <span className="mb-2 flex items-center gap-2 text-[18px] font-extrabold">
+                  {card.title}
+                  <IconArrowUpRight
+                    className="h-4 w-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                    aria-hidden="true"
+                  />
+                </span>
+                <span className="text-[15px] leading-[24px] text-muted">{card.body}</span>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 

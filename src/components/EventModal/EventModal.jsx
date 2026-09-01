@@ -1,23 +1,37 @@
 import Modal from "../Modal/Modal.jsx";
 import RegisterForm from "../RegisterForm/RegisterForm.jsx";
-import { IconArrowUpRight } from "@tabler/icons-react";
-import { cx } from "../../lib/cx.js";
-import { mapEmbed, mapLink } from "../../lib/map.js";
+import VenueMap from "../VenueMap/VenueMap.jsx";
 import { useBrand, useCopy, useCountry, useNav } from "../../content/ContentProvider.jsx";
-import { fill } from "../../lib/fill.js";
 import { longDate, programmeOf } from "../../lib/events.js";
+import { useCms } from "../../hooks/useCms.js";
+import { CMS_ENABLED } from "../../content/cms.js";
 
 const LABEL =
   "mb-[0.9rem] block text-[12px] font-extrabold uppercase tracking-[0.12em] text-muted";
 
-export default function EventModal({ event, onClose }) {
+export default function EventModal({ event: card, onClose }) {
   const BRAND = useBrand();
   const copy = useCopy().eventModal;
   const eventsCopy = useCopy().events;
   const [country] = useCountry();
   const { pages } = useNav();
-  const embed = mapEmbed(event, BRAND.address);
-  const link = mapLink(event, BRAND.address);
+
+  /* ⚠ This modal shows `details`, `agenda` and `address`, and NONE of them are
+     in the homepage's card. Listings carry card fields only — that split is
+     what keeps the first payload bounded however many events exist — so the
+     full record is fetched here, when someone actually opens one.
+
+     Fetching on a deliberate click is the cheapest possible place to pay for
+     it, and GSAP is not involved: the modal animates with its own keyframes
+     (`animate-ecardIn`), not with a `.reveal` pass. */
+  const { data, loading } = useCms(`/api/events/${card.id}`, {
+    enabled: CMS_ENABLED,
+  });
+
+  /* The card is already on screen, so it renders straight away and the detail
+     fields fill in underneath. */
+  const event = { ...card, ...(data ?? {}) };
+
   const programme = programmeOf(event, pages);
 
   return (
@@ -50,12 +64,28 @@ export default function EventModal({ event, onClose }) {
       </div>
 
       <div className="flex flex-col gap-[1.9rem] p-[clamp(1.4rem,4vw,2.2rem)]">
-        <p className="text-[17px] leading-[27px] text-muted">{event.details}</p>
+        {event.details ? (
+          <p className="text-[17px] leading-[27px] text-muted">{event.details}</p>
+        ) : loading ? (
+          <span aria-hidden="true" className="flex flex-col gap-2.5">
+            {[96, 88, 70].map((w) => (
+              <span
+                key={w}
+                style={{ width: `${w}%` }}
+                className="h-4 animate-pulse rounded bg-mist"
+              />
+            ))}
+          </span>
+        ) : null}
 
         <div className="flex flex-wrap gap-[1.9rem] max-phone:gap-[1.4rem]">
           <div className="flex-[1_1_280px]">
             <span className={LABEL}>{copy.runsHeading}</span>
-            {event.agenda.map(([t, label]) => (
+            {/* ⚠ `?.` is load-bearing, not defensive habit. The modal opens on
+                the homepage CARD, which carries no agenda — the running order
+                arrives a moment later with the full record. Mapping over it
+                unguarded crashed the whole page on every open. */}
+            {event.agenda?.map(([t, label]) => (
               <div className="mb-3 flex items-baseline gap-[0.9rem]" key={t}>
                 <span className="w-[58px] flex-none text-[13px] font-extrabold text-primary">
                   {t}
@@ -68,42 +98,12 @@ export default function EventModal({ event, onClose }) {
           <div className="flex flex-[1_1_240px] flex-col">
             <span className={LABEL}>{copy.whereLabel}</span>
 
-            {embed ? (
-              /* lazy so the modal opens instantly and the tiles only load
-                 once someone actually looks at the map */
-              <iframe
-                src={embed}
-                title={fill(copy.mapTitle, { venue: event.venue })}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                className="mb-[0.8rem] h-[180px] w-full rounded border border-line"
-              />
-            ) : (
-              /* no coordinates and no address — a suggestion of a street map
-                 rather than a real one */
-              <div
-                className="relative mb-[0.8rem] h-[132px] overflow-hidden rounded border border-line bg-cloud bg-map-grid [background-size:34px_34px]"
-                aria-hidden="true"
-              >
-                <i className="absolute inset-x-0 top-[46%] h-[10px] bg-grid" />
-                <i className="absolute bottom-0 left-[62%] top-0 w-2 bg-grid" />
-                <i className="absolute left-1/2 top-[44%] h-[18px] w-[18px] -translate-x-1/2 -translate-y-full -rotate-45 rounded-[999px_999px_999px_2px] bg-primary" />
-              </div>
-            )}
-
-            <strong className="text-[15px] font-bold">{event.venue}</strong>
-            <span className="text-[14px] leading-[21px] text-muted">{event.address}</span>
-            {link && (
-              <a
-                href={link}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="mt-2 inline-flex w-fit items-center gap-1 text-[14px] font-bold text-primary underline"
-              >
-                {copy.directions}
-                <IconArrowUpRight className="h-4 w-4" stroke={2} aria-hidden="true" />
-              </a>
-            )}
+            <VenueMap
+              event={event}
+              fallback={BRAND.address}
+              copy={{ mapTitle: copy.mapTitle, directions: copy.directions }}
+              size="compact"
+            />
           </div>
         </div>
 

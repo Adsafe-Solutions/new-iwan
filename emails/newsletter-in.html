@@ -46,8 +46,59 @@
         <p style="margin: 0">
           You received this because you subscribed to Iwan India updates.
         </p>
-        <p style="margin: 8px 0 0">
-          <a href="{{{RESEND_UNSUBSCRIBE_URL}}}">Unsubscribe</a>
+        <!--
+          UNSUBSCRIBE — one-click, and the link is real: Resend replaces
+          {{{RESEND_UNSUBSCRIBE_URL}}} with the recipient's own URL when the
+          Broadcast is sent. Leave the token exactly as it is.
+
+          It renders for every recipient of a Broadcast because a Broadcast only
+          goes to contacts on the segment — by definition subscribed. A
+          TRANSACTIONAL email is different: Resend generates no token for it, so
+          the button must be gated on a contact lookup before it is shown. See
+          the README in this folder.
+        -->
+        <p style="margin: 16px 0 0">
+          <!--[if mso
+            ]><v:roundrect
+              xmlns:v="urn:schemas-microsoft-com:vml"
+              xmlns:w="urn:schemas-microsoft-com:office:word"
+              href="{{{RESEND_UNSUBSCRIBE_URL}}}"
+              style="height: 38px; v-text-anchor: middle; width: 150px"
+              arcsize="20%"
+              stroke="t"
+              strokecolor="#c8d2e4"
+              fillcolor="#ffffff"
+              ><w:anchorlock />
+              <center
+                style="
+                  color: #53627a;
+                  font-family: Arial, sans-serif;
+                  font-size: 13px;
+                  font-weight: bold;
+                "
+              >
+                Unsubscribe
+              </center></v:roundrect
+            ><!
+          [endif]-->
+          <!--[if !mso]><!-- -->
+          <a
+            href="{{{RESEND_UNSUBSCRIBE_URL}}}"
+            style="
+              display: inline-block;
+              padding: 10px 20px;
+              border: 1px solid #c8d2e4;
+              border-radius: 999px;
+              background: #ffffff;
+              color: #53627a;
+              font-size: 13px;
+              font-weight: bold;
+              line-height: 16px;
+              text-decoration: none;
+            "
+            >Unsubscribe</a
+          >
+          <!--<![endif]-->
         </p>
       </footer>
     </main>

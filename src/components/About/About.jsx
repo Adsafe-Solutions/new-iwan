@@ -38,7 +38,7 @@ export default function About() {
             <p className="mb-[1.1rem] text-[18px] leading-[29px] text-ink-2">
               Iwan began in 2020, when a group of young people in Bangalore doing pandemic
               relief work carried on meeting after the work was done. Those weekly
-              conversations turned into something steadier — a place to build character,
+              conversations turned into something steadier a place to build character,
               learn something new and look out for one another.
             </p>
             <p className="text-[18px] leading-[29px] text-ink-2">

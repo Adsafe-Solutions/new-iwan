@@ -13,7 +13,6 @@ import { cx } from "../../lib/cx.js";
    the CTA and the burger at once: below the drawer breakpoint it moves into
    the tray. They take separate labels so each keeps its own trigger ref. */
 const COUNTRY = "__country";
-const COUNTRY_TRAY = "__country-tray";
 
 /* A dropdown is either `simple` — one vertical list — or `mega`, a wider
    panel of columns each holding one or more labelled groups. Everything
@@ -51,12 +50,14 @@ function buildLinks({ pages }) {
 /* Shared by <a> and the dropdown <button> so both get the same underline. */
 const NAV_ITEM = cx(
   "relative flex items-center gap-1 whitespace-nowrap border-0 bg-transparent",
-  "cursor-pointer py-[0.3rem] text-[18px] font-bold normal-case leading-7 tracking-normal",
+  "cursor-pointer py-[0.3rem] text-[16px] font-bold normal-case leading-7 tracking-normal",
   "after:absolute after:-bottom-[3px] after:left-0 after:h-[2px] after:w-0",
   "after:transition-[width] after:duration-300 after:content-['']",
   "hover:after:w-full",
-  /* the inline bar gets tight before it gives up and becomes a drawer */
-  "max-wide:text-[16px] max-nav:text-[18px]"
+  /* The inline bar gets tight before it gives up and becomes a drawer, so it
+     steps down once more there. The drawer keeps the larger size — it is a tap
+     target with a whole row to itself, not a row competing for width. */
+  "max-wide:text-[15px] max-nav:text-[17px]"
 );
 
 /* Panels snap open and shut — `hidden` is display:none, and there is no
@@ -69,7 +70,7 @@ const PANEL = cx(
 );
 
 const PANEL_LINK = cx(
-  "group/link flex items-center gap-3 px-6 py-3.5 text-[16px] text-white",
+  "group/link flex items-center gap-3 px-6 py-3.5 text-[15px] text-white",
   "transition-colors duration-[400ms] hover:text-accent",
   "max-nav:px-4 max-nav:py-3"
 );
@@ -302,16 +303,15 @@ export default function Header({
                 </li>
               );
             })}
-            <li className="relative hidden w-full max-nav:block" key={COUNTRY_TRAY}>
-              <CountrySwitcher
-                open={menu === COUNTRY_TRAY}
-                panelId="country-menu-tray"
-                onToggle={() => toggle(COUNTRY_TRAY)}
-                onClose={close}
-                triggerRef={(el) => {
-                  triggers.current[COUNTRY_TRAY] = el;
-                }}
-              />
+            {/* ⚠ The CTA lives here below `xs`, where the bar cannot hold the
+                brand, the switcher, a button and the burger at once — and the
+                switcher is the one that has to stay reachable without opening
+                anything. `/contact-us` is not a nav entry, so without this the
+                narrowest screens would have no route to it from the header. */}
+            <li className="hidden w-full pt-2 max-xs:block">
+              <Button to="/contact-us" onClick={close} className="w-full">
+                {copy.cta}
+              </Button>
             </li>
           </ul>
         </nav>
@@ -320,7 +320,6 @@ export default function Header({
             that is supposed to close it */}
         <div className="relative z-[100] flex flex-none items-center gap-[0.9rem]">
           <CountrySwitcher
-            className="max-nav:hidden"
             open={menu === COUNTRY}
             overlay={overlay && !open}
             onToggle={() => toggle(COUNTRY)}
@@ -334,6 +333,8 @@ export default function Header({
             to="/contact-us"
             className={cx(
               "px-[1.35rem] py-[0.7rem] text-[13px] leading-[18px]",
+              /* Below `xs` it moves into the tray — see the note there. */
+              "max-xs:hidden",
               /* `!` because Tailwind orders utilities by property, not by the
                  order they appear in the attribute — the variant's own
                  text-white would otherwise win over this one */

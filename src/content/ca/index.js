@@ -1,5 +1,5 @@
-/* Canada runs all four programmes in nav, but only Youth and Men have real
-   Canadian content today — Kids and Women stay in the nav (so the tile,
+/* Canada runs all four programmes in nav, but only Men has real Canadian
+   content today — Kids, Women and Youth stay in the nav (so the tile,
    the route and the homepage link all still exist) with their
    `programmes.content` entry nulled. That makes `Programme` render nothing,
    so App.jsx's routing falls through to the `Placeholder` stub instead — the
@@ -8,39 +8,64 @@
    copy. See ../ops.js for `null`-deletes-a-key. */
 import feed from "./instagram-feed.json";
 
-const instagramUrl = "https://www.instagram.com/iwan.community.canada?utm_source=qr";
+/* Canada's own accounts. X and YouTube are not overridden — those are shared,
+   so they stay inherited rather than being restated here. */
+const INSTAGRAM_URL = "https://www.instagram.com/iwan.community.canada?utm_source=qr";
+const FACEBOOK_URL = "https://www.facebook.com/share/17JTta6ADU/?mibextid=wwXIfr";
 
 export default {
+  /* Canada's own number and address. All three are overridden together: the
+     digits feed wa.me and tel:, `phone` is what is printed, and every surface
+     that shows either — the contact page, the programme "talk to us" panel,
+     the WhatsApp button, the event modal's map fallback — reads them off
+     brand, so this block is the whole change. */
   brand: {
+    whatsapp: "12896254455",
+    phone: "+1 (289) 625-4455",
+    address: "1418-1423 Mississauga Vly Blvd, Mississauga, ON L5A 4A5",
+
+    /* A function override is handed the base list and returns the new one, so
+       only the two accounts that differ are named — X and YouTube keep their
+       inherited hrefs. Replacing the array outright would mean restating all
+       four here, and a new social added to base would then never reach Canada.
+       The footer and the contact page both read brand.socials. */
     socials: (socials) =>
       socials.map((social) => {
-        if (social.icon === "instagram") return { ...social, href: instagramUrl };
-        if (social.icon === "facebook") {
-          return {
-            ...social,
-            href: "https://www.facebook.com/share/17JTta6ADU/?mibextid=wwXIfr",
-          };
-        }
+        if (social.icon === "instagram") return { ...social, href: INSTAGRAM_URL };
+        if (social.icon === "facebook") return { ...social, href: FACEBOOK_URL };
         return social;
       }),
   },
+
+  /* The homepage wall's handle and its "view us on Instagram" link point at the
+     Canadian account. `posts` are deliberately NOT overridden while
+     ca/instagram-feed.json is still empty — an empty list would replace base's
+     and leave the section blank. Once the workflow fills that file, the spread
+     below starts using it and the wall goes live for Canada on its own. */
   instagram: {
     handle: "@iwan.community.canada",
-    url: instagramUrl,
-    posts: (feed.posts ?? []).map((post) => ({
-      img: post.img,
-      href: post.href,
-      label: post.caption
-        ? `Instagram post: ${post.caption}`
-        : "View this post on Instagram",
-    })),
-    isLive: (feed.posts ?? []).length > 0,
+    url: INSTAGRAM_URL,
+    ...(feed.posts?.length
+      ? {
+          posts: feed.posts.map((post) => ({
+            img: post.img,
+            href: post.href,
+            label: post.caption
+              ? `Instagram post: ${post.caption}`
+              : "View this post on Instagram",
+          })),
+          isLive: true,
+        }
+      : {}),
   },
-  programmes: { content: { "iwan-kids": null, "iwan-women": null } },
+
+  programmes: {
+    content: { "iwan-kids": null, "iwan-women": null, "iwan-youth": null },
+  },
 };
 
-/* ⚠ Everything else is still inherited from India — the Bangalore address, the
-   +91 WhatsApp number, the "started in Bangalore in 2020" story.
+/* ⚠ Everything else is still inherited from India — the "started in Bangalore
+   in 2020" story included.
 
    Events are the exception: they live in one list in base/events.js and carry
    their own `country`, so Canada shows only the ones tagged for it rather than
@@ -49,11 +74,8 @@ export default {
    Nothing above has been invented; these are the keys that need real Canadian
    values before this country is shown publicly:
 
-     brand.address        · the map fallback in the event modal reads this
-     brand.whatsapp       · digits only, country code first
      brand.email          · if it differs
-     programmes.contact   · phone + address on Youth and Men's programme pages
-     programmes.content   · Youth and Men's copy, if Canada's differs; Kids and
-                             Women stay "coming soon" until there is real content
+     programmes.content   · Men's copy, if Canada's differs; Kids, Women and
+                             Youth stay "coming soon" until there is real content
      testimonials         · ⚠ real quotes from real people — never invent these
 */

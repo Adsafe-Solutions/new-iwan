@@ -1,0 +1,106 @@
+import { ENV } from "../config/env.js";
+import { merge } from "./merge.js";
+
+export const CMS_URL = (ENV.cmsApiUrl ?? "").replace(/\/$/, "");
+
+export const CMS_ENABLED = Boolean(CMS_URL);
+
+/* ⚠ One request, before the first render, with a hard timeout — NOT a fetch
+   that lands later and swaps the content in.
+
+   That is not a performance choice, it is a correctness one. `useGsap` scans
+   the DOM once per mount and animates what it finds; anything that appears
+   afterwards is stranded at `opacity: 0` forever (see the `.reveal` note in
+   CLAUDE.md). Content arriving mid-session would hit exactly that, on every
+   section it touched. Fetching first costs one round trip against an
+   edge-cached response and sidesteps the whole class of bug.
+
+   The timeout is what stops a slow or dead API from holding the page hostage:
+   when it fires the site renders the static content and carries on. */
+const TIMEOUT_MS = 3000;
+
+/* ⚠ Today as the VISITOR's calendar day, not the server's. The API filters
+   upcoming events against this, so a server in UTC never decides that an event
+   happening this evening is already in the past for someone reading in the
+   morning. Built field-by-field for the same reason the site never calls
+   `new Date("2026-08-21")` — see lib/events.js. */
+export const todayKey = () => {
+  const d = new Date();
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+};
+
+export async function fetchContent(code) {
+  if (!CMS_ENABLED) return null;
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+
+  try {
+    const res = await fetch(`${CMS_URL}/api/content?country=${code}&from=${todayKey()}`, {
+      signal: controller.signal,
+      headers: { accept: "application/json" },
+    });
+    if (!res.ok) throw new Error(`CMS responded ${res.status}`);
+    return await res.json();
+  } catch (err) {
+    /* Never rethrow. A CMS that is down must degrade to the static content,
+       not take the site with it. */
+    if (import.meta.env.DEV) {
+      console.warn(
+        `[cms] falling back to the static content: ${err.name === "AbortError" ? `no response in ${TIMEOUT_MS}ms` : err.message}`
+      );
+    }
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/* ⚠ The bootstrap carries the FIRST PAGE of each list, not the whole list, and
+   its size is bounded no matter how much content exists. Everything past page
+   one — and every detail record, which is where the weight is — is fetched by
+   the route that needs it (see hooks/useCms.js).
+
+   The lists arrive as `{ items, total, page, limit }` and are unwrapped to plain
+   arrays here, because that is the shape every component already reads:
+   `useEvents()` returns an array and always has. The paging metadata is kept
+   beside them under `totals`, so a listing knows whether there is a page two
+   without changing any existing hook.
+
+   ⚠ A key the API omits entirely keeps its static value; a key it sends as an
+   empty list REPLACES it with an empty list. Those are different answers and
+   both are meant: "the CMS has nothing for you" is a real thing for a country
+   with no events yet, and the site already renders that state properly (the
+   homepage section disappears rather than showing a heading over an empty
+   calendar). `merge` treats `null` as a deletion, which is how the API says
+   "there is no promo to show" — the key goes away and `usePromo()` is
+   undefined, exactly as PromoPopup expects. */
+export function applyCms(snapshot, payload) {
+  if (!payload) return snapshot;
+
+  const override = {};
+
+  if (payload.events) override.events = payload.events.items;
+  if (payload.blogs) override.blogs = payload.blogs.items;
+  if (payload.podcast) override.podcast = payload.podcast;
+  if ("promo" in payload) override.promo = payload.promo;
+
+  const merged = merge(snapshot, override);
+
+  return {
+    ...merged,
+    /* How many there are in total, per type — what a listing page reads to
+       decide whether to render a pager. Absent when the CMS is off, which is
+       exactly right: the static files are the whole list, so there is no
+       page two to offer. */
+    totals: payload.events
+      ? {
+          events: payload.events.total,
+          blogs: payload.blogs?.total ?? 0,
+          episodes: payload.podcast?.total ?? 0,
+          perPage: payload.blogs?.limit ?? 6,
+        }
+      : null,
+  };
+}

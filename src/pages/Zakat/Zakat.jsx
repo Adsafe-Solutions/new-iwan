@@ -27,14 +27,14 @@ const STEPS = [
 ];
 
 const CATEGORIES = [
-  "The Poor — al-Fuqarā'",
-  "The Needy — al-Masākīn",
-  "Zakat Administrators — al-ʿĀmilīn",
-  "Reconciliation of Hearts — al-Muʾallafah",
-  "Freeing Captives — fir-Riqāb",
-  "Those in Debt — al-Ghārimīn",
-  "In the Cause of God — fī Sabīlillāh",
-  "The Wayfarer — Ibn as-Sabīl",
+  "The Poor al-Fuqarā'",
+  "The Needy al-Masākīn",
+  "Zakat Administrators al-ʿĀmilīn",
+  "Reconciliation of Hearts al-Muʾallafah",
+  "Freeing Captives fir-Riqāb",
+  "Those in Debt al-Ghārimīn",
+  "In the Cause of God fī Sabīlillāh",
+  "The Wayfarer Ibn as-Sabīl",
 ];
 
 const BADGES = [
@@ -51,7 +51,7 @@ const FAQ = [
   ],
   [
     "How do I calculate my Zakat?",
-    "Total your zakatable assets — cash, savings, gold, silver and investments — subtract eligible liabilities, and pay 2.5% on the remainder if it exceeds the nisab. Our calculator does this for you.",
+    "Total your zakatable assets cash, savings, gold, silver and investments subtract eligible liabilities, and pay 2.5% on the remainder if it exceeds the nisab. Our calculator does this for you.",
   ],
   [
     "Who can receive Zakat according to Islamic law?",
@@ -151,7 +151,7 @@ export default function Zakat() {
           administered with unwavering integrity.
         </p>
         <p className="mb-[0.8rem] text-[16px] font-semibold leading-[26px] text-ink-2">
-          Scholar verified — your Zakat is distributed in strict Sharia compliance.
+          Scholar verified your Zakat is distributed in strict Sharia compliance.
         </p>
         <Button href="#zcalc" className="my-2 w-full p-4 text-[16px]">
           Give Zakat →
@@ -188,7 +188,7 @@ export default function Zakat() {
           )}
         >
           <h2 className="reveal text-[clamp(2rem,4vw,48px)] font-black leading-[1.25] tracking-[-0.01em] [&>b]:text-primary">
-            Today, <b>690 million</b> people face hunger — and billions in Zakat go
+            Today, <b>690 million</b> people face hunger and billions in Zakat go
             uncollected every year. Your <b>2.5%</b> can change everything.
           </h2>
 
@@ -217,7 +217,7 @@ export default function Zakat() {
             <blockquote className="text-[23px] font-normal italic leading-[31.6px] text-quote">
               "Take from their wealth a charity by which you purify them."{" "}
               <cite className="mt-2 block text-[20px] font-bold not-italic leading-[30px] text-white">
-                — Qur'an 9:103
+                Qur'an 9:103
               </cite>
             </blockquote>
           </div>
@@ -347,7 +347,7 @@ export default function Zakat() {
               "Take from their wealth a charity to purify them…"
             </blockquote>
             <cite className="mt-2 font-serif text-[16px] font-bold not-italic text-primary">
-              — Qur'an 9:103
+              Qur'an 9:103
             </cite>
           </div>
         </div>
@@ -362,7 +362,7 @@ export default function Zakat() {
             an act of mercy.
           </>
         }
-        body="Your generosity feeds the hungry, heals the sick and brings dignity to families in need — wherever borders have put them out of reach."
+        body="Your generosity feeds the hungry, heals the sick and brings dignity to families in need wherever borders have put them out of reach."
         img="https://images.unsplash.com/photo-1509099836639-18ba1795216d?q=80&w=900&auto=format&fit=crop"
       >
         <Button href="#zcalc" variant="yellow">

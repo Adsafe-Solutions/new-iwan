@@ -2,6 +2,7 @@ import { DEFAULT_COUNTRY } from "../config/countries.js";
 import { BASE_CONTENT } from "./base/index.js";
 import { merge } from "./merge.js";
 import { eventsForCountry } from "../lib/events.js";
+import { applyCms, fetchContent, CMS_ENABLED } from "./cms.js";
 
 /* Country folders are discovered rather than imported by name, so adding
    src/content/<code>/index.js is all it takes — there is no list here to keep
@@ -14,25 +15,57 @@ const OVERRIDES = Object.fromEntries(
     .filter(([code]) => code !== "base")
 );
 
-export const COUNTRY_CODES = Object.keys(OVERRIDES);
+const COUNTRY_CODES = Object.keys(OVERRIDES);
 
 const cache = new Map();
 
-/* Synchronous today because the content is static. When it moves to the CMS
-   this becomes the fallback the API response is merged onto, which is also
-   what renders before the request lands. */
+/* base → country override → (optionally) the CMS, in that order.
+
+   Order matters. The country folder is a deliberate editorial decision made in
+   code — Canada runs three programmes, not four — and the CMS is the live
+   content on top of it. Reversing the two would let a CMS row reintroduce
+   something a country has explicitly dropped. */
+const build = (code, cms) => {
+  const snapshot = applyCms(merge(BASE_CONTENT, OVERRIDES[code]), cms);
+
+  /* Events are the one list kept whole across countries and split by their own
+     `country` field — see content/base/events.js. Filtering after the merge
+     means a country override of `events` is filtered too.
+
+     ⚠ The CMS has already filtered its own list server-side, so this is a
+     no-op for CMS content. It stays because the STATIC list has not been
+     filtered, and this is the same function either way. */
+  return { ...snapshot, events: eventsForCountry(snapshot.events, code) };
+};
+
+/* ⚠ Synchronous, and it has to stay that way. Every hook in ContentProvider
+   and `setCountry`'s "does the target country have this page?" check read it
+   during render. `primeContent` below is what makes the CMS data available to
+   it — by having already resolved before the app renders at all. */
 export function resolveContent(code = DEFAULT_COUNTRY) {
-  if (!cache.has(code)) {
-    const snapshot = merge(BASE_CONTENT, OVERRIDES[code]);
-    /* Events are the one list kept whole across countries and split here by
-       their own `country` field — see content/base/events.js. Filtering after
-       the merge means a country override of `events` is filtered too. */
-    cache.set(code, {
-      ...snapshot,
-      events: eventsForCountry(snapshot.events, code),
-    });
-  }
+  if (!cache.has(code)) cache.set(code, build(code, null));
   return cache.get(code);
+}
+
+/* Fetches the CMS once and folds it into the cache, so the synchronous
+   `resolveContent` above returns CMS-backed content from the first render.
+
+   Called by main.jsx and AWAITED before the app mounts. See cms.js for why it
+   is a blocking fetch rather than a swap-it-in-later one — the short version is
+   that GSAP scans the DOM once per mount, and content that arrives afterwards
+   never becomes visible.
+
+   A no-op when VITE_CMS_API_URL is unset, which is the pre-cutover default. */
+export async function primeContent(code = DEFAULT_COUNTRY) {
+  if (!CMS_ENABLED) return false;
+
+  const payload = await fetchContent(code);
+  /* Null means the request failed or timed out. cms.js has already logged it;
+     leaving the cache alone means the static content is what renders. */
+  if (!payload) return false;
+
+  cache.set(code, build(code, payload));
+  return true;
 }
 
 export default resolveContent;

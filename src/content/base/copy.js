@@ -32,8 +32,8 @@ export const COPY = {
   },
 
   hero: {
-    kicker: "Believe · Act · Serve — Thrive",
-    body: "Iwan is a community hub in Bangalore — classes, workshops, mentoring and volunteering, built around faith, good character and the kind of friendship that outlasts the session. Everyone is welcome.",
+    kicker: "Believe · Act · Serve Thrive",
+    body: "Iwan is a community hub in Bangalore classes, workshops, mentoring and volunteering, built around faith, good character and the kind of friendship that outlasts the session. Everyone is welcome.",
     cta: "Get Involved",
     prevSlide: "Previous slide",
     nextSlide: "Next slide",
@@ -53,19 +53,10 @@ export const COPY = {
   /* "A hub where people come together" is Iwan's own line, from the live site's
      homepage — kept because it is the organisation describing itself. */
   trustedBy: {
-    eyebrow: "Four ways in",
-    headingLines: [
-      "A hub where people",
-      { mark: "come together" },
-      "and keep coming back.",
-    ],
+    eyebrow: "One community, four programmes",
+    headingLines: ["Reviving Muslim Identity,", { mark: "one step at a time" }],
   },
 
-  /* The four values named in the body are Iwan's own, from the vision
-     statement on the live site — God-Consciousness, Good Manners, Generosity,
-     Prosperity — and each card below names the one it serves. The sessions are
-     real ones, so the abstract commitments land on something a visitor can
-     picture. */
   pillars: {
     heading: "What holds it all",
     mark: "together",
@@ -73,8 +64,22 @@ export const COPY = {
   },
 
   takeAction: {
-    heading: "Find the one",
-    mark: "that's yours",
+    heading: "The programmes",
+    mark: "we run",
+  },
+
+  /* the eight tracks themselves are in ways.js — they name real activities */
+  waysToConnect: {
+    heading: "Ways to",
+    mark: "connect",
+    body: "Whatever is on this week belongs to one of these. Some are a room you sit in, some are a project you take on pick the one that sounds like you.",
+  },
+
+  programmeDeck: {
+    heading: "There’s a room here",
+    mark: "for you",
+    body: "Every programme is its own community the same values, a different room. Start with the one that sounds like you.",
+    cta: "Explore {label}",
   },
 
   events: {
@@ -88,7 +93,7 @@ export const COPY = {
     prevMonth: "Previous month",
     nextMonth: "Next month",
     dayLabel: "{count} event{s} on {date}",
-    hint: "Highlighted days have events — select one to filter.",
+    hint: "Highlighted days have events select one to filter.",
     clearFilter: "Clear filter",
     /* the chip on an event that is not tied to one programme */
     community: "Open to all",
@@ -130,21 +135,20 @@ export const COPY = {
     eyebrow: "Get in touch",
     heading: "We'd love to hear",
     mark: "from you",
-    body: "We're here to assist you with any questions, support, or partnership inquiries — reach out to us today.",
+    body: "A question, an idea, or you just want to know when the next session is write to us and someone will answer.",
     cta: "Contact us",
   },
 
-  /* /careers-and-volunteering. No jobs board exists yet — `openRolesBody`
-     says so plainly rather than faking an "Apply now" flow, the same
-     honesty the contact form's `form.note` already carries. */
+  /* /careers-and-volunteering. There is still no jobs board; what there is now
+     is a way to put your name forward, which is what `applyHeading` below
+     points at. */
   careers: {
     eyebrow: "Careers & volunteering",
     heading: "Iwan runs on the people who",
     mark: "show up for it.",
     body: "Every class, workshop and gathering happens because someone gave their time and skills to it. If you want to be one of them, this is where to start.",
     stepsHeading: "How it works",
-    stepsSubtitle:
-      "There's no application form and no waiting list — just a conversation.",
+    stepsSubtitle: "There's no waiting list send us your details and we'll talk.",
     steps: [
       {
         title: "Reach out",
@@ -165,11 +169,15 @@ export const COPY = {
     ],
     waysEyebrow: "Where you can help",
     waysBody:
-      "Every programme runs on volunteers — pick the one that fits your time and skills, or talk to us if you're not sure.",
+      "Every programme runs on volunteers pick the one that fits your time and skills, or talk to us if you're not sure.",
     waysCta: "See the programme",
     openRolesHeading: "Open roles",
     openRolesBody:
-      "There's nothing listed here right now. Reach out below and tell us what you'd like to do, and we'll be in touch when something opens up.",
+      "There's nothing listed here right now. Send us your details anyway and we'll be in touch when something opens up.",
+    applyVolunteer: "Volunteer with us",
+    applyVolunteerBody: "Tell us what you'd enjoy helping with and when you're free.",
+    applyCareer: "Work with us",
+    applyCareerBody: "Tell us what you do and what you're looking for next.",
   },
 
   /* the /blogs page and each post's own /blogs/<slug> page */
@@ -232,7 +240,7 @@ export const COPY = {
   testimonials: {
     heading: "In their",
     mark: "own words",
-    body: "Members on the sessions they have been to — gardening, Taekwondo, first aid, entrepreneurship, and whatever is on next.",
+    body: "Members on the sessions they have been to gardening, Taekwondo, first aid, entrepreneurship, and whatever is on next.",
     carousel: "Member testimonials",
     prev: "Previous testimonial",
     next: "Next testimonial",
@@ -246,6 +254,42 @@ export const COPY = {
     cta: "View us on Instagram",
   },
 
+  /* The homepage accordion, closing the page on the questions people
+     arrive with. Nothing here states a fee, a schedule or a headcount —
+     only what the rest of the site already says. */
+  faq: {
+    eyebrow: "✦ Before you come",
+    heading: "Frequently asked",
+    mark: "questions",
+    body: "The things people ask before their first session. Anything else, just write to us.",
+    items: [
+      [
+        "Who is Iwan for?",
+        "Anyone who wants to be part of it. Iwan runs four programmes Men, Women, Youth and Kids and between them they cover most ages and stages. You do not need to be invited, introduced or already know somebody there.",
+      ],
+      [
+        "Do I have to be a member to come to something?",
+        "No. Sessions and events are open, and most people start by turning up to one thing that caught their eye rather than by signing up to anything.",
+      ],
+      [
+        "How do I join a session or an event?",
+        "Everything coming up is on the events page, and each one has its own registration form with whatever that particular session needs to know. Register there and you are on the list.",
+      ],
+      [
+        "What actually happens at a session?",
+        "It depends on the programme classes, workshops, mentoring and volunteering, from Taekwondo and gardening to first aid, Web 3.0 and entrepreneurship. The blogs and the Instagram wall are the honest picture of what a session looks like.",
+      ],
+      [
+        "Can I volunteer or help run things?",
+        "Yes, and that is how a lot of Iwan gets done. The careers and volunteering page lists what is open; if nothing fits, tell us what you would like to do.",
+      ],
+      [
+        "How do I get in touch?",
+        "Use the contact page and the message reaches us directly. WhatsApp works too, and we are on Instagram, X, YouTube and Facebook.",
+      ],
+    ],
+  },
+
   eventModal: {
     runsHeading: "How the day runs",
     whereLabel: "Where",
@@ -254,6 +298,7 @@ export const COPY = {
     register: "Register",
     free: "Free to attend · everyone welcome",
     formHeading: "Save your place",
+    subscribeLabel: "Keep me posted about Iwan events and news",
     nameLabel: "Your name",
     namePlaceholder: "First and last",
     emailLabel: "Email",
@@ -264,10 +309,27 @@ export const COPY = {
     cancel: "Cancel",
     doneHeading: "You’re in{name}",
     doneBody: "We’ve noted your place at {title} on {date}.",
+
+    /* The registration form is built per event in the CMS, so the QUESTIONS
+       are content and live there. What stays here is the furniture around
+       them — the words the form itself says, whatever it asks. */
+    required: "required",
+    firstName: "First Name",
+    lastName: "Last Name",
+    choosePlaceholder: "Choose one",
+    sending: "Sending…",
+    /* ⚠ Deliberately vague about the cause. The person filling this in cannot
+       act on "the database refused it", and the specifics are in the field
+       errors underneath when there are any. */
+    failed: "That did not go through. Please check the form and try again.",
+    offline: "We could not reach the server. Please try again in a moment.",
+    full: "This event is full.",
+    fixBelow: "Please check the highlighted answers.",
   },
 
   footer: {
-    blurb: "Be the first to hear about our impact and new volunteer opportunities.",
+    subscribeDone: "Thank you you are on the list.",
+    blurb: "What's on, what we've been up to, and where you can lend a hand.",
     programmesHeading: "Programmes",
     follow: "Follow along",
     subscribeHeading: "Subscribe to receive updates",
@@ -285,10 +347,16 @@ export const COPY = {
   },
 
   programme: {
-    cta: "Get involved",
-    sessionsCta: "What's on",
-    sessionsHeading: "What's",
-    sessionsMark: "on",
+    /* the hero CTA opens /events already filtered to this programme */
+    cta: "Explore {programme} Events",
+    sessionsCta: "See the sessions",
+    /* the hero's second CTA on a programme with `work` but no `sessions` */
+    workCta: "What you'd be doing",
+    /* "What's on" read like an events listing, which this is not: these are
+       the sessions a programme has actually run, not a calendar of what is
+       coming. `work` next to it carries the shape of taking part. */
+    sessionsHeading: "Sessions",
+    sessionsMark: "so far",
     allStrands: "All",
     aboutEyebrow: "About {programme}",
     pillarsHeading: "Where this sits in the mission",
@@ -315,7 +383,7 @@ export const COPY = {
   comingSoon: {
     badge: "Coming soon",
     heading: "is coming soon.",
-    body: "{label} hasn't launched in this country yet — {intro}",
+    body: "{label} hasn't launched in this country yet {intro}",
     home: "See our other programmes",
     contact: "Get in touch",
   },

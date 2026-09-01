@@ -86,6 +86,19 @@ export const palette = {
   whatsapp: "#25d366",
   whatsappDark: "#1da851",
 
+  /* the "ways to connect" marks, sampled from the three logo exports the
+     designer has delivered so far, so a card's rule and its arch agree.
+     The other five tracks borrow one of these until their own mark lands —
+     see content/base/ways.js. */
+  wayRead: "#0495bb",
+  wayCreate: "#fee01b",
+  wayCafe: "#ff0000",
+  /* the plate each mark sits on, tinted the same way the programme softs
+     above are — the mark has to read on it, and #fee01b does not on white */
+  wayReadSoft: "#e8f5f9",
+  wayCreateSoft: "#fffcea",
+  wayCafeSoft: "#ffe8e8",
+
   /* fixed accents (focus areas, donate button) */
   red: "#e11d2a",
   redDark: "#c2161f",
@@ -105,7 +118,7 @@ export const themes = {
     blue: "#244967",
     blueDark: "#1d3b54",
     blue800: "#1b374e",
-    yellow: "#f9be00",
+    yellow: "#FBBD31",
     yellow2: "#e8e347",
     teal: "#3993b5",
   },
@@ -113,7 +126,7 @@ export const themes = {
     blue: "#0b7a4b",
     blueDark: "#085f3a",
     blue800: "#074f30",
-    yellow: "#ffce3f",
+    yellow: "#FFC107",
     yellow2: "#f3bf22",
     teal: "#34d399",
   },
@@ -121,7 +134,7 @@ export const themes = {
     blue: "#5a2ca0",
     blueDark: "#47237e",
     blue800: "#3d1f6e",
-    yellow: "#ffc93c",
+    yellow: "#FFC107",
     yellow2: "#f0b41f",
     teal: "#a78bfa",
   },
@@ -129,7 +142,7 @@ export const themes = {
     blue: "#d01e2b",
     blueDark: "#a91724",
     blue800: "#8f131f",
-    yellow: "#ffd23f",
+    yellow: "#FFC107",
     yellow2: "#f5c518",
     teal: "#f2707a",
   },
@@ -230,6 +243,11 @@ export default {
         ),
         whatsapp: { DEFAULT: palette.whatsapp, dark: palette.whatsappDark },
         red: { DEFAULT: palette.red, dark: palette.redDark },
+        way: {
+          read: { DEFAULT: palette.wayRead, soft: palette.wayReadSoft },
+          create: { DEFAULT: palette.wayCreate, soft: palette.wayCreateSoft },
+          cafe: { DEFAULT: palette.wayCafe, soft: palette.wayCafeSoft },
+        },
         pink: palette.pink,
         green: palette.green,
         amber: palette.amber,

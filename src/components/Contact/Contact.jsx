@@ -51,7 +51,7 @@ export default function Contact() {
 
         <p className="reveal mb-[2rem] text-[18px] leading-[29px] text-white/70">
           Questions, ideas, a session you want to run, or you just fancy coming along to
-          something — say hello. We answer every message.
+          something say hello. We answer every message.
         </p>
 
         <div className="reveal mb-[2.6rem] flex flex-wrap justify-center gap-4">

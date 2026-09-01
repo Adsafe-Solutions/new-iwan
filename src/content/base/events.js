@@ -40,9 +40,9 @@ export const EVENTS = [
     venue: "Iwan Hall, Main Street",
     programme: null,
     img: u("1511578314322-379afb476865"),
-    summary: "Food, conversation and a short reminder — everyone welcome.",
+    summary: "Food, conversation and a short reminder everyone welcome.",
     details:
-      "Our monthly sit-down for the whole community. Doors open at 6:30pm, food is served at 7, and we close with a short reminder and tea. Children are welcome and there is a supervised play corner. Come alone or bring the family — most people arrive not knowing anyone and leave with a table full of friends.",
+      "Our monthly sit-down for the whole community. Doors open at 6:30pm, food is served at 7, and we close with a short reminder and tea. Children are welcome and there is a supervised play corner. Come alone or bring the family most people arrive not knowing anyone and leave with a table full of friends.",
     agenda: [
       ["18:30", "Doors open, tea and settling in"],
       ["19:00", "Food served, open tables"],
@@ -63,7 +63,7 @@ export const EVENTS = [
     venue: "Iwan Community Room",
     programme: "/iwan-women",
     img: u("1552664730-d307ca884978"),
-    summary: "A relaxed morning circle — study, discussion and a proper cup of tea.",
+    summary: "A relaxed morning circle study, discussion and a proper cup of tea.",
     details:
       "A monthly circle for women of every age. We read together for the first hour, then open the floor for discussion over tea and cake. No prior study is expected and there is no obligation to speak. Babies and toddlers are welcome in the room.",
     agenda: [
@@ -88,7 +88,7 @@ export const EVENTS = [
     img: u("1521737711867-e3b97375f902"),
     summary: "Two days of workshops, outdoor challenges and planning the year ahead.",
     details:
-      "Our flagship weekend for 13–18s. Saturday is workshops — public speaking, project planning and running an event from scratch. Sunday moves outdoors for team challenges, then the group sets the youth programme for the coming year. Places are limited and transport can be arranged.",
+      "Our flagship weekend for 13–18s. Saturday is workshops public speaking, project planning and running an event from scratch. Sunday moves outdoors for team challenges, then the group sets the youth programme for the coming year. Places are limited and transport can be arranged.",
     agenda: [
       ["09:30", "Arrival and team split"],
       ["10:00", "Workshop: speaking with confidence"],
@@ -133,9 +133,9 @@ export const EVENTS = [
     venue: "Meet at Iwan Hall",
     programme: "/iwan-men",
     img: u("1454165804606-c3d57bc86b40"),
-    summary: "A morning of practical work across the neighbourhood — all hands welcome.",
+    summary: "A morning of practical work across the neighbourhood all hands welcome.",
     details:
-      "We split into small teams and take on jobs around the neighbourhood: garden clearing for elderly neighbours, painting at the community centre, and a litter sweep along the river path. Tools, gloves and lunch are provided. No skills needed — just turn up.",
+      "We split into small teams and take on jobs around the neighbourhood: garden clearing for elderly neighbours, painting at the community centre, and a litter sweep along the river path. Tools, gloves and lunch are provided. No skills needed just turn up.",
     agenda: [
       ["08:00", "Breakfast and team briefing"],
       ["08:45", "Teams head out"],
@@ -158,7 +158,7 @@ export const EVENTS = [
     img: u("1523240795612-9a054b0db644"),
     summary: "New to the area? Come and meet the people behind every programme.",
     details:
-      "An informal evening for anyone who has recently joined the community or is simply curious. Each programme lead gives a short introduction, then it is open floor over refreshments. Bring your questions — this is the easiest way to find where you fit.",
+      "An informal evening for anyone who has recently joined the community or is simply curious. Each programme lead gives a short introduction, then it is open floor over refreshments. Bring your questions this is the easiest way to find where you fit.",
     agenda: [
       ["19:00", "Doors open, refreshments"],
       ["19:20", "Programme leads introduce themselves"],

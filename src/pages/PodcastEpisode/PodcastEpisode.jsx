@@ -2,8 +2,11 @@ import { Link, useParams } from "react-router-dom";
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
 import { useScrollAnimations } from "../../hooks/useGsap.js";
 import AudioPlayer from "../../components/AudioPlayer/AudioPlayer.jsx";
+import VideoPlayer from "../../components/VideoPlayer/VideoPlayer.jsx";
 import ContactCta from "../../components/ContactCta/ContactCta.jsx";
 import { useCopy, usePodcast } from "../../content/ContentProvider.jsx";
+import { useCms } from "../../hooks/useCms.js";
+import { CMS_ENABLED } from "../../content/cms.js";
 import { fill } from "../../lib/fill.js";
 import { cx } from "../../lib/cx.js";
 import { KICKER } from "../../lib/type.js";
@@ -26,11 +29,30 @@ export default function PodcastEpisode() {
   const show = usePodcast();
   const listCopy = useCopy().podcastPage;
   const copy = useCopy().podcastEpisode;
-  useScrollAnimations();
+
+  /* ⚠ Fetched by slug rather than looked up in the bootstrap. The bootstrap
+     holds only the first page of episodes, so finding it in that list meant
+     every episode past the sixth rendered "not found" for a URL that is real
+     and shareable — the worst way to fail, because it reads as the episode
+     never having existed. */
+  const { data, loading, ready } = useCms(`/api/podcast/${slug}`, {
+    enabled: CMS_ENABLED,
+  });
 
   const episodes = show.episodes ?? [];
   const index = episodes.findIndex((ep) => ep.id === slug);
-  const episode = index === -1 ? null : episodes[index];
+
+  const episode = data ?? (index === -1 ? null : episodes[index]);
+
+  useScrollAnimations(ready);
+
+  if (!episode && loading) {
+    return (
+      <main className="grid min-h-[60vh] place-items-center">
+        <p className="text-[15px] text-muted">{copy.back}…</p>
+      </main>
+    );
+  }
 
   /* An episode a country doesn't carry (or a stale link) still has a
      shareable URL, so a miss is a normal state rather than an error — same
@@ -51,7 +73,11 @@ export default function PodcastEpisode() {
     );
   }
 
-  const next = episodes[index + 1];
+  /* ⚠ Both of these are read from the bootstrap's first page, which is the only
+     list this page has. An episode beyond it still renders correctly — it was
+     fetched by slug — but has no neighbour to offer and no position to print,
+     so each is simply left out rather than guessed at. */
+  const next = index === -1 ? null : episodes[index + 1];
 
   return (
     <main>
@@ -67,7 +93,9 @@ export default function PodcastEpisode() {
 
           <div className="reveal mb-4 flex flex-wrap items-center gap-3">
             <span className="inline-block rounded-full bg-primary/[0.08] px-3 py-1 text-[12px] font-extrabold uppercase tracking-[0.14em] text-primary">
-              {fill(listCopy.episode, { n: String(index + 1).padStart(2, "0") })}
+              {index === -1
+                ? listCopy.episodesHeading
+                : fill(listCopy.episode, { n: String(index + 1).padStart(2, "0") })}
             </span>
             {episode.author && (
               <span className="text-[13px] font-semibold text-muted">
@@ -84,14 +112,28 @@ export default function PodcastEpisode() {
 
       <section className="pb-12">
         <div className={cx(CONTAINER, "mx-auto max-w-[820px]")}>
-          <AudioPlayer
-            className="reveal"
-            src={episode.audio}
-            cover={episode.cover ?? show.cover}
-            title={episode.title}
-            author={episode.author}
-            length={episode.length}
-          />
+          {/* An episode carries a video URL, an audio one, or both — the CMS
+              requires at least one. Video wins when both are set, being the
+              richer of the two. ⚠ Neither renders a player at all rather than
+              an empty one: the payload drops empty fields, so an episode
+              published before this existed arrives with no media key. */}
+          {episode.video ? (
+            <VideoPlayer
+              className="reveal"
+              src={episode.video}
+              title={episode.title}
+              author={episode.author}
+            />
+          ) : episode.audio ? (
+            <AudioPlayer
+              className="reveal"
+              src={episode.audio}
+              cover={episode.cover ?? show.cover}
+              title={episode.title}
+              author={episode.author}
+              length={episode.length}
+            />
+          ) : null}
 
           {/* the show's own write-up, flowing as plain text — real,
               show-level copy. Nothing episode-specific is invented: the live
