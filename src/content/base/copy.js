@@ -337,7 +337,7 @@ export const COPY = {
     closed: "Registration is not open for this event.",
     /* Shown instead of the whole register flow once the date has passed. */
     ended: "This event has ended.",
-    submit: "Confirm my place",
+    submit: "Confirm my spot",
     cancel: "Cancel",
     doneHeading: "You’re in{name}",
     doneBody: "Your spot at {title} on {date} is confirmed.",

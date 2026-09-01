@@ -82,7 +82,7 @@ export default function Modal({
         ref={panelRef}
         tabIndex={-1}
         className={cx(
-          "relative max-h-[92vh] w-[min(760px,100%)] overflow-y-auto",
+          "scroll-slim relative max-h-[92vh] w-[min(760px,100%)] overflow-y-auto",
           "animate-modalPanel rounded-lg bg-white shadow outline-none",
           panelClassName
         )}

@@ -11,6 +11,7 @@
      .reveal  — useGsap.js selects it by name
      .no-smooth — hand-animated scrolls have to defeat
                   `html { scroll-behavior: smooth }` for the duration
+     .scroll-slim — a scrollbar cannot be styled with utilities
 ========================================================= */
 @tailwind base;
 @tailwind components;
@@ -43,6 +44,54 @@
   }
   .reveal.in {
     @apply translate-y-0 opacity-100;
+  }
+
+  /* =======================================================
+     .scroll-slim — the scrollbar inside a scrolling panel.
+
+     The fourth exception to "everything else is utilities in the
+     components themselves", and it earns its place because a
+     scrollbar is TWO unrelated APIs: Firefox styles it with
+     `scrollbar-width`/`scrollbar-color` on the element, WebKit
+     with ::-webkit-scrollbar pseudo-elements. Neither is a
+     utility, and writing both inline would mean six arbitrary
+     variants repeated at every call site.
+
+     ⚠ NO TRACK FILL. A filled track is a hard-edged rectangle and
+     these panels have rounded corners — the strip runs straight
+     into them and squares them off. A floating thumb has no edges
+     to clash with.
+
+     ⚠ The thumb is INSET with a transparent border plus
+     background-clip, not by narrowing the bar: the scrollbar stays
+     wide enough to grab while the visible pill stays slim. 10px of
+     hit area, 4px of paint. The colour comes from the theme, so it
+     follows the switcher.
+  ======================================================= */
+  .scroll-slim {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--c-blue) / 0.5) transparent;
+  }
+
+  .scroll-slim::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  .scroll-slim::-webkit-scrollbar-track,
+  .scroll-slim::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  .scroll-slim::-webkit-scrollbar-thumb {
+    background-color: rgb(var(--c-blue) / 0.5);
+    border-radius: theme("borderRadius.full");
+    border: 3px solid transparent;
+    background-clip: padding-box;
+  }
+
+  .scroll-slim::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(var(--c-blue) / 0.75);
   }
 
   /* =======================================================
