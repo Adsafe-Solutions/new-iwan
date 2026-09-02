@@ -52,7 +52,8 @@ re-encrypt it before staging. The native hook in `.githooks/pre-commit`
 rejects staged plaintext env files; `npm ci` installs that hook through the
 `prepare` script. `TURNSTILE_SITE_KEY` is public and explicitly injected by
 `vite.config.js`; `TURNSTILE_SECRET_KEY` must never become a `VITE_` key or be
-read by frontend code.
+read by frontend code. The Worker derives Turnstile's accepted hostname from
+the existing `VITE_SITE_URL` value.
 
 `.github/workflows/deploy.yaml` deploys on a push to `develop` (dev) or a
 `v*` tag (prod). It imports GPG, decrypts only the selected environment file,
@@ -64,9 +65,9 @@ access to the private `Adsafe-Solutions/gpg` repository. GitHub uses the same
 currently relies on repository-level copies because of the organization plan.
 
 Turnstile is rendered in the event modal, event-detail registration panel,
-newsletter and contact form. Each posts to the Worker for action-specific
-Siteverify. Newsletter creates a regional Resend Contact; event and contact
-forms send regional Resend notification emails.
+newsletter and contact form. The Cloudflare Worker performs Siteverify and
+forwards accepted submissions to the CMS API; the CMS owns persistence and
+email delivery. There is no Resend delivery code in this repository's Worker.
 
 Prettier 3.9.6 is pinned; run `npx prettier --write src` after editing and
 `npm run build` before calling anything done.
@@ -447,8 +448,8 @@ Submissions POST to `/api/events/:slug/register`, which is **the only route on
 the API the public can write to**. It validates against the event's CURRENT form
 — a key that is not in the form is dropped, a choice answer that is not one of
 the offered options is refused — and returns per-field errors that the form
-shows against each question. ⚠ Turnstile gates the button but is still not
-verified server-side; the rate limit is what actually protects the endpoint.
+shows against each question. The Cloudflare Worker verifies Turnstile before
+forwarding the CMS payload; the Turnstile token itself is never sent to the CMS.
 
 ⚠ **There is no fallback form.** With no `VITE_CMS_API_URL`, or on an event
 carrying no questions, `RegisterForm` renders `eventModal.closed` instead of the
@@ -806,7 +807,7 @@ close button losing its position, an unintended scroll-to-section on page load.
 - The hero still uses three stock Webflow photos with generic charity copy. An
   earlier attempt to switch it to the four Iwan programmes (Men, Women, Youth,
   Kids) with local images was rolled back and `src/assests/` no longer exists.
-- Form delivery is live through Resend; CMS persistence is still pending.
+- Form persistence and email delivery are owned by the CMS API.
 - `Upcoming events carousel design/` at the repo root is a reference design
   export, untracked, ships nothing. Safe to delete or gitignore.
 - Nav links for About Us children (Our Story, Leadership, …) all point at `/`.

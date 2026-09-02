@@ -7,7 +7,7 @@ import { checkAnswers } from "../../lib/validate.js";
 import { cx } from "../../lib/cx.js";
 import { Question, blankAnswers } from "../FormFields/FormFields.jsx";
 import Turnstile, { TURNSTILE_ENABLED } from "../Turnstile/Turnstile.jsx";
-import { CMS_ENABLED, CMS_URL } from "../../content/cms.js";
+import { CMS_ENABLED } from "../../content/cms.js";
 
 /* cta → form → done, shared by the homepage modal and an event's own page so
    the two cannot drift.
@@ -85,11 +85,16 @@ export default function RegisterForm({ event, locale = "en-GB", heading = true }
 
     try {
       const res = await fetch(
-        `${CMS_URL}/api/events/${event.id}/register?country=${country.code}`,
+        `/api/events/${event.id}/register?country=${country.code}`,
         {
           method: "POST",
           headers: { "content-type": "application/json" },
-          body: JSON.stringify({ answers: values, subscribe, photoConsent }),
+          body: JSON.stringify({
+            answers: values,
+            subscribe,
+            photoConsent,
+            turnstileToken,
+          }),
         }
       );
 

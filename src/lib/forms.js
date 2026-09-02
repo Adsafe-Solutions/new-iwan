@@ -1,4 +1,4 @@
-import { CMS_URL, CMS_ENABLED } from "../content/cms.js";
+import { CMS_ENABLED } from "../content/cms.js";
 
 /* The one place a public form reaches the CMS API — subscribe, contact,
    volunteer and career. Event registration has its own path in RegisterForm,
@@ -23,7 +23,7 @@ export async function postForm(path, body, { country } = {}) {
     throw new FormError("This form is not connected yet. Please email us instead.");
   }
 
-  const url = `${CMS_URL}${path}${country ? `?country=${encodeURIComponent(country)}` : ""}`;
+  const url = `${path}${country ? `?country=${encodeURIComponent(country)}` : ""}`;
 
   let res;
   try {
@@ -54,7 +54,8 @@ export async function postForm(path, body, { country } = {}) {
   throw new FormError(payload?.error ?? `Something went wrong (${res.status}).`, fields);
 }
 
-export const subscribe = (email, opts) => postForm("/api/subscribe", { email }, opts);
+export const subscribe = (email, { turnstileToken, ...opts } = {}) =>
+  postForm("/api/subscribe", { email, turnstileToken }, opts);
 
 export const sendContact = (body, opts) => postForm("/api/contact", body, opts);
 
