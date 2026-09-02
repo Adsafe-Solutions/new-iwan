@@ -3,6 +3,7 @@
 # A separate Worker, not a Cloudflare "environment": two names keep the two
 # deployments completely independent, which is what the reference project does.
 name = "iwan-community-dev"
+main = "worker/index.js"
 account_id = "655eda9ca541b4af737153f0f1ea6966"
 compatibility_date = "2024-11-01"
 
@@ -13,6 +14,8 @@ routes = [
 
 [assets]
 directory = "./dist"
+binding = "ASSETS"
+run_worker_first = ["/api/*"]
 not_found_handling = "single-page-application"
 
 [vars]

@@ -100,7 +100,7 @@ export const PROGRAMMES_CONTENT = {
       {
         icon: "growth",
         title: "What it's led to",
-        body: "Dozens of young leaders trained this year, now running projects of their own.",
+        body: "Dozens of young leaders trained, and participants running community service projects of their own.",
       },
     ],
     /* the mission pillars this programme leans hardest on */

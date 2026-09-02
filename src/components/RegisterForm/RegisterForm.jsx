@@ -149,7 +149,7 @@ export default function RegisterForm({ event, locale = "en-GB", heading = true }
     );
   }
 
-  if (stage === "form") {
+  if (stage === "form" || stage === "submitting") {
     return (
       <form onSubmit={submit} noValidate>
         {heading && (

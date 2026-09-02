@@ -17,10 +17,10 @@ const live = (path) =>
    newer exports directly; the older ones come through i0.wp.com, Jetpack's
    CDN, which is the one that needs the width parameter. */
 export const PROGRAMME_PHOTOS = {
-  youth: "https://cdn.iwan.community/iwan-youth-fitness-2.webp",
-  kids: live("2025/11/DSC05966.jpg"),
-  men: "https://cdn.iwan.community/iwan-youth-0.webp",
-  women: "https://cdn.iwan.community/iwan-kids-3.webp",
+  youth: "https://cdn.iwan.community/iwan-youth-hero.webp",
+  kids: "https://cdn.iwan.community/iwan-kids-hero.webp",
+  men: "https://cdn.iwan.community/iwan-men-hero.webp",
+  women: "https://cdn.iwan.community/iwan-women-hero.webp",
 };
 
 export const PHOTOS = {

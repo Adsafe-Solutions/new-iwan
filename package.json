@@ -9,7 +9,7 @@
     "build:dev": "vite build --mode development",
     "build:prod": "vite build --mode production",
     "preview": "vite preview",
-    "preview:cf": "npm run build:dev && wrangler dev --config wrangler.dev.toml",
+    "preview:cf": "npm run build:dev && wrangler dev --config wrangler.dev.toml --env-file .env.local",
     "deploy:dev": "npm run build:dev && wrangler deploy --config wrangler.dev.toml",
     "deploy:prod": "npm run build:prod && wrangler deploy --config wrangler.toml",
     "prepare": "sh scripts/install-git-hooks.sh",

@@ -56,6 +56,37 @@ export default function Footer() {
   const MARK_NAME = BRAND.name;
   const MARK_TLD = BRAND.fullName.slice(BRAND.name.length);
 
+  const handleSubscribe = async (event) => {
+    event.preventDefault();
+    if (!turnstileToken || status === "submitting") return;
+
+    setStatus("submitting");
+    setMessage("");
+    try {
+      const response = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          region: country.code.toUpperCase(),
+          turnstileToken,
+        }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Subscription failed.");
+
+      setEmail("");
+      setStatus("success");
+      setMessage(copy.subscribeSuccess);
+    } catch (error) {
+      setStatus("error");
+      setMessage(error.message || copy.subscribeError);
+    } finally {
+      setTurnstileToken("");
+      setTurnstileKey((key) => key + 1);
+    }
+  };
+
   return (
     <footer className="overflow-hidden bg-footer text-ink">
       {/* Wider than the container so the wordmark runs near the full viewport.
@@ -120,7 +151,11 @@ export default function Footer() {
             </div>
           )}
 
-          <div className="w-[min(560px,100%)] max-phone:ml-0 sm:ml-auto">
+          {/* ml-auto only once all three columns actually fit on one line — the
+              row needs ~1233px for that, which is what the `wide` screen is.
+              Below it the block wraps onto its own row, where pushing it right
+              would leave it hanging out of line with the columns above. */}
+          <div className="w-[min(560px,100%)] wide:ml-auto">
             <h4 className="mb-[0.7rem] text-[15px] font-bold">{copy.subscribeHeading}</h4>
             <form onSubmit={onSubscribe}>
               <div
@@ -138,9 +173,9 @@ export default function Footer() {
                   maxLength={200}
                   placeholder={copy.emailPlaceholder}
                   aria-label={copy.emailLabel}
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
                   required
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
                 />
                 <button
                   className={cx(
@@ -155,7 +190,7 @@ export default function Footer() {
                      that can never arrive left this button dead forever. */
                   disabled={(TURNSTILE_ENABLED && !turnstileToken) || state === "sending"}
                 >
-                  {copy.subscribe}
+                  {status === "submitting" ? copy.subscribing : copy.subscribe}
                 </button>
               </div>
               {TURNSTILE_ENABLED && (

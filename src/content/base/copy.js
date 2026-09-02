@@ -44,15 +44,23 @@ export const COPY = {
     scroll: "Scroll",
   },
 
+  /* The heading says who runs Iwan; the eyebrow describes the mark grid it sits
+     above, so the two are not saying the same thing twice.
+
+     ⚠ The highlighted line never wraps (MARK_B is whitespace-nowrap), so keep
+     a `mark` to about 14 characters or it overflows a 360px screen. The whole
+     block renders uppercase — read it in caps before changing it. */
+  /* "A hub where people come together" is Iwan's own line, from the live site's
+     homepage — kept because it is the organisation describing itself. */
   trustedBy: {
     eyebrow: "One community, four programmes",
     headingLines: ["Reviving Muslim Identity,", { mark: "one step at a time" }],
   },
 
   pillars: {
-    heading: "Believe. Act. Serve. —",
-    mark: "thrive",
-    body: "Four commitments we hold each other to. They are the reason the classes, the workshops and the volunteering all belong to the same organisation.",
+    heading: "What holds it all",
+    mark: "together",
+    body: "Four commitments, and the four values they serve: God-consciousness, good manners, generosity and prosperity. They are why a Taekwondo class, a gardening morning and a first-aid workshop all belong to the same organisation.",
   },
 
   takeAction: {
@@ -327,17 +335,15 @@ export const COPY = {
     register: "Register",
     /* Which one shows follows the event's own `admission` field. */
     free: "Free to attend · everyone welcome",
-    ticket: "Ticket to attend · everyone welcome",
-    formHeading: "Save your spot",
-    subscribeLabel: "Subscribe to newsletter",
-    /* Default TICKED — the register button sends it beside the answers. */
-    photoConsentLabel: "I'm happy to appear in photos and video from this event",
-    /* Shown INSTEAD of the Register button when the event carries no questions
-       or the CMS is switched off — see RegisterForm. */
-    closed: "Registration is not open for this event.",
-    /* Shown instead of the whole register flow once the date has passed. */
-    ended: "This event has ended.",
-    submit: "Confirm my spot",
+    formHeading: "Save your place",
+    subscribeLabel: "Keep me posted about Iwan events and news",
+    nameLabel: "Your name",
+    namePlaceholder: "First and last",
+    emailLabel: "Email",
+    emailPlaceholder: "you@email.com",
+    submit: "Confirm my place",
+    submitting: "Confirming…",
+    submitError: "We could not register you right now. Please try again.",
     cancel: "Cancel",
     doneHeading: "You’re in{name}",
     doneBody: "Your spot at {title} on {date} is confirmed.",
@@ -376,6 +382,9 @@ export const COPY = {
     emailPlaceholder: "Enter your email",
     emailLabel: "Email address",
     subscribe: "Subscribe",
+    subscribing: "Subscribing…",
+    subscribeSuccess: "You’re subscribed. Watch your inbox for updates.",
+    subscribeError: "We could not subscribe you right now. Please try again.",
     consent:
       "By subscribing you agree to receive updates from {name} from time to time and to our",
     privacy: "Privacy Policy",

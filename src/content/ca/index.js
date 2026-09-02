@@ -6,6 +6,13 @@
    same "this page is coming soon" treatment every other unbuilt page gets,
    using each programme's own nav intro rather than India's Bangalore-specific
    copy. See ../ops.js for `null`-deletes-a-key. */
+import feed from "./instagram-feed.json";
+
+/* Canada's own accounts. X and YouTube are not overridden — those are shared,
+   so they stay inherited rather than being restated here. */
+const INSTAGRAM_URL = "https://www.instagram.com/iwan.community.canada?utm_source=qr";
+const FACEBOOK_URL = "https://www.facebook.com/share/17JTta6ADU/?mibextid=wwXIfr";
+
 export default {
   /* Canada's own number and address. All three are overridden together: the
      digits feed wa.me and tel:, `phone` is what is printed, and every surface
@@ -16,6 +23,40 @@ export default {
     whatsapp: "12896254455",
     phone: "+1 (289) 625-4455",
     address: "1418-1423 Mississauga Vly Blvd, Mississauga, ON L5A 4A5",
+
+    /* A function override is handed the base list and returns the new one, so
+       only the two accounts that differ are named — X and YouTube keep their
+       inherited hrefs. Replacing the array outright would mean restating all
+       four here, and a new social added to base would then never reach Canada.
+       The footer and the contact page both read brand.socials. */
+    socials: (socials) =>
+      socials.map((social) => {
+        if (social.icon === "instagram") return { ...social, href: INSTAGRAM_URL };
+        if (social.icon === "facebook") return { ...social, href: FACEBOOK_URL };
+        return social;
+      }),
+  },
+
+  /* The homepage wall's handle and its "view us on Instagram" link point at the
+     Canadian account. `posts` are deliberately NOT overridden while
+     ca/instagram-feed.json is still empty — an empty list would replace base's
+     and leave the section blank. Once the workflow fills that file, the spread
+     below starts using it and the wall goes live for Canada on its own. */
+  instagram: {
+    handle: "@iwan.community.canada",
+    url: INSTAGRAM_URL,
+    ...(feed.posts?.length
+      ? {
+          posts: feed.posts.map((post) => ({
+            img: post.img,
+            href: post.href,
+            label: post.caption
+              ? `Instagram post: ${post.caption}`
+              : "View this post on Instagram",
+          })),
+          isLive: true,
+        }
+      : {}),
   },
 
   programmes: {
