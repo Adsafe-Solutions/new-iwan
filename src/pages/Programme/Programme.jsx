@@ -28,28 +28,28 @@ const SKIN = {
     text: "text-youth",
     soft: "bg-youth/10",
     tint: "hover:bg-youth/5",
-    edge: "border-youth/30",
+    edge: "border-youth/60",
   },
   "iwan-kids": {
     solid: "bg-kids",
     text: "text-kids",
     soft: "bg-kids/10",
     tint: "hover:bg-kids/5",
-    edge: "border-kids/30",
+    edge: "border-kids/60",
   },
   "iwan-women": {
     solid: "bg-women",
     text: "text-women",
     soft: "bg-women/10",
     tint: "hover:bg-women/5",
-    edge: "border-women/30",
+    edge: "border-women/60",
   },
   "iwan-men": {
     solid: "bg-men",
     text: "text-men",
     soft: "bg-men/10",
     tint: "hover:bg-men/5",
-    edge: "border-men/30",
+    edge: "border-men/60",
   },
 };
 
