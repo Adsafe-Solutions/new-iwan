@@ -279,9 +279,12 @@ export default function Programme({ page }) {
               {work.items.map((w) => (
                 <article
                   className={cx(
-                    "reveal flex flex-col rounded-2xl border border-line bg-white p-7",
+                    "reveal flex flex-col rounded-2xl border bg-white p-7",
                     "transition-[transform,box-shadow] duration-[250ms]",
-                    "hover:-translate-y-1 hover:shadow-card"
+                    "hover:-translate-y-1 hover:shadow-card",
+                    /* the programme's own colour on the rule, so the six
+                       cards read as this page's rather than the site's */
+                    skin.edge
                   )}
                   key={w.title}
                 >
