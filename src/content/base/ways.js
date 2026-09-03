@@ -27,8 +27,43 @@ import learnLogo from "../../assests/logos/iwan-learn-logo.webp";
    these exports is the arch alone, the same box in every one, so the marks
    line up either way, and the plate is a fixed box so the grid stays even.
    When the real mark lands: drop the file in assests/logos, point `logo`
-   at it, add its colour pair to the palette and clear `borrowed`. */
+   at it, add its colour pair to the palette and clear `borrowed`.
+
+   ⚠ The ORDER is a design decision, not delivery order. Three marks are
+   warm (cafe red, play orange, create coral) and four are cool (learn
+   indigo, read teal, lead green, reflect purple), so they alternate — no
+   two neighbours share a hue, cafe and create never touch, and read sits
+   mid-row rather than first, where its teal reads as the youth programme
+   blue the ProgrammeDeck above has just used. Re-check the neighbours if a
+   track is added or a mark changes colour. */
 export const WAYS = [
+  {
+    id: "cafe",
+    name: "cafe",
+    logo: cafeLogo,
+    tone: "bg-way-cafe",
+    soft: "bg-way-cafe-soft",
+    activity: "Social connection & casual networking",
+    examples: ["Informal meetups", "Virtual coffee chats", "Interest channels"],
+  },
+  {
+    id: "learn",
+    name: "learn",
+    logo: learnLogo,
+    tone: "bg-way-learn",
+    soft: "bg-way-learn-soft",
+    activity: "Practical skills, technical & professional tools",
+    examples: ["Bootcamps", "Practical workshops", "Skill swaps"],
+  },
+  {
+    id: "play",
+    name: "play",
+    logo: playLogo,
+    tone: "bg-way-play",
+    soft: "bg-way-play-soft",
+    activity: "Sports, fitness & healthy competition",
+    examples: ["Sports leagues", "Outdoor activities", "Wellness routines"],
+  },
   {
     id: "read",
     name: "read",
@@ -48,24 +83,6 @@ export const WAYS = [
     examples: ["Design challenges", "Media lab", "Youth blog"],
   },
   {
-    id: "cafe",
-    name: "cafe",
-    logo: cafeLogo,
-    tone: "bg-way-cafe",
-    soft: "bg-way-cafe-soft",
-    activity: "Social connection & casual networking",
-    examples: ["Informal meetups", "Virtual coffee chats", "Interest channels"],
-  },
-  {
-    id: "play",
-    name: "play",
-    logo: playLogo,
-    tone: "bg-way-play",
-    soft: "bg-way-play-soft",
-    activity: "Sports, fitness & healthy competition",
-    examples: ["Sports leagues", "Outdoor activities", "Wellness routines"],
-  },
-  {
     id: "lead",
     name: "lead",
     logo: leadLogo,
@@ -73,15 +90,6 @@ export const WAYS = [
     soft: "bg-way-lead-soft",
     activity: "Guidance, mentorship & personal development",
     examples: ["Career mentorship", "Leadership cohorts"],
-  },
-  {
-    id: "learn",
-    name: "learn",
-    logo: learnLogo,
-    tone: "bg-way-learn",
-    soft: "bg-way-learn-soft",
-    activity: "Practical skills, technical & professional tools",
-    examples: ["Bootcamps", "Practical workshops", "Skill swaps"],
   },
   {
     id: "reflect",
