@@ -20,11 +20,14 @@ const EYEBROW =
   "reveal mb-4 text-[12px] font-bold uppercase leading-4 tracking-[0.16em] text-primary";
 const BODY = "text-[17px] leading-[28px] text-ink-2";
 
-/* One heading shape for the whole page: a plain line, then a marked one. */
-function Heading({ text, mark, marker = MARK_B, className }) {
+/* One heading shape for the whole page: a plain line, then a marked one.
+   `stack` forces the break between them, where the copy wants two lines. */
+function Heading({ text, mark, marker = MARK_B, className, stack = false }) {
   return (
     <h2 className={cx(KICKER, "reveal !mb-5 !text-[clamp(1.9rem,4vw,44px)]", className)}>
-      {text} <span className={marker}>{mark}</span>
+      {text}
+      {stack ? <br /> : " "}
+      <span className={marker}>{mark}</span>
     </h2>
   );
 }
@@ -65,7 +68,9 @@ export default function About() {
         <div className={CONTAINER}>
           <p className={EYEBROW}>{about.hero.eyebrow}</p>
           <h1 className={cx(KICKER, "reveal !mb-0 !text-[clamp(2rem,5vw,60px)]")}>
-            {about.hero.heading} <span className={MARK_B}>{about.hero.mark}</span>
+            {about.hero.heading}
+            <br />
+            <span className={MARK_B}>{about.hero.mark}</span>
           </h1>
         </div>
       </section>
@@ -80,7 +85,7 @@ export default function About() {
         >
           <div>
             <p className={EYEBROW}>{about.genesis.eyebrow}</p>
-            <Heading text={about.genesis.heading} mark={about.genesis.mark} />
+            <Heading text={about.genesis.heading} mark={about.genesis.mark} stack />
           </div>
           <div className="flex flex-col gap-5">
             {about.genesis.paragraphs.map((t) => (
@@ -291,7 +296,7 @@ export default function About() {
           <div className="grid grid-cols-[0.85fr_1.15fr] gap-14 max-nav:grid-cols-1 max-nav:gap-8">
             <div>
               <p className={EYEBROW}>{about.people.eyebrow}</p>
-              <Heading text={about.people.heading} mark={about.people.mark} />
+              <Heading text={about.people.heading} mark={about.people.mark} stack />
             </div>
             <div className="flex flex-col gap-5">
               {about.people.paragraphs.map((t) => (
