@@ -189,10 +189,14 @@ export default function About() {
           >
             {PILLARS.map((p) => (
               <div
-                className="reveal rounded-xl border border-line bg-white px-5 py-[1.1rem]"
+                className={cx(
+                  "reveal rounded-xl px-5 py-[1.1rem]",
+                  p.servesTone,
+                  p.servesInk
+                )}
                 key={`vision-${p.id}`}
               >
-                <Named name={p.serves} ar={p.servesAr} size="text-[15px]" />
+                <Named name={p.serves} ar={p.servesAr} size="text-[17px]" />
               </div>
             ))}
           </div>
