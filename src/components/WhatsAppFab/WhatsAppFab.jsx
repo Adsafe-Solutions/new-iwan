@@ -17,6 +17,7 @@ export default function WhatsAppFab({ label = "Chat with us on WhatsApp" }) {
       href={`https://wa.me/${BRAND.whatsapp}`}
       target="_blank"
       rel="noreferrer noopener"
+      data-fab
       aria-label={label}
       title={label}
       className={cx(

@@ -103,6 +103,7 @@ export default function ShareFab({ title }) {
   return (
     <div
       ref={ref}
+      data-fab
       className="pointer-events-none fixed bottom-5 right-5 z-[200] flex flex-col items-end gap-3"
     >
       {/* Speed-dial: each button pops in on its own, nearest the trigger

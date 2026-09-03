@@ -26,6 +26,14 @@
     scroll-behavior: auto;
   }
 
+  /* The floating corner buttons — WhatsApp, share, theme — step aside for a
+     dialog. They share the modal's z-index and come after it in the tree, so
+     without this they paint over the panel: on a phone the WhatsApp circle
+     lands squarely on the event modal's Register button. Set by Modal.jsx. */
+  html[data-modal-open] [data-fab] {
+    display: none;
+  }
+
   /* `clip`, NOT `hidden`. overflow-x:hidden makes body a scroll container,
      which silently breaks `position: sticky` for every descendant — the
      About column and the Events calendar both depend on it. `clip` cuts off

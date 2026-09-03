@@ -45,6 +45,7 @@ export default function ThemeSwitcher() {
        z-200 over the bottom-left corner — which is exactly where the footer's
        Privacy and Terms links sit. They were unclickable because of it. */
     <div
+      data-fab
       className="pointer-events-none fixed bottom-5 left-5 z-[200] flex flex-col items-start gap-3"
       ref={ref}
     >
