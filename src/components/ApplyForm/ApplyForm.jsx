@@ -95,7 +95,7 @@ export default function ApplyForm({ kind, onReady }) {
     const send = kind === "career" ? applyCareer : applyVolunteer;
 
     try {
-      await send({ answers, subscribe }, { country: country.code });
+      await send({ answers, subscribe, turnstileToken }, { country: country.code });
       setSent(true);
     } catch (err) {
       setFailed(err.message);

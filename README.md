@@ -10,17 +10,6 @@ members about belonging and programmes, never to donors about beneficiaries —
 the build was inherited from a charity template, so anything that reads like a
 donor appeal is leftover and wrong.
 
-## Documentation
-
-| Document                                     | What it covers                                                                                  |
-| -------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| [docs/architecture.md](docs/architecture.md) | How the app is put together — routing, the country model, content vs config, styling, animation |
-| [docs/build.md](docs/build.md)               | How a build is configured and produced, and why config is baked in at build time                |
-| [docs/deploy.md](docs/deploy.md)             | Environments, the GitHub Actions pipeline, secrets, manual deploys, cutover                     |
-| [docs/third-party.md](docs/third-party.md)   | Every dependency, external service and hotlinked asset host, and what each costs                |
-| [docs/prompts-deck.md](docs/prompts-deck.md) | The prompt library for working on this codebase with an AI agent                                |
-| [CLAUDE.md](CLAUDE.md)                       | The working guide agents load automatically — conventions and past regressions                  |
-
 ## Prerequisites
 
 | Tool                                    | Version               | Notes                                                               |
@@ -31,9 +20,8 @@ donor appeal is leftover and wrong.
 | [SOPS](https://github.com/getsops/sops) | 3.13.x                | Decrypts the environment files. The pre-commit hook needs it too.   |
 | Wrangler                                | installed by `npm ci` | Only needed for manual Cloudflare deploys or `npm run preview:cf`.  |
 
-No test runner and no database. The only server-side code is `worker/index.js`,
-which handles newsletter, contact and event-registration API submissions;
-everything else is static.
+No test runner and no database. The Worker verifies Turnstile and proxies form
+submissions to the CMS API, which owns persistence and email delivery.
 `npm run build` is the check.
 
 ## Quick start
@@ -97,16 +85,13 @@ this way include a logo rendering at 0px wide and a nav wrapping to two lines.
 | `.env.example`     | Plaintext template — variable names and what each one does |
 
 All three real files are **SOPS-encrypted in Git**. Decrypt only the one you
-need, and re-encrypt before staging. See [docs/build.md](docs/build.md) for what
-each variable does.
+need, and re-encrypt before staging. See [.env.example](.env.example) for the
+available variables.
 
 ⚠ `TURNSTILE_SITE_KEY` is public and explicitly injected into the browser bundle
-by [vite.config.js](vite.config.js). `TURNSTILE_SECRET_KEY`,
-`TURNSTILE_HOSTNAMES` and the `RESEND_*` values are **server-only** — they are
-read by `worker/index.js` at request time and must never gain a `VITE_` prefix,
-which would publish them in the bundle. In a deployed Worker they are Cloudflare
-secrets, not build values; `npm run preview:cf` passes `.env.local` to the local
-Workers runtime so all `/api/*` form endpoints work while you develop.
+by [vite.config.js](vite.config.js). `TURNSTILE_SECRET_KEY` is server-only and
+must never gain a `VITE_` prefix. The Worker derives the accepted hostname from
+`VITE_SITE_URL`. Email-provider credentials belong only to the CMS backend.
 
 ## Deployment at a glance
 
@@ -117,8 +102,8 @@ Workers runtime so all `/api/*` form endpoints work while you develop.
 | Manual dispatch    | chosen dev or prod   | matching config                            | as above             |
 
 The live WordPress site still serves `www.iwan.community`; neither Worker claims
-that hostname yet. Full detail, including the required Actions secrets, is in
-[docs/deploy.md](docs/deploy.md).
+that hostname yet. The deployment pipeline is defined in
+[.github/workflows/deploy.yaml](.github/workflows/deploy.yaml).
 
 ## Repository layout
 
@@ -134,7 +119,7 @@ src/
   lib/                 date, map, geo, contact and class-name helpers
 scripts/               Instagram feed fetcher, git-hook installer
 emails/                Resend Broadcast templates for the IN and CA segments
-worker/                form APIs, Turnstile verification, Resend delivery
+worker/                Turnstile verification, CMS form proxy, static assets
 .githooks/pre-commit   SOPS + Prettier gate
 tailwind.config.js     EVERY colour in the project
 wrangler.toml          production Worker
@@ -143,8 +128,7 @@ wrangler.dev.toml      development Worker
 
 ## House rules
 
-These are the ones that bite hardest. The full set is in
-[CLAUDE.md](CLAUDE.md) and [docs/architecture.md](docs/architecture.md).
+These are the ones that bite hardest. The full set is in [CLAUDE.md](CLAUDE.md).
 
 - **No hex codes anywhere in `src/`.** Every colour is a name in
   [tailwind.config.js](tailwind.config.js).

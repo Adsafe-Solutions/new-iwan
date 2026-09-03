@@ -114,7 +114,10 @@ export default function ContactPage() {
     try {
       /* The PARSED values — trimmed and lowercased the way the API stores
          them, so what was checked is what is sent. */
-      await sendContact({ ...checked.data, subscribe }, { country: country.code });
+      await sendContact(
+        { ...checked.data, subscribe, turnstileToken },
+        { country: country.code }
+      );
       setSent(true);
     } catch (err) {
       /* The API names which fields it refused; show each against its own

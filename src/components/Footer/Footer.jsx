@@ -37,7 +37,10 @@ export default function Footer() {
 
     setState("sending");
     try {
-      await subscribe(checked.data.email, { country: country.code });
+      await subscribe(checked.data.email, {
+        country: country.code,
+        turnstileToken,
+      });
       setEmail("");
       setState("done");
     } catch (err) {
@@ -55,37 +58,6 @@ export default function Footer() {
   const programmes = pages.filter((p) => p.group === programmesGroup);
   const MARK_NAME = BRAND.name;
   const MARK_TLD = BRAND.fullName.slice(BRAND.name.length);
-
-  const handleSubscribe = async (event) => {
-    event.preventDefault();
-    if (!turnstileToken || status === "submitting") return;
-
-    setStatus("submitting");
-    setMessage("");
-    try {
-      const response = await fetch("/api/newsletter", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email,
-          region: country.code.toUpperCase(),
-          turnstileToken,
-        }),
-      });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.error || "Subscription failed.");
-
-      setEmail("");
-      setStatus("success");
-      setMessage(copy.subscribeSuccess);
-    } catch (error) {
-      setStatus("error");
-      setMessage(error.message || copy.subscribeError);
-    } finally {
-      setTurnstileToken("");
-      setTurnstileKey((key) => key + 1);
-    }
-  };
 
   return (
     <footer className="overflow-hidden bg-footer text-ink">
