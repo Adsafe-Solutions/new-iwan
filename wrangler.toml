@@ -41,3 +41,10 @@ not_found_handling = "single-page-application"
 
 [vars]
 CMS_API_URL = "https://iwan-cms-api.onrender.com"
+# ⚠ The Worker verifies Turnstile against this hostname. It is NOT the
+# VITE_ build variable — those are inlined into the browser bundle and
+# never reach the Worker at runtime.
+# ⚠ Change this at the same time as the route pattern above — Turnstile
+# checks the hostname a token was solved on against this exact value, so a
+# cutover to www that forgets this line 403s every form on the site.
+SITE_URL = "https://new.iwan.community"

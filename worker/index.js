@@ -41,23 +41,34 @@ function cmsBodyFor(pathname, body) {
   };
 }
 
+/* ⚠ Every rejection below returns the SAME 403 to the browser, deliberately —
+   telling a spammer which check failed is telling them how to pass it. But it
+   made a real outage undiagnosable: the site URL was missing from [vars], so
+   every form 403'd for every visitor and looked exactly like a bad token.
+   The reason is logged instead, where `wrangler tail` can see it. */
+const reject = (why) => {
+  console.warn(`[turnstile] rejected: ${why}`);
+  return false;
+};
+
 async function verifyTurnstile(token, expectedAction, request, env) {
+  /* ⚠ SITE_URL is a Worker [vars] entry, NOT the VITE_ build variable — Vite
+     inlines those into the browser bundle at build time and they never become
+     runtime bindings here. VITE_SITE_URL is read too, for a deployment still
+     carrying the old name. */
   let expectedHostname = "";
   try {
-    expectedHostname = new URL(env.VITE_SITE_URL).hostname;
+    expectedHostname = new URL(env.SITE_URL || env.VITE_SITE_URL).hostname;
   } catch {
     /* A missing or invalid site URL is a deployment configuration error. */
   }
 
-  if (
-    !env.TURNSTILE_SECRET_KEY ||
-    typeof token !== "string" ||
-    token.length === 0 ||
-    token.length > 2048 ||
-    !expectedHostname
-  ) {
-    return false;
+  if (!env.TURNSTILE_SECRET_KEY) return reject("TURNSTILE_SECRET_KEY is not set");
+  if (!expectedHostname) return reject("SITE_URL is not set or is not a URL");
+  if (typeof token !== "string" || token.length === 0) {
+    return reject("no token in the request body");
   }
+  if (token.length > 2048) return reject("token is implausibly long");
 
   try {
     const response = await fetch(TURNSTILE_VERIFY_URL, {
@@ -70,16 +81,21 @@ async function verifyTurnstile(token, expectedAction, request, env) {
         remoteip: request.headers.get("CF-Connecting-IP") ?? "",
       }),
     });
-    if (!response.ok) return false;
+    if (!response.ok) return reject(`siteverify responded ${response.status}`);
 
     const result = await response.json();
-    return (
-      result.success === true &&
-      result.action === expectedAction &&
-      result.hostname === expectedHostname
-    );
-  } catch {
-    return false;
+    if (result.success !== true) {
+      return reject(`siteverify said no: ${(result["error-codes"] ?? []).join(", ")}`);
+    }
+    if (result.action !== expectedAction) {
+      return reject(`action was "${result.action}", expected "${expectedAction}"`);
+    }
+    if (result.hostname !== expectedHostname) {
+      return reject(`solved on "${result.hostname}", expected "${expectedHostname}"`);
+    }
+    return true;
+  } catch (err) {
+    return reject(`siteverify threw: ${err?.message ?? err}`);
   }
 }
 

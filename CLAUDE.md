@@ -52,8 +52,23 @@ re-encrypt it before staging. The native hook in `.githooks/pre-commit`
 rejects staged plaintext env files; `npm ci` installs that hook through the
 `prepare` script. `TURNSTILE_SITE_KEY` is public and explicitly injected by
 `vite.config.js`; `TURNSTILE_SECRET_KEY` must never become a `VITE_` key or be
-read by frontend code. The Worker derives Turnstile's accepted hostname from
-the existing `VITE_SITE_URL` value.
+read by frontend code.
+
+⚠ **The Worker's env is NOT the build's env.** `VITE_*` values are inlined
+into the browser bundle by Vite at build time and never become Worker runtime
+bindings — the Worker only sees `[vars]` in its wrangler config and secrets
+set on the Worker itself. This has bitten once: the Worker checked Turnstile's
+hostname against `env.VITE_SITE_URL`, which was set in `.env.development` but
+not in `[vars]`, so it was `undefined` and **every form on the live site
+403'd for every visitor**. `SITE_URL` now lives in both wrangler configs and
+must be changed alongside the route pattern at cutover.
+
+The Worker needs three things set per environment: `SITE_URL` and
+`CMS_API_URL` in `[vars]`, and `TURNSTILE_SECRET_KEY` as a secret
+(`wrangler secret put TURNSTILE_SECRET_KEY -c wrangler.dev.toml`).
+⚠ All five Turnstile rejection paths return the same opaque 403 to the
+browser deliberately — the reason is logged instead, so `wrangler tail`
+names it.
 
 `.github/workflows/deploy.yaml` deploys on a push to `develop` (dev) or a
 `v*` tag (prod). It imports GPG, decrypts only the selected environment file,
