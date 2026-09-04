@@ -79,7 +79,7 @@ export const LEGAL = {
         list: [
           "Places are limited on some events, and an event can fill up between you opening the page and submitting the form.",
           "We may have to change or cancel a session. We will tell whoever registered.",
-          "If you cannot make it, reply to your confirmation email so we can offer your place to someone else.",
+          "If you cannot make it, reply to your confirmation email so we can offer your spot to someone else.",
           "Programmes for children are the responsibility of a parent or guardian, who should be the one registering.",
         ],
       },

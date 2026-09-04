@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useScrollAnimations } from "../../hooks/useGsap.js";
 import Button from "../../components/Button/Button.jsx";
 import Icon from "../../components/Icon/Icon.jsx";
+import MediaBrand from "../../components/MediaBrand/MediaBrand.jsx";
 import AboutStrip from "../../components/AboutStrip/AboutStrip.jsx";
 import AboutSplit from "../../components/AboutSplit/AboutSplit.jsx";
 import PageHero from "../../components/PageHero/PageHero.jsx";
@@ -401,10 +402,15 @@ export default function Programme({ page }) {
                       real pictures somewhere. A colour block carries the
                       strand until those arrive; add `img` to swap it. */}
                   {s.img ? (
+                    /* `relative` anchors the brand overlay — same treatment as
+                       the blog and event cards. Photo branch only: the colour
+                       block below already carries a mark. */
                     <div
-                      className="h-40 bg-cover bg-center"
+                      className="relative h-40 bg-cover bg-center"
                       style={{ backgroundImage: `url(${s.img})` }}
-                    />
+                    >
+                      <MediaBrand size={52} />
+                    </div>
                   ) : (
                     <div
                       className={cx("grid h-28 place-items-center", skin.soft, skin.text)}

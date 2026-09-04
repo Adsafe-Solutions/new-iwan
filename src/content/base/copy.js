@@ -266,8 +266,8 @@ export const COPY = {
     dateLabel: "Date",
     timeLabel: "Time",
     kindLabel: "Type",
-    spotsLabel: "Places",
-    spotsValue: "{spots} places",
+    spotsLabel: "Spots",
+    spotsValue: "{spots} spots",
     registerHeading: "Save your spot",
     programmeLink: "More about {programme}",
     notFound: "We can’t find that event",
@@ -336,7 +336,7 @@ export const COPY = {
     /* Which one shows follows the event's own `admission` field. */
     free: "Free to attend · everyone welcome",
     ticket: "Ticket to attend · everyone welcome",
-    formHeading: "Save your place",
+    formHeading: "Save your spot",
     subscribeLabel: "Subscribe to newsletter",
     /* Default TICKED, sent beside the answers — see RegisterForm. */
     photoConsentLabel: "I'm happy to appear in photos and video from this event",

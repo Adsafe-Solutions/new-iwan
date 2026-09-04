@@ -18,8 +18,18 @@ export const CMS_ENABLED = Boolean(CMS_URL);
    The timeout is what stops a slow or dead API from holding the page hostage:
    when it fires the site renders without the CMS-owned sections and carries
    on. ⚠ Nothing in content/base backs those four any more, so a timeout costs
-   real content — the empty states are honest, not a soft landing. */
-const TIMEOUT_MS = 3000;
+   real content — the empty states are honest, not a soft landing.
+
+   ⚠ It is also a WHITE-SCREEN budget, which is what stops it being generous:
+   primeContent is awaited before the first render, so this number is how long
+   a visitor can stare at nothing. 3s was too tight — the first request after
+   Render's free tier spins the API down measured 3.2s and was cancelled,
+   emptying every CMS-owned section for the visitor who paid the wait. 5s
+   clears that without making a dead API cost the page five seconds twice.
+
+   ⚠ The real fix is upstream: .github/workflows/keep-warm.yml pings the API
+   so it never sleeps. Raising this number is the belt, not the braces. */
+const TIMEOUT_MS = 5000;
 
 /* ⚠ Today as the VISITOR's calendar day, not the server's. The API filters
    upcoming events against this, so a server in UTC never decides that an event

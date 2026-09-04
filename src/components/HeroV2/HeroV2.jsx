@@ -67,8 +67,8 @@ export default function HeroV2() {
              heroRise/heroSet animate */
           style={{ "--s": logo.scale ?? 1 }}
           className={cx(
-            "w-[calc(min(520px,62vw)*var(--s))] max-w-[94vw]",
-            "max-phone:w-[calc(64vw*var(--s))]",
+            "w-[calc(min(280px,34vw)*var(--s))] max-w-[94vw]",
+            "max-phone:w-[calc(42vw*var(--s))]",
             !still && (setting ? "animate-heroSet" : "animate-heroRise")
           )}
         />

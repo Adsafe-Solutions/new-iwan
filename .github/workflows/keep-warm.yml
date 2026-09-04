@@ -1,0 +1,42 @@
+# Keeps the CMS API awake.
+#
+# ⚠ Render's free tier spins a service down after ~15 minutes idle, and the
+# cold start that follows takes far longer than the site's 5s bootstrap
+# budget (src/content/cms.js). When that budget is missed the fetch is
+# cancelled and the visitor gets a site with no events, blog posts, podcast
+# episodes or promo — the four things the CMS owns outright.
+#
+# A ping every 10 minutes keeps it inside the idle window, so no visitor pays
+# the cold start. This is a workaround for the free tier: a paid instance does
+# not sleep, and this file can be deleted the day the API moves to one.
+name: keep the CMS API warm
+
+on:
+  schedule:
+    # Every 10 minutes. ⚠ GitHub queues cron generously — treat this as
+    # "roughly every 10 minutes", which is still well inside the 15 idle.
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+# Nothing is written; the token needs no permissions at all.
+permissions: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wake the API
+        # /health is the cheapest route that proves the process AND its
+        # database connection are up — it 503s when Mongo is disconnected.
+        # --max-time is generous on purpose: a genuine cold start is the case
+        # this exists to absorb, so waiting through one is the job.
+        run: |
+          code=$(curl -sS -o /tmp/health.json -w '%{http_code}' \
+            --max-time 120 --retry 2 --retry-delay 15 \
+            https://iwan-cms-api.onrender.com/health) || true
+          echo "health: $code"
+          cat /tmp/health.json 2>/dev/null || true
+          # ⚠ Never fail the job on a bad response. A red cron every 10
+          # minutes trains everyone to ignore it, and this is a nudge, not a
+          # monitor — the API being down is not news this workflow can act on.
+          exit 0

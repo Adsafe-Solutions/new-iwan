@@ -73,8 +73,8 @@ export default function EventModal({ event: card, onClose }) {
         </h3>
         <p className="text-[15px] font-medium text-white/70">
           {/* Only the parts this event has — a spotless or kindless event
-              used to print "· · places". The spots line reuses the detail
-              page's copy key rather than a second hardcoded "places". */}
+              used to print "· · spots". The spots line reuses the detail
+              page's copy key rather than a second hardcoded label. */}
           {[
             event.start && event.end && `${event.start}–${event.end}`,
             event.kind,
