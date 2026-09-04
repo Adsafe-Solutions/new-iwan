@@ -11,6 +11,10 @@
    `tone` / `ink` / `markTone` are Tailwind classes, never hexes —
    the colours themselves live in tailwind.config.js. They follow
    the deck's own card set: navy, yellow, teal, red.
+   `servesTone` / `servesInk` colour the vision card on /about-us:
+   the same four colours, rotated so each vision card contrasts
+   with the mission card it sits above (yellow over navy, navy
+   over yellow, red over teal, teal over red).
    `mark` picks the geometric glyph drawn in Pillars.jsx.
 ========================================================= */
 
@@ -22,6 +26,8 @@ export const PILLARS = [
     /* the vision pillar this one serves */
     serves: "God-Consciousness",
     servesAr: "تقوى",
+    servesTone: "bg-accent",
+    servesInk: "text-men",
     body: "Everything starts inward. We make room for prayer, reflection and honest questions, so conviction is something you hold rather than something you inherited.",
     tone: "bg-men",
     ink: "text-white",
@@ -34,6 +40,8 @@ export const PILLARS = [
     ar: "عمل",
     serves: "Good Manners",
     servesAr: "آداب",
+    servesTone: "bg-men",
+    servesInk: "text-white",
     body: "Belief that stops at the head counts for little. Good manners, open-handedness and the discipline to keep turning up that is the part people actually feel.",
     tone: "bg-accent",
     ink: "text-men",
@@ -46,6 +54,8 @@ export const PILLARS = [
     ar: "خدمة",
     serves: "Generosity & Charity",
     servesAr: "صدقة",
+    servesTone: "bg-red",
+    servesInk: "text-white",
     body: "We look after one another and the city around us not as a project with an end date, but as a habit the community keeps.",
     tone: "bg-youth",
     ink: "text-white",
@@ -58,6 +68,8 @@ export const PILLARS = [
     ar: "شورى",
     serves: "Prosperity & Economy",
     servesAr: "إقتصاد",
+    servesTone: "bg-youth",
+    servesInk: "text-white",
     body: "Nobody decides alone. Shura means the room stays open, the quiet voice gets heard, and the best idea wins regardless of who carried it in.",
     tone: "bg-red",
     ink: "text-white",

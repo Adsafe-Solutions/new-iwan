@@ -3,7 +3,7 @@ import { cx } from "../../lib/cx.js";
 import { KICKER, MARK_YB } from "../../lib/type.js";
 
 /* ---------- WAYS TO CONNECT ----------
-   The eight tracks from content/base/ways.js. Not programmes — those have
+   The seven tracks from content/base/ways.js. Not programmes — those have
    pages of their own and are dealt out by ProgrammeDeck one section up —
    these are the kinds of thing that happen inside them, so nothing here
    links anywhere yet. A card that went somewhere it has no page for would
@@ -18,19 +18,16 @@ import { KICKER, MARK_YB } from "../../lib/type.js";
    Each card is a mark on a plate over a white body, the same treatment
    ProgrammeDeck gives a programme: the logo is what names a track, so it
    gets the room a stock picture used to take. The plate is tinted from the
-   track's own colour because `bg-way-create` is #fee01b and a yellow mark
-   does not read on white.
+   track's own colour, a light tint of the same hue the rule above it uses,
+   so the mark, plate and rule read as one palette.
 
-   ⚠ Five of the eight tracks have no mark of their own yet and borrow a
-   delivered one (see ways.js — the play/lead/learn/reflect/serve files in
-   assests/logos are byte-identical copies of other marks, so they are not
-   wired up). Those cards show the ARCH ONLY: the wordmark baked into the
-   export would have a card headed "play @ iwan" displaying artwork reading
-   "read @iwan". The arch is the top 161px of every 600-wide export and is
-   the same box in all three, so the marks line up across the grid. The
-   plate is a fixed height either way, so a borrowed card and a real one are
-   the same size. Showing the whole logo again is a change to ARCH and
-   nothing else. */
+   Every track has its own mark now, but the `borrowed` path stays for the
+   next track added ahead of its logo: a borrowed card shows the ARCH ONLY,
+   because the wordmark baked into the export would have a card headed
+   "play @ iwan" displaying artwork reading "read @iwan". The arch is the
+   top 161px of every 600-wide export and is the same box in all of them,
+   so the marks line up across the grid, and the plate is a fixed height
+   either way, so a borrowed card and a real one are the same size. */
 
 /* the arch, without the wordmark underneath it */
 const ARCH = "block w-[128px] overflow-hidden aspect-[600/161]";
@@ -88,7 +85,7 @@ export default function WaysToConnect() {
           {WAYS.map((w) => (
             <article className={CARD} key={w.id}>
               {/* the track's colour, full width, so the row reads as a set
-                  of eight rather than eight unrelated boxes */}
+                  of seven rather than seven unrelated boxes */}
               <span aria-hidden="true" className={cx("h-[4px] flex-none", w.tone)} />
 
               <span aria-hidden="true" className={cx(PLATE, w.soft)}>
