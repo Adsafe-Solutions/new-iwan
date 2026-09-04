@@ -7,8 +7,7 @@
 
      1. Tailwind utilities  → `theme.extend.colors` below.
      2. CSS custom properties → the `themeVariables` plugin at the
-        bottom emits :root and :root[data-theme="…"] blocks, so the
-        ThemeSwitcher keeps working exactly as before.
+        bottom emits the :root block every themeable utility reads.
 
    JS that needs a literal colour (GSAP tweens, swatch previews)
    imports `palette` / `themes` from this file — see src/themes.js
@@ -198,7 +197,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        /* themeable — resolved at paint time from [data-theme] */
+        /* resolved at paint time from the :root variables */
         primary: {
           DEFAULT: themed("c-blue"),
           dark: themed("c-blue-dark"),
@@ -437,6 +436,11 @@ export default {
         "--c-teal": channels(t.teal),
       });
 
+      /* ⚠ `:root` ONLY. The theme switcher is gone, so nothing sets
+         [data-theme] and the per-theme blocks this used to emit alongside
+         were unreachable CSS. The `themes` map is kept because DEFAULT_THEME
+         indexes it for the values below — and because switching the site's
+         palette is now a one-word change here rather than a rewrite. */
       addBase({
         ":root": {
           ...vars(themes[DEFAULT_THEME]),
@@ -447,9 +451,6 @@ export default {
           "--header-h": "78px",
           "--topbar-h": "34px",
         },
-        ...Object.fromEntries(
-          Object.entries(themes).map(([id, t]) => [`:root[data-theme="${id}"]`, vars(t)])
-        ),
       });
     }),
   ],
