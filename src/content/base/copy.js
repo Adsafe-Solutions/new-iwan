@@ -68,7 +68,7 @@ export const COPY = {
     mark: "we run",
   },
 
-  /* the eight tracks themselves are in ways.js — they name real activities */
+  /* the seven tracks themselves are in ways.js — they name real activities */
   waysToConnect: {
     heading: "Ways to",
     mark: "connect",
