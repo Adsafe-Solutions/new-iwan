@@ -154,6 +154,12 @@ export const PROGRAMMES_CONTENT = {
       body: "The sessions above are only part of it. This is the shape of a year here, and any one of these is a reasonable place to start.",
       items: [
         {
+          icon: "book",
+          title: "Reading the write-ups",
+          body: "Sessions get written up afterwards, so you can catch one you missed or go back over the parts worth keeping.",
+          link: { to: "/blogs", programme: true, label: "Read the write-ups" },
+        },
+        {
           icon: "bulb",
           title: "Learning something new",
           body: "Tech Hub one month, Islamic history the next, fitness after that. You do not have to know which strand is yours before you turn up.",
@@ -177,12 +183,6 @@ export const PROGRAMMES_CONTENT = {
           icon: "growth",
           title: "Training and sport",
           body: "Strength, nutrition and the habit of looking after yourself. It sits alongside everything else here rather than apart from it.",
-        },
-        {
-          icon: "book",
-          title: "Reading the write-ups",
-          body: "Sessions get written up afterwards, so you can catch one you missed or go back over the parts worth keeping.",
-          link: { to: "/blogs", programme: true, label: "Read the write-ups" },
         },
       ],
     },
@@ -324,6 +324,12 @@ export const PROGRAMMES_CONTENT = {
       body: "The subjects change every few weeks. What stays the same is the shape of a session, and what your child gets out of one.",
       items: [
         {
+          icon: "book",
+          title: "Reading the write-ups",
+          body: "Sessions get written up afterwards, so you can see what your child did and carry the good bits on at home.",
+          link: { to: "/blogs", programme: true, label: "Read the write-ups" },
+        },
+        {
           icon: "spark",
           title: "Trying things out",
           body: "Cooking one week, world history the next, first aid after that. Nobody is expected to be good at it beforehand, which is rather the point.",
@@ -347,12 +353,6 @@ export const PROGRAMMES_CONTENT = {
           icon: "people",
           title: "Staying with them",
           body: "You are welcome to stay rather than drop off, and plenty of parents do. Nobody treats it as getting in the way.",
-        },
-        {
-          icon: "book",
-          title: "Reading the write-ups",
-          body: "Sessions get written up afterwards, so you can see what your child did and carry the good bits on at home.",
-          link: { to: "/blogs", programme: true, label: "Read the write-ups" },
         },
       ],
     },

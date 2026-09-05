@@ -24,7 +24,6 @@ import { SECTIONS } from "./config/sections.js";
 import { DEFAULT_COUNTRY, basenameFor, countryFromPath } from "./config/countries.js";
 import ContentProvider, { useNav, useProgrammes } from "./content/ContentProvider.jsx";
 import ScrollToTop from "./components/ScrollToTop/ScrollToTop.jsx";
-import ThemeSwitcher from "./components/ThemeSwitcher/ThemeSwitcher.jsx";
 import WhatsAppFab from "./components/WhatsAppFab/WhatsAppFab.jsx";
 import ShareFab from "./components/ShareFab/ShareFab.jsx";
 import LocationPrompt from "./components/LocationPrompt/LocationPrompt.jsx";
@@ -148,7 +147,6 @@ function Shell() {
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
-      <ThemeSwitcher />
       {/* On a detail page the corner button shares the page instead of
           opening WhatsApp — the one place a visitor has something specific
           to pass on. The pathname is basename-relative, so this needs no

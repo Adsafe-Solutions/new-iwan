@@ -13,9 +13,11 @@ import { useCopy } from "../../content/ContentProvider.jsx";
 import { cx } from "../../lib/cx.js";
 
 /* The corner share button on detail pages — it takes the WhatsApp FAB's spot
-   (see App.jsx), so it copies that button's geometry exactly and ThemeSwitcher's
-   tray behaviour: ⚠ pointer-events-none on the closed tray, or an invisible
-   column of buttons floats over the content beneath it.
+   (see App.jsx), so it copies that button's geometry exactly. ⚠ The closed
+   tray keeps `pointer-events-none`: it is invisible but still occupies its
+   full height, so without that it is a transparent column of buttons sitting
+   over whatever is beneath it — which is how the footer's links became
+   unclickable once before.
 
    Plain share URLs, no SDK — every network still accepts a GET with the page's
    address, and a script per network is a price this page has nothing to show
@@ -103,6 +105,7 @@ export default function ShareFab({ title }) {
   return (
     <div
       ref={ref}
+      data-fab
       className="pointer-events-none fixed bottom-5 right-5 z-[200] flex flex-col items-end gap-3"
     >
       {/* Speed-dial: each button pops in on its own, nearest the trigger

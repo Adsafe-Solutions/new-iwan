@@ -68,7 +68,7 @@ export const COPY = {
     mark: "we run",
   },
 
-  /* the eight tracks themselves are in ways.js — they name real activities */
+  /* the seven tracks themselves are in ways.js — they name real activities */
   waysToConnect: {
     heading: "Ways to",
     mark: "connect",
@@ -266,8 +266,8 @@ export const COPY = {
     dateLabel: "Date",
     timeLabel: "Time",
     kindLabel: "Type",
-    spotsLabel: "Places",
-    spotsValue: "{spots} places",
+    spotsLabel: "Spots",
+    spotsValue: "{spots} spots",
     registerHeading: "Save your spot",
     programmeLink: "More about {programme}",
     notFound: "We can’t find that event",
@@ -347,13 +347,21 @@ export const COPY = {
     register: "Register",
     /* Which one shows follows the event's own `admission` field. */
     free: "Free to attend · everyone welcome",
-    formHeading: "Save your place",
-    subscribeLabel: "Keep me posted about Iwan events and news",
+    ticket: "Ticket to attend · everyone welcome",
+    formHeading: "Save your spot",
+    subscribeLabel: "Subscribe to newsletter",
+    /* Default TICKED, sent beside the answers — see RegisterForm. */
+    photoConsentLabel: "I'm happy to appear in photos and video from this event",
+    /* Shown INSTEAD of the Register button when the event carries no
+       questions, or the CMS is switched off. */
+    closed: "Registration is not open for this event.",
+    /* And instead of the whole flow once the date has passed. */
+    ended: "This event has ended.",
     nameLabel: "Your name",
     namePlaceholder: "First and last",
     emailLabel: "Email",
     emailPlaceholder: "you@email.com",
-    submit: "Confirm my place",
+    submit: "Confirm my spot",
     submitting: "Confirming…",
     submitError: "We could not register you right now. Please try again.",
     cancel: "Cancel",

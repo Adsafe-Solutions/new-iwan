@@ -33,10 +33,15 @@ export function useCms(path, { enabled = true, initial = null, from = null } = {
   /* The country and today's date belong to every request, so callers pass the
      path alone and cannot forget either. */
   /* `from` defaults to the visitor's own day — "upcoming". The events listing
-     overrides it to reach back for recently-ended events; nothing else does. */
+     overrides it to reach back for recently-ended events; nothing else does.
+
+     ⚠ `today` travels SEPARATELY and is never overridden. Once `from` can be
+     two months back, it stops meaning "now", and the API needs both: `from`
+     bounds the range, `today` is where upcoming ends and past begins. */
   const url =
     path && CMS_ENABLED
-      ? `${CMS_URL}${path}${path.includes("?") ? "&" : "?"}country=${country.code}&from=${from ?? todayKey()}`
+      ? `${CMS_URL}${path}${path.includes("?") ? "&" : "?"}country=${country.code}` +
+        `&from=${from ?? todayKey()}&today=${todayKey()}`
       : null;
 
   useEffect(() => {

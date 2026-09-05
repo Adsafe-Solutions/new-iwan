@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useScrollAnimations } from "../../hooks/useGsap.js";
 import Button from "../../components/Button/Button.jsx";
 import Icon from "../../components/Icon/Icon.jsx";
+import MediaBrand from "../../components/MediaBrand/MediaBrand.jsx";
 import AboutStrip from "../../components/AboutStrip/AboutStrip.jsx";
 import AboutSplit from "../../components/AboutSplit/AboutSplit.jsx";
 import PageHero from "../../components/PageHero/PageHero.jsx";
@@ -28,28 +29,28 @@ const SKIN = {
     text: "text-youth",
     soft: "bg-youth/10",
     tint: "hover:bg-youth/5",
-    edge: "border-youth/30",
+    edge: "border-youth/60",
   },
   "iwan-kids": {
     solid: "bg-kids",
     text: "text-kids",
     soft: "bg-kids/10",
     tint: "hover:bg-kids/5",
-    edge: "border-kids/30",
+    edge: "border-kids/60",
   },
   "iwan-women": {
     solid: "bg-women",
     text: "text-women",
     soft: "bg-women/10",
     tint: "hover:bg-women/5",
-    edge: "border-women/30",
+    edge: "border-women/60",
   },
   "iwan-men": {
     solid: "bg-men",
     text: "text-men",
     soft: "bg-men/10",
     tint: "hover:bg-men/5",
-    edge: "border-men/30",
+    edge: "border-men/60",
   },
 };
 
@@ -279,9 +280,12 @@ export default function Programme({ page }) {
               {work.items.map((w) => (
                 <article
                   className={cx(
-                    "reveal flex flex-col rounded-2xl border border-line bg-white p-7",
+                    "reveal flex flex-col rounded-2xl border bg-white p-7",
                     "transition-[transform,box-shadow] duration-[250ms]",
-                    "hover:-translate-y-1 hover:shadow-card"
+                    "hover:-translate-y-1 hover:shadow-card",
+                    /* the programme's own colour on the rule, so the six
+                       cards read as this page's rather than the site's */
+                    skin.edge
                   )}
                   key={w.title}
                 >
@@ -401,10 +405,15 @@ export default function Programme({ page }) {
                       real pictures somewhere. A colour block carries the
                       strand until those arrive; add `img` to swap it. */}
                   {s.img ? (
+                    /* `relative` anchors the brand overlay — same treatment as
+                       the blog and event cards. Photo branch only: the colour
+                       block below already carries a mark. */
                     <div
-                      className="h-40 bg-cover bg-center"
+                      className="relative h-40 bg-cover bg-center"
                       style={{ backgroundImage: `url(${s.img})` }}
-                    />
+                    >
+                      <MediaBrand size={52} />
+                    </div>
                   ) : (
                     <div
                       className={cx("grid h-28 place-items-center", skin.soft, skin.text)}

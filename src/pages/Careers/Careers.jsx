@@ -42,7 +42,9 @@ export default function Careers() {
         <div className={CONTAINER}>
           <p className={EYEBROW}>{copy.eyebrow}</p>
           <h1 className={cx(KICKER, "reveal !mb-5 !text-[clamp(2rem,5vw,56px)]")}>
-            {copy.heading} <span className={MARK_B}>{copy.mark}</span>
+            {copy.heading}
+            <br />
+            <span className={MARK_B}>{copy.mark}</span>
           </h1>
           <p className={cx("reveal max-w-[62ch]", BODY)}>{copy.body}</p>
         </div>

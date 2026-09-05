@@ -7,8 +7,7 @@
 
      1. Tailwind utilities  → `theme.extend.colors` below.
      2. CSS custom properties → the `themeVariables` plugin at the
-        bottom emits :root and :root[data-theme="…"] blocks, so the
-        ThemeSwitcher keeps working exactly as before.
+        bottom emits the :root block every themeable utility reads.
 
    JS that needs a literal colour (GSAP tweens, swatch previews)
    imports `palette` / `themes` from this file — see src/themes.js
@@ -91,18 +90,26 @@ export const palette = {
   linkedin: "#0a66c2",
   telegram: "#26a5e4",
 
-  /* the "ways to connect" marks, sampled from the three logo exports the
-     designer has delivered so far, so a card's rule and its arch agree.
-     The other five tracks borrow one of these until their own mark lands —
-     see content/base/ways.js. */
-  wayRead: "#0495bb",
-  wayCreate: "#fee01b",
+  /* the "ways to connect" marks, each sampled from its own logo export so
+     a card's rule, plate and mark agree — see content/base/ways.js.
+     ⚠ Re-sample these if a logo is replaced: the rule is the only thing
+     on the card that is not the export itself. */
+  wayRead: "#3b97b8",
+  wayCreate: "#ff4d6d",
   wayCafe: "#ff0000",
-  /* the plate each mark sits on, tinted the same way the programme softs
-     above are — the mark has to read on it, and #fee01b does not on white */
-  wayReadSoft: "#e8f5f9",
-  wayCreateSoft: "#fffcea",
+  wayPlay: "#ff8a3d",
+  wayLead: "#0ae448",
+  wayReflect: "#662d91",
+  wayLearn: "#3939c6",
+  /* the plate each mark sits on — a ~10% tint of the mark's colour over
+     white, the same way the programme softs above are built */
+  wayReadSoft: "#e9f4f8",
+  wayCreateSoft: "#ffedf0",
   wayCafeSoft: "#ffe8e8",
+  wayPlaySoft: "#fff3ec",
+  wayLeadSoft: "#e7fced",
+  wayReflectSoft: "#f0eaf4",
+  wayLearnSoft: "#ebebf9",
 
   /* fixed accents (focus areas, donate button) */
   red: "#e11d2a",
@@ -190,7 +197,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        /* themeable — resolved at paint time from [data-theme] */
+        /* resolved at paint time from the :root variables */
         primary: {
           DEFAULT: themed("c-blue"),
           dark: themed("c-blue-dark"),
@@ -256,6 +263,10 @@ export default {
           read: { DEFAULT: palette.wayRead, soft: palette.wayReadSoft },
           create: { DEFAULT: palette.wayCreate, soft: palette.wayCreateSoft },
           cafe: { DEFAULT: palette.wayCafe, soft: palette.wayCafeSoft },
+          play: { DEFAULT: palette.wayPlay, soft: palette.wayPlaySoft },
+          lead: { DEFAULT: palette.wayLead, soft: palette.wayLeadSoft },
+          reflect: { DEFAULT: palette.wayReflect, soft: palette.wayReflectSoft },
+          learn: { DEFAULT: palette.wayLearn, soft: palette.wayLearnSoft },
         },
         pink: palette.pink,
         green: palette.green,
@@ -425,6 +436,11 @@ export default {
         "--c-teal": channels(t.teal),
       });
 
+      /* ⚠ `:root` ONLY. The theme switcher is gone, so nothing sets
+         [data-theme] and the per-theme blocks this used to emit alongside
+         were unreachable CSS. The `themes` map is kept because DEFAULT_THEME
+         indexes it for the values below — and because switching the site's
+         palette is now a one-word change here rather than a rewrite. */
       addBase({
         ":root": {
           ...vars(themes[DEFAULT_THEME]),
@@ -435,9 +451,6 @@ export default {
           "--header-h": "78px",
           "--topbar-h": "34px",
         },
-        ...Object.fromEntries(
-          Object.entries(themes).map(([id, t]) => [`:root[data-theme="${id}"]`, vars(t)])
-        ),
       });
     }),
   ],

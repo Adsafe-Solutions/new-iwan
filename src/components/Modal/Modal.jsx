@@ -53,6 +53,11 @@ export default function Modal({
     document.addEventListener("keydown", onKey);
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    /* ⚠ The floating corner buttons sit at the SAME z-index as this backdrop
+       and are later siblings, so they paint on top of the dialog — over the
+       Register button, in the event modal's case. They step aside on this
+       flag; see [data-fab] in index.css. */
+    document.documentElement.dataset.modalOpen = "true";
     /* the panel rather than the close button: focus has to enter the dialog,
        but landing it on Close draws a focus ring around the glyph the moment
        the modal opens, which reads as a chip behind it. Tab from here goes
@@ -61,6 +66,7 @@ export default function Modal({
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = prev;
+      delete document.documentElement.dataset.modalOpen;
     };
   }, []);
 
