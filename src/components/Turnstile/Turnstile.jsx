@@ -37,7 +37,7 @@ function loadTurnstile() {
   });
 }
 
-export default function Turnstile({ action, onChange }) {
+export default function Turnstile({ action, onChange, resetKey = 0 }) {
   const container = useRef(null);
   const onChangeRef = useRef(onChange);
 
@@ -64,6 +64,8 @@ export default function Turnstile({ action, onChange }) {
           appearance: "always",
           theme: "auto",
           size: "flexible",
+          "refresh-expired": "auto",
+          "refresh-timeout": "auto",
           callback: (token) => onChangeRef.current(token),
           "expired-callback": () => onChangeRef.current(""),
           "error-callback": () => onChangeRef.current(""),
@@ -78,7 +80,7 @@ export default function Turnstile({ action, onChange }) {
       onChangeRef.current("");
       if (widgetId !== undefined && window.turnstile) window.turnstile.remove(widgetId);
     };
-  }, [action]);
+  }, [action, resetKey]);
 
   return <div ref={container} className="min-h-[65px] w-full" />;
 }

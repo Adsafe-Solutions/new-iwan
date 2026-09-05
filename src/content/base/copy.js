@@ -284,11 +284,23 @@ export const COPY = {
     goTo: "Show testimonial from {author}",
   },
 
+  /* The two embedded panels in the "follow along" band. `social.cta` is
+     shared by both deliberately: the panels sit side by side, so the link
+     wording is one string rather than two that can drift apart. Only the
+     label and the iframe title name a network. */
+  social: { cta: "Follow us" },
+
+  facebook: {
+    label: "On Facebook",
+    frameTitle: "Iwan on Facebook",
+  },
+
   instagram: {
+    label: "On Instagram",
+    frameTitle: "Iwan on Instagram",
     heading: "Follow",
     mark: "along",
     body: "What the sessions actually look like, as they happen.",
-    cta: "View us on Instagram",
   },
 
   /* The homepage accordion, closing the page on the questions people

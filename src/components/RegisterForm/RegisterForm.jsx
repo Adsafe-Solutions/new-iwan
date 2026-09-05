@@ -46,6 +46,7 @@ export default function RegisterForm({ event, locale = "en-GB", heading = true }
   const [subscribe, setSubscribe] = useState(true);
   const [photoConsent, setPhotoConsent] = useState(true);
   const [turnstileToken, setTurnstileToken] = useState("");
+  const [turnstileResetKey, setTurnstileResetKey] = useState(0);
 
   /* The name typed in, for the confirmation line — whichever question happens
      to be the name one. */
@@ -119,6 +120,8 @@ export default function RegisterForm({ event, locale = "en-GB", heading = true }
       setBanner(copy.offline);
     } finally {
       setSending(false);
+      setTurnstileToken("");
+      setTurnstileResetKey((key) => key + 1);
     }
   };
 
@@ -208,7 +211,11 @@ export default function RegisterForm({ event, locale = "en-GB", heading = true }
             that can never arrive made the form permanently unsubmittable. */}
         {TURNSTILE_ENABLED && (
           <div className="mb-[1.1rem] max-w-[420px]">
-            <Turnstile action="event_registration" onChange={setTurnstileToken} />
+            <Turnstile
+              action="event_registration"
+              onChange={setTurnstileToken}
+              resetKey={turnstileResetKey}
+            />
           </div>
         )}
 

@@ -68,6 +68,7 @@ export default function ContactPage() {
      the box is right there to say otherwise. */
   const [subscribe, setSubscribe] = useState(true);
   const [turnstileToken, setTurnstileToken] = useState("");
+  const [turnstileResetKey, setTurnstileResetKey] = useState(0);
   const [sending, setSending] = useState(false);
   const [failed, setFailed] = useState(null);
   const [fieldErrors, setFieldErrors] = useState({});
@@ -126,6 +127,8 @@ export default function ContactPage() {
       setFailed(err.message || copy.form.failed);
     } finally {
       setSending(false);
+      setTurnstileToken("");
+      setTurnstileResetKey((key) => key + 1);
     }
   };
 
@@ -358,7 +361,11 @@ export default function ContactPage() {
                         form. */}
                     {TURNSTILE_ENABLED && (
                       <div className="mb-5 max-w-[420px]">
-                        <Turnstile action="contact" onChange={setTurnstileToken} />
+                        <Turnstile
+                          action="contact"
+                          onChange={setTurnstileToken}
+                          resetKey={turnstileResetKey}
+                        />
                       </div>
                     )}
 

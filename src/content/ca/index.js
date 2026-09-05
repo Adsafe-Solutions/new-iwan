@@ -11,7 +11,11 @@ import feed from "./instagram-feed.json";
 /* Canada's own accounts. X and YouTube are not overridden — those are shared,
    so they stay inherited rather than being restated here. */
 const INSTAGRAM_URL = "https://www.instagram.com/iwan.community.canada?utm_source=qr";
+/* The share link the team gave us (facebook.com/share/17JTta6ADU) is a
+   redirect. brand.socials can use it, but the Page Plugin cannot — it needs
+   the canonical page, which that link resolves to. */
 const FACEBOOK_URL = "https://www.facebook.com/share/17JTta6ADU/?mibextid=wwXIfr";
+const FACEBOOK_PAGE = "https://www.facebook.com/iwan.community.canada";
 
 export default {
   /* Canada's own number and address. All three are overridden together: the
@@ -42,8 +46,11 @@ export default {
      ca/instagram-feed.json is still empty — an empty list would replace base's
      and leave the section blank. Once the workflow fills that file, the spread
      below starts using it and the wall goes live for Canada on its own. */
+  facebook: { page: FACEBOOK_PAGE },
+
   instagram: {
     handle: "@iwan.community.canada",
+    username: "iwan.community.canada",
     url: INSTAGRAM_URL,
     ...(feed.posts?.length
       ? {

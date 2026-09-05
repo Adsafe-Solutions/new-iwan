@@ -88,6 +88,7 @@ export const useContact = () => useContent().contact;
 export const useTestimonials = () => useContent().testimonials;
 export const useStats = () => useContent().stats;
 export const useInstagram = () => useContent().instagram;
+export const useFacebook = () => useContent().facebook;
 export const useHero = () => useContent().hero;
 export const useFocus = () => useContent().focus;
 export const useAdvisors = () => useContent().advisors;

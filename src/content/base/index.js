@@ -5,11 +5,13 @@ import { PROGRAMMES_CONTENT } from "./programmes.js";
 import { TESTIMONIALS } from "./testimonials.js";
 import { STATS } from "./stats.js";
 import {
+  INSTAGRAM_USERNAME,
   INSTAGRAM_HANDLE,
   INSTAGRAM_URL,
   INSTAGRAM_POSTS,
   INSTAGRAM_IS_LIVE,
 } from "./instagram.js";
+import { FACEBOOK_PAGE } from "./facebook.js";
 import { HERO_IMAGE, HERO_LOGOS, HERO_SLIDES, PROGRAMME_MARKS } from "./hero.js";
 import { FOCUS_AREAS, FOCUS_LINKS } from "./focusAreas.js";
 import { ADVISORS } from "./advisors.js";
@@ -36,7 +38,9 @@ export const BASE_CONTENT = {
   contact: CONTACT,
   testimonials: TESTIMONIALS,
   stats: STATS,
+  facebook: { page: FACEBOOK_PAGE },
   instagram: {
+    username: INSTAGRAM_USERNAME,
     handle: INSTAGRAM_HANDLE,
     url: INSTAGRAM_URL,
     posts: INSTAGRAM_POSTS,

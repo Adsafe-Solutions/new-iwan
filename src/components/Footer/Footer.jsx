@@ -16,6 +16,7 @@ const SOCIAL_ICON = cx(
 
 export default function Footer() {
   const [turnstileToken, setTurnstileToken] = useState("");
+  const [turnstileResetKey, setTurnstileResetKey] = useState(0);
   const [email, setEmail] = useState("");
   /* "idle" | "sending" | "done" | "failed" — one value rather than three
      booleans that can disagree with each other. */
@@ -46,6 +47,9 @@ export default function Footer() {
     } catch (err) {
       setFailed(err.message);
       setState("failed");
+    } finally {
+      setTurnstileToken("");
+      setTurnstileResetKey((key) => key + 1);
     }
   };
   const BRAND = useBrand();
@@ -162,12 +166,16 @@ export default function Footer() {
                      that can never arrive left this button dead forever. */
                   disabled={(TURNSTILE_ENABLED && !turnstileToken) || state === "sending"}
                 >
-                  {status === "submitting" ? copy.subscribing : copy.subscribe}
+                  {state === "sending" ? copy.subscribing : copy.subscribe}
                 </button>
               </div>
               {TURNSTILE_ENABLED && (
                 <div className="mt-3 max-w-[420px]">
-                  <Turnstile action="newsletter_signup" onChange={setTurnstileToken} />
+                  <Turnstile
+                    action="newsletter_signup"
+                    onChange={setTurnstileToken}
+                    resetKey={turnstileResetKey}
+                  />
                 </div>
               )}
             </form>
