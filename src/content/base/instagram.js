@@ -20,6 +20,10 @@
 ========================================================= */
 import feed from "./instagram-feed.json";
 
+/* the bare username is what the profile embed URL is built from —
+   the handle carries an @ and the URL a trailing slash, and neither
+   works there */
+export const INSTAGRAM_USERNAME = "iwan.community";
 export const INSTAGRAM_HANDLE = "@iwan.community";
 export const INSTAGRAM_URL = "https://instagram.com/iwan.community/";
 
@@ -44,6 +48,13 @@ const PLACEHOLDERS = [
 /* Feed posts win when there are any; otherwise the placeholders do. */
 export const INSTAGRAM_IS_LIVE = feed.posts?.length > 0;
 
+/* Real posts only — no placeholder is mixed in with them.
+
+   ⚠ The keyless profile embed returns exactly SIX posts, whatever it is asked
+   for, so the twelve-tile mosaic renders half full. Filling the rest needs a
+   source that is not capped: scripts/fetch-instagram.mjs (Graph API, needs
+   IG_USER_ID and IG_ACCESS_TOKEN) or a provider's JSON feed. Until one of
+   those runs, six real posts is what there is. */
 export const INSTAGRAM_POSTS = INSTAGRAM_IS_LIVE
   ? feed.posts.map((p) => ({
       img: p.img,

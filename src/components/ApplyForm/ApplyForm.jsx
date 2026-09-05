@@ -43,6 +43,7 @@ export default function ApplyForm({ kind, onReady }) {
   const [answers, setAnswers] = useState({});
   const [subscribe, setSubscribe] = useState(true);
   const [turnstileToken, setTurnstileToken] = useState("");
+  const [turnstileResetKey, setTurnstileResetKey] = useState(0);
   const [sending, setSending] = useState(false);
   const [failed, setFailed] = useState("");
   const [fieldErrors, setFieldErrors] = useState({});
@@ -102,6 +103,8 @@ export default function ApplyForm({ kind, onReady }) {
       setFieldErrors(err.fields ?? {});
     } finally {
       setSending(false);
+      setTurnstileToken("");
+      setTurnstileResetKey((key) => key + 1);
     }
   };
 
@@ -178,7 +181,11 @@ export default function ApplyForm({ kind, onReady }) {
 
         {TURNSTILE_ENABLED && (
           <div className="mb-5 max-w-[420px]">
-            <Turnstile action={`${kind}_application`} onChange={setTurnstileToken} />
+            <Turnstile
+              action={`${kind}_application`}
+              onChange={setTurnstileToken}
+              resetKey={turnstileResetKey}
+            />
           </div>
         )}
 

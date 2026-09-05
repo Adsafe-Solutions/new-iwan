@@ -1,128 +1,59 @@
-import { IconArrowUpRight, IconBrandInstagram } from "@tabler/icons-react";
 import { useCopy, useInstagram } from "../../content/ContentProvider.jsx";
 import { cx } from "../../lib/cx.js";
 import { KICKER, MARK_B } from "../../lib/type.js";
+import SocialPanel, { BODY_H } from "../SocialPanel/SocialPanel.jsx";
+import FacebookFeed from "../FacebookFeed/FacebookFeed.jsx";
 
-/* A packed mosaic rather than a tidy row of thumbnails: CSS multi-column
-   lays the tiles out as true masonry, and the varied aspect ratios below
-   are what stop the columns squaring off into a plain grid.
+/* The "follow along" band: the two accounts, embedded live, side by side.
 
-   Whole class names in a literal list, because Tailwind scans this file as
-   plain text — an aspect built by interpolation would never be generated.
-   The list cycles, so any number of tiles works. */
-const ASPECTS = [
-  "aspect-[4/5]",
-  "aspect-square",
-  "aspect-[3/4]",
-  "aspect-[4/3]",
-  "aspect-square",
-  "aspect-[4/5]",
-  "aspect-[3/4]",
-  "aspect-square",
-  "aspect-[4/3]",
-  "aspect-[4/5]",
-  "aspect-square",
-  "aspect-[3/4]",
-];
+   Both are the providers' own keyless embeds, so there is no token in the
+   bundle and no feed to keep in step — what the accounts post is what shows.
+   The cost is that neither can be restyled from here: they are cross-origin
+   documents, and only their outer chrome can be cropped. See FacebookFeed.
 
-const TILE = "mb-3 block break-inside-avoid overflow-hidden rounded-2xl bg-ink";
-const IMG =
-  "h-full w-full object-cover transition-transform duration-[600ms] group-hover:scale-[1.07]";
+   Instagram's profile embed draws its own header (avatar, name, follower and
+   post counts) and it is left alone — unlike Facebook's, it does not repeat
+   what the panel header above it already says.
+
+   ⚠ The account is the ACTIVE COUNTRY'S, both here and in the panel link:
+   `username` comes from content, so /ca/ embeds Canada's account without this
+   component knowing there is more than one. */
 
 export default function Instagram() {
-  const {
-    handle: INSTAGRAM_HANDLE,
-    url: INSTAGRAM_URL,
-    posts: INSTAGRAM_POSTS,
-    isLive: INSTAGRAM_IS_LIVE,
-  } = useInstagram();
+  const { username, url } = useInstagram();
   const copy = useCopy().instagram;
-  if (INSTAGRAM_POSTS.length === 0) return null;
+  const social = useCopy().social;
+  if (!username) return null;
 
   return (
     <section className="bg-mist py-[4.5rem]" id="instagram">
       <div className="mx-auto w-full max-w-container px-6">
-        <div className="mb-9 flex flex-wrap items-center justify-between gap-6">
-          <div>
-            <h2 className={cx(KICKER, "reveal !mb-2")}>
-              {copy.heading} <span className={MARK_B}>{copy.mark}</span>
-            </h2>
-            <p className="reveal text-[17px] leading-[1.7] text-muted">{copy.body}</p>
-          </div>
-
-          <a
-            href={INSTAGRAM_URL}
-            target="_blank"
-            rel="noreferrer noopener"
-            className={cx(
-              "reveal group inline-flex flex-none items-center gap-2.5 rounded-full",
-              "bg-primary px-6 py-3 text-[15px] font-bold text-white",
-              "transition-[background-color,transform] duration-200",
-              "hover:-translate-y-0.5 hover:bg-primary-dark"
-            )}
-          >
-            <IconBrandInstagram className="h-5 w-5" stroke={2} aria-hidden="true" />
-            {copy.cta}
-            <IconArrowUpRight
-              className="h-4 w-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-              stroke={2}
-              aria-hidden="true"
-            />
-          </a>
+        <div className="mb-9">
+          <h2 className={cx(KICKER, "reveal !mb-2")}>
+            {copy.heading} <span className={MARK_B}>{copy.mark}</span>
+          </h2>
+          <p className="reveal text-[17px] leading-[1.7] text-muted">{copy.body}</p>
         </div>
 
-        {/* gap-3 on the columns and mb-3 on the tiles have to match, or the
-            horizontal and vertical gutters come out uneven */}
-        <div
-          className="columns-6 gap-3 max-wide:columns-5 max-nav:columns-4 max-phone:columns-2"
-          data-stagger
-        >
-          {INSTAGRAM_POSTS.map((post, i) => {
-            const shape = ASPECTS[i % ASPECTS.length];
-            const inner = (
-              <img
-                src={post.img}
-                /* decorative: the tile is either a labelled link, or a
-                   placeholder that says nothing about Iwan */
-                alt=""
-                loading="lazy"
-                className={IMG}
-              />
-            );
+        {/* Wraps to a single column below ~1000px, where two 468px panels and
+            the gap stop fitting. ⚠ Centred, which also centres the SINGLE
+            panel a country renders when it has no Facebook page with posts
+            behind it — India today. That is deliberate: the panels are
+            centred as a group, not aligned to the heading above them. */}
+        <div className="flex flex-wrap justify-center gap-x-8 gap-y-10">
+          <SocialPanel icon="instagram" label={copy.label} href={url} cta={social.cta}>
+            <iframe
+              title={copy.frameTitle}
+              src={`https://www.instagram.com/${username}/embed`}
+              height={BODY_H}
+              loading="lazy"
+              className="block w-full border-0"
+              scrolling="no"
+              frameBorder="0"
+            />
+          </SocialPanel>
 
-            /* Placeholders are not links — twelve identical "View on
-               Instagram" links would be worse than none, and the header
-               CTA already covers it. Real posts each go somewhere. */
-            return INSTAGRAM_IS_LIVE ? (
-              <a
-                key={post.img}
-                href={post.href ?? INSTAGRAM_URL}
-                target="_blank"
-                rel="noreferrer noopener"
-                aria-label={post.label}
-                className={cx(TILE, shape, "reveal group relative")}
-              >
-                {inner}
-                <span
-                  className={cx(
-                    "absolute inset-0 grid place-items-center bg-ink/55 text-white",
-                    "opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                  )}
-                  aria-hidden="true"
-                >
-                  <IconBrandInstagram className="h-7 w-7" stroke={1.8} />
-                </span>
-              </a>
-            ) : (
-              <div
-                key={post.img}
-                className={cx(TILE, shape, "reveal group relative")}
-                aria-hidden="true"
-              >
-                {inner}
-              </div>
-            );
-          })}
+          <FacebookFeed />
         </div>
       </div>
     </section>
